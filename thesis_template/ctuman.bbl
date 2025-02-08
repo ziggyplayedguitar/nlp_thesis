@@ -1,0 +1,16 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\providecommand{\bysame}{\leavevmode\hbox to3em{\hrulefill}\thinspace}
+\providecommand{\MR}{\relax\ifhmode\unskip\space\fi MR }
+% \MRhref is called by the amsart/book/proc definition of \MR.
+\providecommand{\MRhref}[2]{%
+  \href{http://www.ams.org/mathscinet-getitem?mr=#1}{#2}
+}
+\providecommand{\href}[2]{#2}
+\begin{thebibliography}{FMP{\etalchar{+}}18}
+
+\bibitem[FMP{\etalchar{+}}18]{Fornacciari2018}
+Paolo Fornacciari, Monica Mordonini, Agostino Poggi, Laura Sani, and Michele
+  Tomaiuolo, \emph{A holistic system for troll detection on {Twitter}},
+  Computers in Human Behavior \textbf{89} (2018), 258--268.
+
+\end{thebibliography}
