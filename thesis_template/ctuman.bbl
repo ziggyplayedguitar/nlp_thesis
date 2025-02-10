@@ -14,6 +14,11 @@ Vincenzo Masucci Johanna~Monti Antonio~Pascucci, Raffaele~Manna, \emph{The role
   english social media text}, Second Workshop on Trolling, Aggression and
   Cyberbullying, 2020.
 
+\bibitem[Dae13]{Daelemans2013Explanation}
+Walter Daelemans, \emph{Explanation in computational stylometry}, Computational
+  Linguistics and Intelligent Text Processing (Berlin, Heidelberg) (Alexander
+  Gelbukh, ed.), Springer Berlin Heidelberg, 2013, pp.~451--462.
+
 \bibitem[FMP{\etalchar{+}}18]{Fornacciari2018}
 Paolo Fornacciari, Monica Mordonini, Agostino Poggi, Laura Sani, and Michele
   Tomaiuolo, \emph{A holistic system for troll detection on {Twitter}},
@@ -39,6 +44,6 @@ Yunita Sari, Mark Stevenson, and Andreas Vlachos, \emph{Topic or {Style}?
 
 \bibitem[ZJ21]{Jiang2021Sentiment}
 Mark~Stamp Zidong~Jiang, Fabio Di~Troia, \emph{Sentiment {Analysis} for {Troll}
-  {Detection} on {Weibo}}, CoRR (2021), arXiv:2103.09054 [cs].
+  {Detection} on {Weibo}}, CoRR (2021), 0, arXiv:2103.09054 [cs].
 
 \end{thebibliography}

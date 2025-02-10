@@ -26,10 +26,5 @@
 \contentsline {section}{\numberline {2.1}Stylometry}{3}{section.2.1}%
 \contentsline {section}{\numberline {2.2}Sentiment Analysis}{3}{section.2.2}%
 \contentsline {section}{\numberline {2.3}Topic Detection Techniques}{3}{section.2.3}%
-\contentsline {section}{\numberline {2.4}}{3}{section.2.4}%
-\contentsline {section}{\numberline {2.5}Troll Detection}{3}{section.2.5}%
 \contentsline {chapter}{\numberline {3}}{5}{chapter.3}%
-\contentsline {chapter}{\numberline {4}}{7}{chapter.4}%
-\contentsline {chapter}{\numberline {5}}{9}{chapter.5}%
-\contentsline {chapter}{\numberline {6}}{11}{chapter.6}%
-\contentsline {chapter}{\numberline {A}Bibliography}{13}{appendix.A}%
+\contentsline {chapter}{\numberline {A}Bibliography}{7}{appendix.A}%
