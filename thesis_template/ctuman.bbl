@@ -8,9 +8,37 @@
 \providecommand{\href}[2]{#2}
 \begin{thebibliography}{FMP{\etalchar{+}}18}
 
+\bibitem[AP20]{Pascucci2020Misogyny}
+Vincenzo Masucci Johanna~Monti Antonio~Pascucci, Raffaele~Manna, \emph{The role
+  of computational stylometry in identifying (misogynistic) aggression in
+  english social media text}, Second Workshop on Trolling, Aggression and
+  Cyberbullying, 2020.
+
 \bibitem[FMP{\etalchar{+}}18]{Fornacciari2018}
 Paolo Fornacciari, Monica Mordonini, Agostino Poggi, Laura Sani, and Michele
   Tomaiuolo, \emph{A holistic system for troll detection on {Twitter}},
   Computers in Human Behavior \textbf{89} (2018), 258--268.
+
+\bibitem[Lut98]{Lutoslawski1898}
+Wincenty Lutoslawski, \emph{Principes de stylométrie appliqués à la
+  chronologie des œuvres de {Platon}}, Revue des Études Grecques \textbf{11}
+  (1898), no.~41, 61--81 (fre).
+
+\bibitem[MW64]{Mosteller1964Federalist}
+Frederick Mosteller and David L. (David~Lee) Wallace, \emph{Inference and
+  disputed authorship: {The} {Federalist}}, Reading, Mass., Addison-Wesley,
+  1964 (eng).
+
+\bibitem[SSV18]{Sari2018Features}
+Yunita Sari, Mark Stevenson, and Andreas Vlachos, \emph{Topic or {Style}?
+  {Exploring} the {Most} {Useful} {Features} for {Authorship} {Attribution}},
+  Proceedings of the 27th {International} {Conference} on {Computational}
+  {Linguistics} (Santa Fe, New Mexico, USA) (Emily~M. Bender, Leon Derczynski,
+  and Pierre Isabelle, eds.), Association for Computational Linguistics, August
+  2018, pp.~343--353.
+
+\bibitem[ZJ21]{Jiang2021Sentiment}
+Mark~Stamp Zidong~Jiang, Fabio Di~Troia, \emph{Sentiment {Analysis} for {Troll}
+  {Detection} on {Weibo}}, CoRR (2021), arXiv:2103.09054 [cs].
 
 \end{thebibliography}

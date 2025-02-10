@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.8)  8 FEB 2025 12:42
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.8)  10 FEB 2025 18:32
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -847,7 +847,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmss' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-<ctu_logo_black.pdf, id=56, 366.36874pt x 279.0425pt>
+<ctu_logo_black.pdf, id=60, 366.36874pt x 279.0425pt>
 File: ctu_logo_black.pdf Graphic file (type pdf)
 <use ctu_logo_black.pdf>
 Package pdftex.def Info: ctu_logo_black.pdf  used on input line 162.
@@ -991,23 +991,28 @@ Chapter 6.
 
 ]
 Appendix A.
+
+Underfull \hbox (badness 1708) in paragraph at lines 12--16
+[]\T1/lmr/m/n/10.95 (+20) Vincenzo Ma-succi Jo-hanna Monti An-to-nio Pas-cucci, Raf-
+ []
+
 ) [13] (./ctuman.aux)
 Package rerunfilecheck Info: File `ctuman.out' has not changed.
-(rerunfilecheck)             Checksum: 0826CC56340BBC212A0BB92A5F22FCCB;1451.
+(rerunfilecheck)             Checksum: F11DC4D0C4CF35546C536AFFC0074206;1447.
  ) 
 Here is how much of TeX's memory you used:
- 20103 strings out of 478287
- 329573 string characters out of 5849290
- 673969 words of memory out of 5000000
- 37819 multiletter control sequences out of 15000+600000
- 537057 words of font info for 120 fonts, out of 8000000 for 9000
+ 20133 strings out of 478287
+ 330014 string characters out of 5849290
+ 676188 words of memory out of 5000000
+ 37825 multiletter control sequences out of 15000+600000
+ 537956 words of font info for 129 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  68i,17n,78p,1038b,1144s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb>
-Output written on ctuman.pdf (19 pages, 171121 bytes).
+Output written on ctuman.pdf (19 pages, 181456 bytes).
 PDF statistics:
- 204 PDF objects out of 1000 (max. 8388607)
- 169 compressed objects within 2 object streams
- 38 named destinations out of 1000 (max. 500000)
- 37486 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 220 PDF objects out of 1000 (max. 8388607)
+ 185 compressed objects within 2 object streams
+ 44 named destinations out of 1000 (max. 500000)
+ 37494 words of extra memory for PDF output out of 42996 (max. 10000000)
 
