@@ -1,12 +1,5 @@
 \begin{thebibliography}{10}
 
-\bibitem{Pascucci2020Misogyny}
-Vincenzo Masucci Johanna~Monti Antonio~Pascucci, Raffaele~Manna.
-\newblock The role of computational stylometry in identifying (misogynistic)
-  aggression in english social media text.
-\newblock In {\em Second Workshop on Trolling, Aggression and Cyberbullying},
-  2020.
-
 \bibitem{Blei2001LDA}
 David Blei, Andrew Ng, and Michael Jordan.
 \newblock Latent dirichlet allocation.
@@ -19,12 +12,6 @@ Walter Daelemans.
 \newblock In Alexander Gelbukh, editor, {\em Computational Linguistics and
   Intelligent Text Processing}, pages 451--462, Berlin, Heidelberg, 2013.
   Springer Berlin Heidelberg.
-
-\bibitem{Fornacciari2018}
-Paolo Fornacciari, Monica Mordonini, Agostino Poggi, Laura Sani, and Michele
-  Tomaiuolo.
-\newblock A holistic system for troll detection on {Twitter}.
-\newblock {\em Computers in Human Behavior}, 89:258--268, December 2018.
 
 \bibitem{Golino2022Elections}
 Hudson Golino, Alexander~P. Christensen, Robert Moulder, Seohyun Kim, and
@@ -41,16 +28,35 @@ Maarten Grootendorst.
 \newblock {\em arXiv preprint arXiv:2203.05794}, March 2022.
 \newblock arXiv:2203.05794 [cs].
 
+\bibitem{Jiang2021Sentiment}
+Zidong Jiang, Fabio~Di Troia, and Mark Stamp.
+\newblock Sentiment {Analysis} for {Troll} {Detection} on {Weibo}.
+\newblock {\em CoRR}, page~0, March 2021.
+\newblock arXiv:2103.09054 [cs].
+
 \bibitem{Lutoslawski1898}
 Wincenty Lutoslawski.
 \newblock Principes de stylométrie appliqués à la chronologie des œuvres de
   {Platon}.
 \newblock {\em Revue des Études Grecques}, 11(41):61--81, 1898.
 
+\bibitem{Fornacciari2018}
+Paolo~Fornacciari Monica, Mordonini, Agostino Poggi, Laura Sani, and Michele
+  Tomaiuolo.
+\newblock A holistic system for troll detection on {Twitter}.
+\newblock {\em Computers in Human Behavior}, 89:258--268, December 2018.
+
 \bibitem{Mosteller1964Federalist}
 Frederick Mosteller and David L. (David~Lee) Wallace.
 \newblock {\em Inference and disputed authorship: {The} {Federalist}}.
 \newblock Reading, Mass., Addison-Wesley, 1964.
+
+\bibitem{Pascucci2020Misogyny}
+Antonio Pascucci, Raffaele Manna, Vincenzo Masucci, and Johanna Monti.
+\newblock The role of computational stylometry in identifying (misogynistic)
+  aggression in english social media text.
+\newblock In {\em Second Workshop on Trolling, Aggression and Cyberbullying},
+  2020.
 
 \bibitem{Ruediger2022TopicModellingRevisited}
 Matthias Rüdiger, David Antons, Amol~M. Joshi, and Torsten-Oliver Salge.
@@ -66,11 +72,5 @@ Yunita Sari, Mark Stevenson, and Andreas Vlachos.
   {\em Proceedings of the 27th {International} {Conference} on {Computational}
   {Linguistics}}, pages 343--353, Santa Fe, New Mexico, USA, August 2018.
   Association for Computational Linguistics.
-
-\bibitem{Jiang2021Sentiment}
-Mark~Stamp Zidong~Jiang, Fabio Di~Troia.
-\newblock Sentiment {Analysis} for {Troll} {Detection} on {Weibo}.
-\newblock {\em CoRR}, page~0, March 2021.
-\newblock arXiv:2103.09054 [cs].
 
 \end{thebibliography}

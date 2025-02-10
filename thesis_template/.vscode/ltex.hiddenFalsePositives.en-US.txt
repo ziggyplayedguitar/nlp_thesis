@@ -1,0 +1,3 @@
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QIJCTE-International Journal of Computer Theory and Engineering\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QIdentifying Russian Trolls on Reddit with DeepLearning and BERT Word Embeddings\\E$"}
+{"rule":"NUMEROUS_DIFFERENT","sentence":"^\\QThe results show that DynEGA is substantially more accurate than several different LDA algorithms when estimating the number of simulated topics.\\E$"}
