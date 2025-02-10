@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.8)  10 FEB 2025 23:12
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.8)  10 FEB 2025 23:44
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -987,15 +987,15 @@ Package rerunfilecheck Info: File `ctuman.out' has not changed.
 (rerunfilecheck)             Checksum: F7F1B15AF1A26F7413878EC100FE6D22;1159.
  ) 
 Here is how much of TeX's memory you used:
- 20130 strings out of 478287
- 330217 string characters out of 5849290
- 678368 words of memory out of 5000000
+ 20140 strings out of 478287
+ 330327 string characters out of 5849290
+ 677368 words of memory out of 5000000
  37822 multiletter control sequences out of 15000+600000
- 540939 words of font info for 132 fonts, out of 8000000 for 9000
+ 541365 words of font info for 137 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  68i,17n,78p,1038b,1144s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso10.pfb>
-Output written on ctuman.pdf (14 pages, 216330 bytes).
+Output written on ctuman.pdf (14 pages, 216238 bytes).
 PDF statistics:
  184 PDF objects out of 1000 (max. 8388607)
  153 compressed objects within 2 object streams
