@@ -186,9 +186,13 @@ We can group these features into key categories studied in literature:
 \end{itemize}
 By extracting these features, machine learning classifiers can be trained to recognize troll behavior.
 
-\section{Sentiment Analysis}
-
 \section{Topic Detection Techniques}
+
+Topic detection methods, such as Latent Dirichlet Allocation (LDA), can be employed to analyze the thematic content of online messages and identify patterns associated with troll behavior. LDA is a probabilistic model that identifies latent topics in a collection of documents based on word co-occurrence patterns.\cite{Blei2001LDA} It assumes that each document is a mixture of topics, and each topic is a distribution over words. By analyzing the distribution of words in troll messages, LDA can uncover the underlying topics that trolls frequently discuss. However, challenges exist in selecting the appropriate algorithm and determining the optimal number of topics.\cite{Ruediger2022TopicModellingRevisited} Research has shown that LDA can be effectively used to analyze troll tweets during events like the 2016 US election, revealing coordinated campaigns focused on specific political issues.\cite{Golino2022Elections}
+
+BERTopic is another state-of-the-art technique that can be used for dynamic topic modeling. It leverages pre-trained transformers and Class-based TF-IDF to create dense clusters allowing for easily interpretable topics while keeping important words in the topic descriptions. BERTopic also allows for the analysis of topic evolution by calculating the topic representation at different timestep without the need to run the entire model several times.\cite{Grootendorst2022BERTopic}
+
+\section{Sentiment Analysis}
 
 
 % ========================================== CHAPTER 3  ==========================================
@@ -200,7 +204,7 @@ By extracting these features, machine learning classifiers can be trained to rec
 
 \printindex
 
-\bibliographystyle{amsalpha}
+\bibliographystyle{plain}
 \bibliography{../sources/library.bib}
 
 \end{document}

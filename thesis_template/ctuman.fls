@@ -1102,6 +1102,7 @@ INPUT ctuman.lot
 INPUT ctuman.lot
 OUTPUT ctuman.lot
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmssbx10.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmsso10.tfm
 INPUT ./ctuman.ind
 INPUT ctuman.ind
 INPUT ./ctuman.ind
@@ -1114,9 +1115,9 @@ INPUT ctuman.aux
 INPUT ./ctuman.out
 INPUT ./ctuman.out
 INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc
-INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc
 INPUT /usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb
 INPUT /usr/share/texmf/fonts/type1/public/lm/lmr10.pfb
 INPUT /usr/share/texmf/fonts/type1/public/lm/lmr8.pfb
 INPUT /usr/share/texmf/fonts/type1/public/lm/lmri10.pfb
 INPUT /usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb
+INPUT /usr/share/texmf/fonts/type1/public/lm/lmsso10.pfb

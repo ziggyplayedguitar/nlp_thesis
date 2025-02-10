@@ -1,0 +1,51 @@
+This is BibTeX, Version 0.99d (TeX Live 2022/dev/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: ctuman.aux
+The style file: plain.bst
+Database file #1: ../sources/library.bib
+Too many commas in name 1 of "Antonio Pascucci, Raffaele Manna, Vincenzo Masucci, Johanna Monti" for entry Pascucci2020Misogyny
+while executing---line 1049 of file plain.bst
+Too many commas in name 1 of "Antonio Pascucci, Raffaele Manna, Vincenzo Masucci, Johanna Monti" for entry Pascucci2020Misogyny
+while executing---line 1090 of file plain.bst
+You've used 11 entries,
+            2118 wiz_defined-function locations,
+            584 strings with 6623 characters,
+and the built_in function-call counts, 3991 in all, are:
+= -- 391
+> -- 178
+< -- 5
++ -- 71
+- -- 58
+* -- 274
+:= -- 657
+add.period$ -- 37
+call.type$ -- 11
+change.case$ -- 59
+chr.to.int$ -- 0
+cite$ -- 11
+duplicate$ -- 163
+empty$ -- 315
+format.name$ -- 58
+if$ -- 848
+int.to.chr$ -- 0
+int.to.str$ -- 11
+missing$ -- 12
+newline$ -- 60
+num.names$ -- 26
+pop$ -- 65
+preamble$ -- 1
+purify$ -- 49
+quote$ -- 0
+skip$ -- 114
+stack$ -- 0
+substring$ -- 244
+swap$ -- 44
+text.length$ -- 5
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 42
+warning$ -- 0
+while$ -- 40
+width$ -- 13
+write$ -- 129
+(There were 2 error messages)

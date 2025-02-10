@@ -1,49 +1,76 @@
-\newcommand{\etalchar}[1]{$^{#1}$}
-\providecommand{\bysame}{\leavevmode\hbox to3em{\hrulefill}\thinspace}
-\providecommand{\MR}{\relax\ifhmode\unskip\space\fi MR }
-% \MRhref is called by the amsart/book/proc definition of \MR.
-\providecommand{\MRhref}[2]{%
-  \href{http://www.ams.org/mathscinet-getitem?mr=#1}{#2}
-}
-\providecommand{\href}[2]{#2}
-\begin{thebibliography}{FMP{\etalchar{+}}18}
+\begin{thebibliography}{10}
 
-\bibitem[AP20]{Pascucci2020Misogyny}
-Vincenzo Masucci Johanna~Monti Antonio~Pascucci, Raffaele~Manna, \emph{The role
-  of computational stylometry in identifying (misogynistic) aggression in
-  english social media text}, Second Workshop on Trolling, Aggression and
-  Cyberbullying, 2020.
+\bibitem{Pascucci2020Misogyny}
+Vincenzo Masucci Johanna~Monti Antonio~Pascucci, Raffaele~Manna.
+\newblock The role of computational stylometry in identifying (misogynistic)
+  aggression in english social media text.
+\newblock In {\em Second Workshop on Trolling, Aggression and Cyberbullying},
+  2020.
 
-\bibitem[Dae13]{Daelemans2013Explanation}
-Walter Daelemans, \emph{Explanation in computational stylometry}, Computational
-  Linguistics and Intelligent Text Processing (Berlin, Heidelberg) (Alexander
-  Gelbukh, ed.), Springer Berlin Heidelberg, 2013, pp.~451--462.
+\bibitem{Blei2001LDA}
+David Blei, Andrew Ng, and Michael Jordan.
+\newblock Latent dirichlet allocation.
+\newblock In {\em The Journal of Machine Learning Research}, volume~3, pages
+  601--608, 01 2001.
 
-\bibitem[FMP{\etalchar{+}}18]{Fornacciari2018}
+\bibitem{Daelemans2013Explanation}
+Walter Daelemans.
+\newblock Explanation in computational stylometry.
+\newblock In Alexander Gelbukh, editor, {\em Computational Linguistics and
+  Intelligent Text Processing}, pages 451--462, Berlin, Heidelberg, 2013.
+  Springer Berlin Heidelberg.
+
+\bibitem{Fornacciari2018}
 Paolo Fornacciari, Monica Mordonini, Agostino Poggi, Laura Sani, and Michele
-  Tomaiuolo, \emph{A holistic system for troll detection on {Twitter}},
-  Computers in Human Behavior \textbf{89} (2018), 258--268.
+  Tomaiuolo.
+\newblock A holistic system for troll detection on {Twitter}.
+\newblock {\em Computers in Human Behavior}, 89:258--268, December 2018.
 
-\bibitem[Lut98]{Lutoslawski1898}
-Wincenty Lutoslawski, \emph{Principes de stylométrie appliqués à la
-  chronologie des œuvres de {Platon}}, Revue des Études Grecques \textbf{11}
-  (1898), no.~41, 61--81 (fre).
+\bibitem{Golino2022Elections}
+Hudson Golino, Alexander~P. Christensen, Robert Moulder, Seohyun Kim, and
+  Steven~M. Boker.
+\newblock Modeling latent topics in social media using dynamic exploratory
+  graph analysis: The case of the right-wing and left-wing trolls in the 2016
+  us elections.
+\newblock {\em Psychometrika}, 87(1):156--187, 2022.
 
-\bibitem[MW64]{Mosteller1964Federalist}
-Frederick Mosteller and David L. (David~Lee) Wallace, \emph{Inference and
-  disputed authorship: {The} {Federalist}}, Reading, Mass., Addison-Wesley,
-  1964 (eng).
+\bibitem{Grootendorst2022BERTopic}
+Maarten Grootendorst.
+\newblock {BERTopic}: {Neural} topic modeling with a class-based {TF}-{IDF}
+  procedure.
+\newblock {\em arXiv preprint arXiv:2203.05794}, March 2022.
+\newblock arXiv:2203.05794 [cs].
 
-\bibitem[SSV18]{Sari2018Features}
-Yunita Sari, Mark Stevenson, and Andreas Vlachos, \emph{Topic or {Style}?
-  {Exploring} the {Most} {Useful} {Features} for {Authorship} {Attribution}},
-  Proceedings of the 27th {International} {Conference} on {Computational}
-  {Linguistics} (Santa Fe, New Mexico, USA) (Emily~M. Bender, Leon Derczynski,
-  and Pierre Isabelle, eds.), Association for Computational Linguistics, August
-  2018, pp.~343--353.
+\bibitem{Lutoslawski1898}
+Wincenty Lutoslawski.
+\newblock Principes de stylométrie appliqués à la chronologie des œuvres de
+  {Platon}.
+\newblock {\em Revue des Études Grecques}, 11(41):61--81, 1898.
 
-\bibitem[ZJ21]{Jiang2021Sentiment}
-Mark~Stamp Zidong~Jiang, Fabio Di~Troia, \emph{Sentiment {Analysis} for {Troll}
-  {Detection} on {Weibo}}, CoRR (2021), 0, arXiv:2103.09054 [cs].
+\bibitem{Mosteller1964Federalist}
+Frederick Mosteller and David L. (David~Lee) Wallace.
+\newblock {\em Inference and disputed authorship: {The} {Federalist}}.
+\newblock Reading, Mass., Addison-Wesley, 1964.
+
+\bibitem{Ruediger2022TopicModellingRevisited}
+Matthias Rüdiger, David Antons, Amol~M. Joshi, and Torsten-Oliver Salge.
+\newblock Topic modeling revisited:  new evidence on algorithm performance and
+  quality metrics.
+\newblock {\em PloS one}, 17:e0266325, 2022.
+
+\bibitem{Sari2018Features}
+Yunita Sari, Mark Stevenson, and Andreas Vlachos.
+\newblock Topic or {Style}? {Exploring} the {Most} {Useful} {Features} for
+  {Authorship} {Attribution}.
+\newblock In Emily~M. Bender, Leon Derczynski, and Pierre Isabelle, editors,
+  {\em Proceedings of the 27th {International} {Conference} on {Computational}
+  {Linguistics}}, pages 343--353, Santa Fe, New Mexico, USA, August 2018.
+  Association for Computational Linguistics.
+
+\bibitem{Jiang2021Sentiment}
+Mark~Stamp Zidong~Jiang, Fabio Di~Troia.
+\newblock Sentiment {Analysis} for {Troll} {Detection} on {Weibo}.
+\newblock {\em CoRR}, page~0, March 2021.
+\newblock arXiv:2103.09054 [cs].
 
 \end{thebibliography}

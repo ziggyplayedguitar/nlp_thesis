@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.8)  10 FEB 2025 22:01
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.8)  10 FEB 2025 22:55
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -971,36 +971,34 @@ Chapter 1.
 
 ]
 Chapter 2.
-[3] [4
-
-]
+[3]
+LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10.95> not available
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 199.
+ [4]
 Chapter 3.
-(./ctuman.ind) (./ctuman.bbl [5] [6
+(./ctuman.ind) (./ctuman.bbl [5
+
+] [6
 
 ]
 Appendix A.
-
-Underfull \hbox (badness 1708) in paragraph at lines 12--16
-[]\T1/lmr/m/n/10.95 (+20) Vincenzo Ma-succi Jo-hanna Monti An-to-nio Pas-cucci, Raf-
- []
-
-) [7] (./ctuman.aux)
+[7]) [8] (./ctuman.aux)
 Package rerunfilecheck Info: File `ctuman.out' has not changed.
-(rerunfilecheck)             Checksum: 830B5EBF5E0030977D5E64E59271646E;1159.
+(rerunfilecheck)             Checksum: F7F1B15AF1A26F7413878EC100FE6D22;1159.
  ) 
 Here is how much of TeX's memory you used:
- 20123 strings out of 478287
- 329947 string characters out of 5849290
- 677219 words of memory out of 5000000
- 37815 multiletter control sequences out of 15000+600000
- 538429 words of font info for 134 fonts, out of 8000000 for 9000
+ 20130 strings out of 478287
+ 330217 string characters out of 5849290
+ 678368 words of memory out of 5000000
+ 37822 multiletter control sequences out of 15000+600000
+ 540986 words of font info for 132 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  68i,17n,78p,1038b,1144s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb>
-Output written on ctuman.pdf (13 pages, 188773 bytes).
+{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso10.pfb>
+Output written on ctuman.pdf (14 pages, 216308 bytes).
 PDF statistics:
- 168 PDF objects out of 1000 (max. 8388607)
- 139 compressed objects within 2 object streams
- 34 named destinations out of 1000 (max. 500000)
- 37454 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 184 PDF objects out of 1000 (max. 8388607)
+ 153 compressed objects within 2 object streams
+ 39 named destinations out of 1000 (max. 500000)
+ 39502 words of extra memory for PDF output out of 42996 (max. 10000000)
 
