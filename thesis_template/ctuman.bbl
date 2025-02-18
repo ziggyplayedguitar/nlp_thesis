@@ -1,5 +1,13 @@
 \begin{thebibliography}{10}
 
+\bibitem{Angelov2024}
+Dimo Angelov and Diana Inkpen.
+\newblock Topic modeling: Contextual token embeddings are all you need.
+\newblock In Yaser Al-Onaizan, Mohit Bansal, and Yun-Nung Chen, editors, {\em
+  Findings of the Association for Computational Linguistics: EMNLP 2024}, pages
+  13528--13539, Miami, Florida, USA, November 2024. Association for
+  Computational Linguistics.
+
 \bibitem{Blei2001LDA}
 David Blei, Andrew Ng, and Michael Jordan.
 \newblock Latent dirichlet allocation.
@@ -72,5 +80,11 @@ Yunita Sari, Mark Stevenson, and Andreas Vlachos.
   {\em Proceedings of the 27th {International} {Conference} on {Computational}
   {Linguistics}}, pages 343--353, Santa Fe, New Mexico, USA, August 2018.
   Association for Computational Linguistics.
+
+\bibitem{Schuster2020}
+Tal Schuster, Roei Schuster, Darsh~J. Shah, and Regina Barzilay.
+\newblock The limitations of stylometry for detecting machine-generated fake
+  news.
+\newblock 2020.
 
 \end{thebibliography}

@@ -186,11 +186,20 @@ We can group these features into key categories studied in literature:
 \end{itemize}
 By extracting these features, machine learning classifiers can be trained to recognize troll behavior.
 
+\subsection{Limitations of Stylometry}
+Though stylometry has proven useful for text classification, recent advancements in large language models and their potential for misuse might pose a challenge to its efficacy in troll detection. As demonstrated by Schuster et al.\cite{Schuster2020}, stylmoetry may struggle to differentiate between human-written and machine-generated text. It may also struggle to correctly classify machine-generated troll text  especially when dealing with sophisticated language models that can mask subtle stylistic variations that would typically be present in human-generated troll content.
+
 \section{Topic Detection Techniques}
 
+
+\subsection{LDA}
 Topic detection methods like Latent Dirichlet Allocation (LDA) can analyze online messages, identify common patterns and then group them by topics. LDA is a probabilistic model that identifies latent topics in documents based on word co-occurrence patterns.\cite{Blei2001LDA} It assumes that each document is a mixture of topics, and each topic is a distribution over words. By analyzing the distribution of words in troll messages, LDA can uncover the underlying topics that trolls frequently discuss. However, challenges exist in selecting the appropriate algorithm and determining the optimal number of topics.\cite{Ruediger2022TopicModellingRevisited} Research has shown that LDA can be effectively used to analyze troll tweets during events like the 2016 US election, revealing coordinated campaigns focused on specific political issues.\cite{Golino2022Elections}
 
-BERTopic is another state-of-the-art technique that can be used for dynamic topic modeling. It leverages pre-trained transformers and Class-based TF-IDF to create dense clusters allowing for easily interpretable topics while keeping important words in the topic descriptions. BERTopic also enables for the analysis of topic evolution by calculating the topic representation at different timestep without the need to run the entire model several times.\cite{Grootendorst2022BERTopic}
+\subsection{Top2Vec}
+Top2Vec is a state-of-the-art and well-established alternative to traditional topic modeling techniques like LDA. Unlike LDA, where the number of topics needs to be set manually, Top2Vec automatically determines the optimal number of topics. It achieves this by analyzing the density of document clusters in a vector space created using word embeddings. This is advantageous especially with datasets where the exact number of topics is not clear. Additionally, Top2Vec provides a unique topic representation by identifying the most representative documents and phrases for each topic. This representation, allows for a more nuanced understanding of the topics compared to traditional methods that primarily focus on individual words.\cite{Angelov2024}
+
+\subsection{BERTopic}
+BERTopic is another state-of-the-art technique that can be used for dynamic topic modeling. It leverages pre-trained transformers and Class-based TF-IDF to create dense clusters allowing for easily interpretable topics while keeping important words in the topic descriptions. BERTopic also enables for the analysis of topic evolution by calculating the topic representation at different time step without the need to run the entire model several times.\cite{Grootendorst2022BERTopic}
 
 \section{Sentiment Analysis}
 

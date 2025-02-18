@@ -3,44 +3,46 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: ctuman.aux
 The style file: plain.bst
 Database file #1: ../sources/library.bib
-You've used 11 entries,
+Warning--empty booktitle in Schuster2020
+You've used 13 entries,
             2118 wiz_defined-function locations,
-            584 strings with 6632 characters,
-and the built_in function-call counts, 4156 in all, are:
-= -- 403
-> -- 205
-< -- 5
-+ -- 81
-- -- 68
-* -- 296
-:= -- 687
-add.period$ -- 37
-call.type$ -- 11
-change.case$ -- 64
+            597 strings with 7066 characters,
+and the built_in function-call counts, 5081 in all, are:
+= -- 493
+> -- 252
+< -- 6
++ -- 99
+- -- 83
+* -- 357
+:= -- 827
+add.period$ -- 44
+call.type$ -- 13
+change.case$ -- 76
 chr.to.int$ -- 0
-cite$ -- 11
-duplicate$ -- 163
-empty$ -- 315
-format.name$ -- 68
-if$ -- 877
+cite$ -- 14
+duplicate$ -- 203
+empty$ -- 387
+format.name$ -- 83
+if$ -- 1082
 int.to.chr$ -- 0
-int.to.str$ -- 11
-missing$ -- 12
-newline$ -- 60
-num.names$ -- 26
-pop$ -- 70
+int.to.str$ -- 13
+missing$ -- 14
+newline$ -- 70
+num.names$ -- 32
+pop$ -- 89
 preamble$ -- 1
-purify$ -- 54
+purify$ -- 64
 quote$ -- 0
-skip$ -- 114
+skip$ -- 146
 stack$ -- 0
-substring$ -- 244
-swap$ -- 44
-text.length$ -- 5
+substring$ -- 303
+swap$ -- 59
+text.length$ -- 6
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 42
-warning$ -- 0
-while$ -- 40
-width$ -- 13
-write$ -- 129
+type$ -- 50
+warning$ -- 1
+while$ -- 48
+width$ -- 15
+write$ -- 151
+(There was 1 warning)
