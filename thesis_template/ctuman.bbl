@@ -48,6 +48,12 @@ Wincenty Lutoslawski.
   {Platon}.
 \newblock {\em Revue des Études Grecques}, 11(41):61--81, 1898.
 
+\bibitem{Machova2022Comparison}
+Kristina Machova, Marian Mach, and Matej Vasilko.
+\newblock Comparison of machine learning and sentiment analysis in detection of
+  suspicious online reviewers on different type of data.
+\newblock {\em Sensors}, 22(1), 2022.
+
 \bibitem{Mikolov2013Word2vec}
 Tomas Mikolov, Kai Chen, Greg Corrado, and Jeffrey Dean.
 \newblock Efficient estimation of word representations in vector space, 2013.
