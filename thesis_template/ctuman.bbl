@@ -48,6 +48,10 @@ Wincenty Lutoslawski.
   {Platon}.
 \newblock {\em Revue des Études Grecques}, 11(41):61--81, 1898.
 
+\bibitem{Mikolov2013Word2vec}
+Tomas Mikolov, Kai Chen, Greg Corrado, and Jeffrey Dean.
+\newblock Efficient estimation of word representations in vector space, 2013.
+
 \bibitem{Fornacciari2018}
 Paolo~Fornacciari Monica, Mordonini, Agostino Poggi, Laura Sani, and Michele
   Tomaiuolo.
@@ -65,6 +69,15 @@ Antonio Pascucci, Raffaele Manna, Vincenzo Masucci, and Johanna Monti.
   aggression in english social media text.
 \newblock In {\em Second Workshop on Trolling, Aggression and Cyberbullying},
   2020.
+
+\bibitem{PerezRosas2018Stylometry}
+Ver{\'o}nica P{\'e}rez-Rosas, Bennett Kleinberg, Alexandra Lefevre, and Rada
+  Mihalcea.
+\newblock Automatic detection of fake news.
+\newblock In Emily~M. Bender, Leon Derczynski, and Pierre Isabelle, editors,
+  {\em Proceedings of the 27th International Conference on Computational
+  Linguistics}, pages 3391--3401, Santa Fe, New Mexico, USA, August 2018.
+  Association for Computational Linguistics.
 
 \bibitem{Ruediger2022TopicModellingRevisited}
 Matthias Rüdiger, David Antons, Amol~M. Joshi, and Torsten-Oliver Salge.

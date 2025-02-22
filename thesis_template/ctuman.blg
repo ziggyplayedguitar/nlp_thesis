@@ -4,45 +4,45 @@ The top-level auxiliary file: ctuman.aux
 The style file: plain.bst
 Database file #1: ../sources/library.bib
 Warning--empty booktitle in Schuster2020
-You've used 13 entries,
+You've used 15 entries,
             2118 wiz_defined-function locations,
-            597 strings with 7066 characters,
-and the built_in function-call counts, 5081 in all, are:
-= -- 493
-> -- 252
-< -- 6
-+ -- 99
-- -- 83
-* -- 357
-:= -- 827
-add.period$ -- 44
-call.type$ -- 13
-change.case$ -- 76
+            607 strings with 7485 characters,
+and the built_in function-call counts, 5997 in all, are:
+= -- 580
+> -- 309
+< -- 7
++ -- 120
+- -- 102
+* -- 423
+:= -- 970
+add.period$ -- 50
+call.type$ -- 15
+change.case$ -- 90
 chr.to.int$ -- 0
-cite$ -- 14
-duplicate$ -- 203
-empty$ -- 387
-format.name$ -- 83
-if$ -- 1082
+cite$ -- 16
+duplicate$ -- 235
+empty$ -- 452
+format.name$ -- 102
+if$ -- 1281
 int.to.chr$ -- 0
-int.to.str$ -- 13
-missing$ -- 14
-newline$ -- 70
-num.names$ -- 32
-pop$ -- 89
+int.to.str$ -- 15
+missing$ -- 15
+newline$ -- 79
+num.names$ -- 38
+pop$ -- 110
 preamble$ -- 1
-purify$ -- 64
+purify$ -- 76
 quote$ -- 0
-skip$ -- 146
+skip$ -- 175
 stack$ -- 0
-substring$ -- 303
-swap$ -- 59
-text.length$ -- 6
+substring$ -- 353
+swap$ -- 72
+text.length$ -- 7
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 50
+type$ -- 58
 warning$ -- 1
-while$ -- 48
-width$ -- 15
-write$ -- 151
+while$ -- 56
+width$ -- 17
+write$ -- 172
 (There was 1 warning)

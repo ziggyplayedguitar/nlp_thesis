@@ -1,0 +1,4 @@
+stylometric
+Stylometry
+psycholingustic
+stylometry-based
