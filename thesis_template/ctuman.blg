@@ -3,46 +3,46 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: ctuman.aux
 The style file: plain.bst
 Database file #1: ../sources/library.bib
-Warning--empty booktitle in Schuster2020
-You've used 16 entries,
+Warning--empty institution in Bradshaw2017TroopsTrolls
+You've used 23 entries,
             2118 wiz_defined-function locations,
-            613 strings with 7712 characters,
-and the built_in function-call counts, 6277 in all, are:
-= -- 606
-> -- 327
+            670 strings with 9252 characters,
+and the built_in function-call counts, 8415 in all, are:
+= -- 818
+> -- 427
 < -- 7
-+ -- 127
-- -- 108
-* -- 444
-:= -- 1022
-add.period$ -- 53
-call.type$ -- 16
-change.case$ -- 96
++ -- 167
+- -- 140
+* -- 602
+:= -- 1395
+add.period$ -- 75
+call.type$ -- 23
+change.case$ -- 134
 chr.to.int$ -- 0
-cite$ -- 17
-duplicate$ -- 245
-empty$ -- 470
-format.name$ -- 108
-if$ -- 1336
+cite$ -- 24
+duplicate$ -- 319
+empty$ -- 633
+format.name$ -- 140
+if$ -- 1773
 int.to.chr$ -- 0
-int.to.str$ -- 16
-missing$ -- 16
-newline$ -- 84
-num.names$ -- 40
-pop$ -- 114
+int.to.str$ -- 23
+missing$ -- 22
+newline$ -- 120
+num.names$ -- 54
+pop$ -- 137
 preamble$ -- 1
-purify$ -- 81
+purify$ -- 111
 quote$ -- 0
-skip$ -- 183
+skip$ -- 236
 stack$ -- 0
-substring$ -- 358
-swap$ -- 73
+substring$ -- 491
+swap$ -- 80
 text.length$ -- 7
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 62
+type$ -- 90
 warning$ -- 1
-while$ -- 58
-width$ -- 18
-write$ -- 183
+while$ -- 78
+width$ -- 25
+write$ -- 262
 (There was 1 warning)

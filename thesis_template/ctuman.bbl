@@ -8,11 +8,36 @@ Dimo Angelov and Diana Inkpen.
   13528--13539, Miami, Florida, USA, November 2024. Association for
   Computational Linguistics.
 
+\bibitem{Bennett2012DigitalMedia}
+Lance Bennett and Alexandra Segerberg.
+\newblock The logic of connective action: Digital media and the personalization
+  of contentious politics.
+\newblock {\em The Logic of Connective Action: Digital Media and the
+  Personalization of Contentious Politics}, 15:1--240, 01 2012.
+
 \bibitem{Blei2001LDA}
 David Blei, Andrew Ng, and Michael Jordan.
 \newblock Latent dirichlet allocation.
 \newblock In {\em The Journal of Machine Learning Research}, volume~3, pages
   601--608, 01 2001.
+
+\bibitem{Bradshaw2017TroopsTrolls}
+S~Bradshaw and P~Howard.
+\newblock Troops, trolls and troublemakers: A global inventory of organized
+  social media manipulation.
+\newblock Technical report, 2017.
+
+\bibitem{Buckels2014TrollsWantToHaveFun}
+Erin~E. Buckels, Paul~D. Trapnell, and Delroy~L. Paulhus.
+\newblock Trolls just want to have fun.
+\newblock {\em Personality and Individual Differences}, 67:97--102, 2014.
+\newblock The Dark Triad of Personality.
+
+\bibitem{Coles2016}
+Bryn~Alexander Coles and Melanie West.
+\newblock Trolling the trolls: Online forum users constructions of the nature
+  and properties of trolling.
+\newblock {\em Computers in Human Behavior}, 60:233--244, 2016.
 
 \bibitem{Daelemans2013Explanation}
 Walter Daelemans.
@@ -20,6 +45,13 @@ Walter Daelemans.
 \newblock In Alexander Gelbukh, editor, {\em Computational Linguistics and
   Intelligent Text Processing}, pages 451--462, Berlin, Heidelberg, 2013.
   Springer Berlin Heidelberg.
+
+\bibitem{GolfPapez2017DontFeedTheTroll}
+Maja Golf-Papez and Ekant Veer.
+\newblock Don't feed the trolling: rethinking how online trolling is being
+  defined and combated.
+\newblock {\em Journal of Marketing Management}, 33(15/16):1336--1354, November
+  2017.
 
 \bibitem{Golino2022Elections}
 Hudson Golino, Alexander~P. Christensen, Robert Moulder, Seohyun Kim, and
@@ -42,6 +74,19 @@ Zidong Jiang, Fabio~Di Troia, and Mark Stamp.
 \newblock {\em CoRR}, page~0, March 2021.
 \newblock arXiv:2103.09054 [cs].
 
+\bibitem{Kandasamy2021COVID}
+Venkatachalam Kandasamy, Pavel Trojovský, Fadi~Al Machot, Kyandoghere
+  Kyamakya, Nebojsa Bacanin, Sameh Askar, and Mohamed Abouhawwash.
+\newblock Sentimental analysis of covid-19 related messages in social networks
+  by involving an n-gram stacked autoencoder integrated in an ensemble learning
+  scheme.
+\newblock {\em Sensors}, 21(22), 2021.
+
+\bibitem{Linvill2020IRATrolls}
+D.~Linvill and Patrick Warren.
+\newblock Troll factories: Manufacturing specialized disinformation on twitter.
+\newblock {\em Political Communication}, 37:1--21, 02 2020.
+
 \bibitem{Lutoslawski1898}
 Wincenty Lutoslawski.
 \newblock Principes de stylométrie appliqués à la chronologie des œuvres de
@@ -57,12 +102,6 @@ Kristina Machova, Marian Mach, and Matej Vasilko.
 \bibitem{Mikolov2013Word2vec}
 Tomas Mikolov, Kai Chen, Greg Corrado, and Jeffrey Dean.
 \newblock Efficient estimation of word representations in vector space, 2013.
-
-\bibitem{Fornacciari2018}
-Paolo~Fornacciari Monica, Mordonini, Agostino Poggi, Laura Sani, and Michele
-  Tomaiuolo.
-\newblock A holistic system for troll detection on {Twitter}.
-\newblock {\em Computers in Human Behavior}, 89:258--268, December 2018.
 
 \bibitem{Mosteller1964Federalist}
 Frederick Mosteller and David L. (David~Lee) Wallace.
@@ -104,6 +143,11 @@ Yunita Sari, Mark Stevenson, and Andreas Vlachos.
 Tal Schuster, Roei Schuster, Darsh~J. Shah, and Regina Barzilay.
 \newblock The limitations of stylometry for detecting machine-generated fake
   news.
-\newblock 2020.
+\newblock In {\em Booktitle}, 2020.
+
+\bibitem{Suler2004}
+John Suler.
+\newblock The {Online} {Disinhibition} {Effect}.
+\newblock {\em CyberPsychology \& Behavior}, 7(3):321--326, June 2004.
 
 \end{thebibliography}

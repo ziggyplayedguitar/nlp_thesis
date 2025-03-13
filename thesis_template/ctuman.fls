@@ -1102,8 +1102,8 @@ INPUT ctuman.lot
 INPUT ctuman.lot
 OUTPUT ctuman.lot
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmssbx10.tfm
-INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmssbx10.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmsso10.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmssbx10.tfm
 INPUT ./ctuman.ind
 INPUT ctuman.ind
 INPUT ./ctuman.ind
