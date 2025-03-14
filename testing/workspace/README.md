@@ -74,7 +74,7 @@ This runs occlusion-based analysis to highlight important tokens in the predicti
 Key configuration parameters in `train.py`:
 ```python
 config = {
-    'model_name': "bert-base-multilingual-cased",
+    'model_name': "distilbert-base-multilingual-cased",
     'max_length': 128,
     'tweets_per_account': 10,
     'batch_size': 8,
