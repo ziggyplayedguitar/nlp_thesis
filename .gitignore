@@ -1,5 +1,5 @@
 sources/pdfs/
 testing/workspace/data
 testing/workspace/checkpoints
-
-
+testing/wrorkspace/__pycache__/
+testing/__pycache__/

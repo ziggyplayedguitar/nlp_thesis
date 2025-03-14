@@ -92,7 +92,7 @@ class TrollDetectorTrainer:
             labels = batch['label'].to(self.device)
             
             # Forward pass with mixed precision
-            with autocast():
+            with torch.cuda.amp.autocast():
                 outputs = self.model(
                     input_ids=input_ids,
                     attention_mask=attention_mask,
