@@ -9,6 +9,7 @@ import torch
 from torch.utils.data import Dataset
 import logging
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -273,17 +274,41 @@ def load_and_clean_data_json_test(data_dir: str) -> pd.DataFrame:
     
     return twitter_data
 
-def main():
-    """Main function to test loading JSON files and printing a few tweets."""
-    data_dir = "data"
-    twitter_data = load_and_clean_data_json_test(data_dir)
-    
-    if not twitter_data.empty:
-        print("Sample Tweets from JSON files:")
-        print(twitter_data[['account', 'tweet']].head())
-    else:
-        print("No tweets found in JSON files.")
+def plot_tweet_lengths(tweets_df: pd.DataFrame):
+    """
+    Plots the distribution of tweet lengths in the dataset.
+
+    Args:
+        tweets_df (pd.DataFrame): DataFrame containing tweets in a column named 'tweet'.
+    """
+    import matplotlib.pyplot as plt
+
+    # Calculate tweet lengths, handling NaN values gracefully
+    tweet_lengths = tweets_df['tweet'].fillna("").astype(str).apply(lambda x: len(x.split()))
+
+    plt.figure(figsize=(10, 6))
+    plt.hist(tweet_lengths, bins=50, color='skyblue', edgecolor='black')
+    plt.title('Distribution of Tweet Lengths')
+    plt.xlabel('Tweet Length (number of words)')
+    plt.ylabel('Number of Tweets')
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
+
 
 if __name__ == "__main__":
-    main()
+    import pandas as pd
+
+    data_dir = "./data"
+
+    # Load and preprocess data
+    all_tweets = load_and_clean_data(data_dir)
+    logger.info(f"Loaded {len(all_tweets)} tweets from {len(all_tweets['account'].unique())} accounts")
+
+    # Plot tweet lengths
+    plot_tweet_lengths(all_tweets)
+
+    # The rest of your existing main function
+    pass  # (Existing implementation here)
+
 
