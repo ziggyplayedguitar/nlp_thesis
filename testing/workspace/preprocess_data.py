@@ -19,16 +19,36 @@ class TweetPreprocessor:
         self.url_pattern = re.compile(r'https?://\S+\b')
         self.pic_pattern = re.compile(r'pic\.twitter\.com/\w+\b')
         self.multiple_whitespace = re.compile(r'\s+')
+        self.hashtag_pattern = re.compile(r'#\w+')
+        self.mention_pattern = re.compile(r'@\w+')
         
+        # Define custom stop words for social media content
+        self.custom_stop_words = {
+            't', 's', 'm', 'rt', 'http', 'https',  # Common Twitter artifacts
+            'amp', 'co', 've', 'll', 'd', 're',    # Contractions and common artifacts
+            'twitter', 'tweet', 'retweet'         # Twitter-specific terms
+        }
+
     def preprocess_tweet(self, text: str) -> str:
         """Basic tweet preprocessing while keeping hashtags and mentions"""
         if pd.isna(text):
             return ""
         
-        text = str(text)
-        text = self.url_pattern.sub('', text)
+        # Remove URLs, Twitter pics, hashtags, and mentions
+        text = str(text).lower()
+        text = self.url_pattern.sub('', text) 
         text = self.pic_pattern.sub('', text)
+        text = self.hashtag_pattern.sub('', text)
+        text = self.mention_pattern.sub('', text)
+
+        # Split into words and filter out stop words
+        words = text.split()
+        words = [word for word in words if word not in self.custom_stop_words]
+
+        # Rejoin and normalize whitespace
+        text = ' '.join(words)
         text = self.multiple_whitespace.sub(' ', text)
+
         return text.strip()
 
 
@@ -49,71 +69,10 @@ def load_twitter_json(json_folder: Path) -> pd.DataFrame:
     
     return pd.DataFrame(all_tweets)
 
-# def load_and_clean_data(data_dir: str, max_troll_accounts: int = 100, max_tweets_per_troll: int = 50) -> pd.DataFrame:
-#     """Load and combine datasets with a limited number of troll accounts/tweets."""
-#     data_path = Path(data_dir)
-    
-#     # Load Twitter JSON files from "non_troll_politics" folder
-#     json_folder = data_path / "non_troll_politics"
-#     twitter_data = pd.DataFrame()
-#     if json_folder.exists():
-#         twitter_data = load_twitter_json(json_folder)
-    
-#     # Load Russian troll tweets
-#     logger.info("Loading Russian troll tweets with limitation...")
-#     troll_files = list(data_path.glob("russian_troll_tweets/*.csv"))
-#     troll_tweets = pd.concat([pd.read_csv(f) for f in troll_files])
-#     troll_tweets = troll_tweets[['author', 'content', 'language']]
-#     troll_tweets = troll_tweets[troll_tweets['language'] == 'English']
-#     troll_tweets.rename(columns={'author': 'account', 'content': 'tweet'}, inplace=True)
-#     troll_tweets['troll'] = 1
-    
-#     # Limit the number of troll accounts
-#     unique_troll_accounts = troll_tweets['account'].unique()[:max_troll_accounts]
-#     troll_tweets = troll_tweets[troll_tweets['account'].isin(unique_troll_accounts)]
-    
-#     # Limit the number of tweets per troll account
-#     troll_tweets = troll_tweets.groupby('account').head(max_tweets_per_troll)
-    
-#     # Load all non-troll data
-#     logger.info("Loading non-troll tweets...")
-#     sentiment_path = data_path / "sentiment_tweets/training.1600000.processed.noemoticon.csv"
-#     sentiment_tweets = pd.read_csv(sentiment_path, encoding='Latin-1',
-#                                  names=['target', 'id', 'date', 'flag', 'username', 'tweet'])
-#     sentiment_tweets = sentiment_tweets[['username', 'tweet']]
-#     sentiment_tweets.rename(columns={'username': 'account'}, inplace=True)
-#     sentiment_tweets['troll'] = 0
-    
-#     celeb_files = list(data_path.glob("celebrity_tweets/*.csv"))
-#     celeb_tweets = pd.concat([pd.read_csv(f) for f in celeb_files])
-#     if 'text' in celeb_tweets.columns:
-#         celeb_tweets.rename(columns={'text': 'tweet'}, inplace=True)
-#     if 'author' in celeb_tweets.columns:
-#         celeb_tweets.rename(columns={'author': 'account'}, inplace=True)
-#     celeb_tweets = celeb_tweets[['account', 'tweet']]
-#     celeb_tweets['troll'] = 0
-    
-#     # Combine datasets
-#     logger.info("Combining datasets...")
-#     all_tweets = pd.concat([
-#         troll_tweets[['account', 'tweet', 'troll']],
-#         sentiment_tweets[['account', 'tweet', 'troll']],
-#         celeb_tweets[['account', 'tweet', 'troll']],
-#         twitter_data[['account', 'tweet', 'troll']]
-#     ], ignore_index=True)
-
-#     # Remove accounts with very few tweets
-#     logger.info("Filtering accounts with few tweets...")
-#     account_counts = all_tweets.groupby('account').size()
-#     valid_accounts = account_counts[account_counts >= 10].index
-#     all_tweets = all_tweets[all_tweets['account'].isin(valid_accounts)]
-    
-#     return all_tweets
-
-
 def load_and_clean_data(data_dir: str) -> pd.DataFrame:
     """Load and combine all datasets including Twitter JSON files."""
     data_path = Path(data_dir)
+    preprocessor = TweetPreprocessor()
     
     # Load Russian troll tweets
     logger.info("Loading Russian troll tweets...")
@@ -166,6 +125,12 @@ def load_and_clean_data(data_dir: str) -> pd.DataFrame:
         celeb_tweets[['account', 'tweet', 'troll']],
         twitter_data[['account', 'tweet', 'troll']]
     ], ignore_index=True)
+
+    # Apply preprocessing to tweet text
+    all_tweets['tweet'] = all_tweets['tweet'].apply(preprocessor.preprocess_tweet)
+
+    # Remove empty tweets after preprocessing
+    all_tweets = all_tweets[all_tweets['tweet'].str.len() > 0]
     
     # Remove accounts with very few tweets
     logger.info("Filtering accounts with few tweets...")
