@@ -36,7 +36,7 @@ class TweetPreprocessor:
             return ""
         
         # Remove URLs, Twitter pics, hashtags, and mentions
-        text = str(text).lower()
+        # text = str(text).lower()
         text = self.url_pattern.sub('', text) 
         text = self.pic_pattern.sub('', text)
         text = self.hashtag_pattern.sub('', text)
@@ -70,6 +70,8 @@ def load_twitter_json(json_folder: Path) -> pd.DataFrame:
     
     return pd.DataFrame(all_tweets)
 
+# TODO Remove UNK tokens
+# TODO Train only on english data maybe
 def load_and_clean_data(data_dir: str) -> pd.DataFrame:
     """Load and combine all datasets including Twitter JSON files."""
     data_path = Path(data_dir)
@@ -261,43 +263,3 @@ def load_and_clean_data_json_test(data_dir: str) -> pd.DataFrame:
         twitter_data = load_twitter_json(json_folder)
     
     return twitter_data
-
-def load_czech_media_data(data_dir: str = "./data/MediaSource") -> pd.DataFrame:
-    """Load and process Czech media data from JSON files"""
-    data_path = Path(data_dir)
-    all_comments = []
-    
-    # Look for all JSON files
-    json_files = list(data_path.glob("*.json"))
-    
-    for json_file in tqdm(json_files, desc="Loading files"):
-        try:
-            with open(json_file, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                
-                # Process each entry in the JSON file
-                for entry in data:
-                    if entry.get('articleType') == 'Comment':
-                        comment_data = {
-                            'text': entry.get('content', ''),
-                            'author': entry.get('author', ''),
-                            'timestamp': entry.get('publishDate', ''),
-                            'article_title': entry.get('title', ''),
-                            'url': entry.get('url', ''),
-                            'article_id': entry.get('articleId', ''),
-                            'sentiment': entry.get('attributes', {}).get('sentiment', ''),
-                        }
-                        all_comments.append(comment_data)
-                        
-        except Exception as e:
-            print(f"Error loading {json_file}: {e}")
-    
-    # Create DataFrame
-    df = pd.DataFrame(all_comments)
-    
-    # Convert timestamp to datetime if present
-    if 'timestamp' in df.columns:
-        df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
-    
-    return df
-

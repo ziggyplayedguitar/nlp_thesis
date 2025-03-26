@@ -11,3 +11,15 @@ workspace/processed_data
 workspace/troll_analysis_results.csv
 workspace/predict_results_old
 workspace/extracted_comments
+workspace/notebooks/correlation_tweet_1.png
+workspace/notebooks/correlation_tweet_2.png
+workspace/notebooks/correlation_tweet_3.png
+workspace/notebooks/correlation_tweet_4.png
+workspace/notebooks/correlation_tweet_5.png
+workspace/notebooks/importance_tweet_1.png
+workspace/notebooks/importance_tweet_2.png
+workspace/notebooks/importance_tweet_3.png
+workspace/notebooks/importance_tweet_4.png
+workspace/notebooks/importance_tweet_5.png
+workspace/output/high_confidence_predictions.csv
+workspace/output/medium_confidence_predictions.csv

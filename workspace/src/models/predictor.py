@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 from typing import List, Dict, Union
+import pandas as pd
 
 from src.models.bert_model import TrollDetector
 from src.data_tools.preprocessor import TweetPreprocessor
@@ -343,7 +344,7 @@ class TrollPredictor:
                     outputs = self.model(
                         input_ids=mod_inputs['input_ids'],
                         attention_mask=mod_inputs['attention_mask'],
-                        comments_per_user=1
+                        tweets_per_account=1
                     )
                     mod_probs = torch.softmax(outputs['logits'], dim=-1)
                     mod_confidence = mod_probs[0, prediction_class].item()
@@ -429,4 +430,37 @@ class TrollPredictor:
         
         return {'explanations': explanation_data}
 
-    # ...rest of the TrollPredictor methods from old_code/predict.py...
+    # Add this method to the TrollPredictor class
+    def explain_author_prediction(self, author: str, comments_df: pd.DataFrame) -> Dict:
+        """
+        Generate explanation for why an author was classified as a troll.
+        
+        Args:
+            author: Name of the author to explain
+            comments_df: DataFrame containing comments data
+            
+        Returns:
+            Dictionary containing explanation data
+        """
+        # Get author's comments
+        author_comments = comments_df[comments_df['author'] == author]['text'].tolist()
+        
+        if not author_comments:
+            return {'error': f'No comments found for author: {author}'}
+            
+        # Get prediction first
+        pred = self.predict_batch(author_comments)
+        
+        if pred['prediction'] != 'troll':
+            return {'error': f'Author {author} is not classified as a troll (confidence: {pred["confidence"]:.3f})'}
+        
+        # Generate explanation
+        explanation = self.explain_prediction(author_comments)
+        
+        # Add prediction info
+        explanation['prediction'] = {
+            'confidence': pred['confidence'],
+            'troll_probability': pred['probabilities'][1]
+        }
+        
+        return explanation
