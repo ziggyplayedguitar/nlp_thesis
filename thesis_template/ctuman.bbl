@@ -1,6 +1,7 @@
-\begin{thebibliography}{10}
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{PRKLM18}
 
-\bibitem{Angelov2024}
+\bibitem[AI24]{Angelov2024}
 Dimo Angelov and Diana Inkpen.
 \newblock Topic modeling: Contextual token embeddings are all you need.
 \newblock In Yaser Al-Onaizan, Mohit Bansal, and Yun-Nung Chen, editors, {\em
@@ -8,52 +9,45 @@ Dimo Angelov and Diana Inkpen.
   13528--13539, Miami, Florida, USA, November 2024. Association for
   Computational Linguistics.
 
-\bibitem{Bennett2012DigitalMedia}
+\bibitem[BH17]{Bradshaw2017TroopsTrolls}
+S~Bradshaw and P~Howard.
+\newblock Troops, trolls and troublemakers: A global inventory of organized
+  social media manipulation.
+\newblock Technical report, 2017.
+
+\bibitem[BNJ01]{Blei2001LDA}
+David Blei, Andrew Ng, and Michael Jordan.
+\newblock Latent dirichlet allocation.
+\newblock In {\em The Journal of Machine Learning Research}, volume~3, pages
+  601--608, 01 2001.
+
+\bibitem[BS12]{Bennett2012DigitalMedia}
 Lance Bennett and Alexandra Segerberg.
 \newblock The logic of connective action: Digital media and the personalization
   of contentious politics.
 \newblock {\em The Logic of Connective Action: Digital Media and the
   Personalization of Contentious Politics}, 15:1--240, 01 2012.
 
-\bibitem{Blei2001LDA}
-David Blei, Andrew Ng, and Michael Jordan.
-\newblock Latent dirichlet allocation.
-\newblock In {\em The Journal of Machine Learning Research}, volume~3, pages
-  601--608, 01 2001.
-
-\bibitem{Bradshaw2017TroopsTrolls}
-S~Bradshaw and P~Howard.
-\newblock Troops, trolls and troublemakers: A global inventory of organized
-  social media manipulation.
-\newblock Technical report, 2017.
-
-\bibitem{Buckels2014TrollsWantToHaveFun}
+\bibitem[BTP14]{Buckels2014TrollsWantToHaveFun}
 Erin~E. Buckels, Paul~D. Trapnell, and Delroy~L. Paulhus.
 \newblock Trolls just want to have fun.
 \newblock {\em Personality and Individual Differences}, 67:97--102, 2014.
 \newblock The Dark Triad of Personality.
 
-\bibitem{Coles2016}
+\bibitem[CW16]{Coles2016}
 Bryn~Alexander Coles and Melanie West.
 \newblock Trolling the trolls: Online forum users constructions of the nature
   and properties of trolling.
 \newblock {\em Computers in Human Behavior}, 60:233--244, 2016.
 
-\bibitem{Daelemans2013Explanation}
+\bibitem[Dae13]{Daelemans2013Explanation}
 Walter Daelemans.
 \newblock Explanation in computational stylometry.
 \newblock In Alexander Gelbukh, editor, {\em Computational Linguistics and
   Intelligent Text Processing}, pages 451--462, Berlin, Heidelberg, 2013.
   Springer Berlin Heidelberg.
 
-\bibitem{GolfPapez2017DontFeedTheTroll}
-Maja Golf-Papez and Ekant Veer.
-\newblock Don't feed the trolling: rethinking how online trolling is being
-  defined and combated.
-\newblock {\em Journal of Marketing Management}, 33(15/16):1336--1354, November
-  2017.
-
-\bibitem{Golino2022Elections}
+\bibitem[GCM{\etalchar{+}}22]{Golino2022Elections}
 Hudson Golino, Alexander~P. Christensen, Robert Moulder, Seohyun Kim, and
   Steven~M. Boker.
 \newblock Modeling latent topics in social media using dynamic exploratory
@@ -61,20 +55,27 @@ Hudson Golino, Alexander~P. Christensen, Robert Moulder, Seohyun Kim, and
   us elections.
 \newblock {\em Psychometrika}, 87(1):156--187, 2022.
 
-\bibitem{Grootendorst2022BERTopic}
+\bibitem[GPV17]{GolfPapez2017DontFeedTheTroll}
+Maja Golf-Papez and Ekant Veer.
+\newblock Don't feed the trolling: rethinking how online trolling is being
+  defined and combated.
+\newblock {\em Journal of Marketing Management}, 33(15/16):1336--1354, November
+  2017.
+
+\bibitem[Gro22]{Grootendorst2022BERTopic}
 Maarten Grootendorst.
 \newblock {BERTopic}: {Neural} topic modeling with a class-based {TF}-{IDF}
   procedure.
 \newblock {\em arXiv preprint arXiv:2203.05794}, March 2022.
 \newblock arXiv:2203.05794 [cs].
 
-\bibitem{Jiang2021Sentiment}
+\bibitem[JTS21]{Jiang2021Sentiment}
 Zidong Jiang, Fabio~Di Troia, and Mark Stamp.
 \newblock Sentiment {Analysis} for {Troll} {Detection} on {Weibo}.
 \newblock {\em CoRR}, page~0, March 2021.
 \newblock arXiv:2103.09054 [cs].
 
-\bibitem{Kandasamy2021COVID}
+\bibitem[KTM{\etalchar{+}}21]{Kandasamy2021COVID}
 Venkatachalam Kandasamy, Pavel Trojovský, Fadi~Al Machot, Kyandoghere
   Kyamakya, Nebojsa Bacanin, Sameh Askar, and Mohamed Abouhawwash.
 \newblock Sentimental analysis of covid-19 related messages in social networks
@@ -82,40 +83,40 @@ Venkatachalam Kandasamy, Pavel Trojovský, Fadi~Al Machot, Kyandoghere
   scheme.
 \newblock {\em Sensors}, 21(22), 2021.
 
-\bibitem{Linvill2020IRATrolls}
-D.~Linvill and Patrick Warren.
-\newblock Troll factories: Manufacturing specialized disinformation on twitter.
-\newblock {\em Political Communication}, 37:1--21, 02 2020.
-
-\bibitem{Lutoslawski1898}
+\bibitem[Lut98]{Lutoslawski1898}
 Wincenty Lutoslawski.
 \newblock Principes de stylométrie appliqués à la chronologie des œuvres de
   {Platon}.
 \newblock {\em Revue des Études Grecques}, 11(41):61--81, 1898.
 
-\bibitem{Machova2022Comparison}
+\bibitem[LW20]{Linvill2020IRATrolls}
+D.~Linvill and Patrick Warren.
+\newblock Troll factories: Manufacturing specialized disinformation on twitter.
+\newblock {\em Political Communication}, 37:1--21, 02 2020.
+
+\bibitem[MCCD13]{Mikolov2013Word2vec}
+Tomas Mikolov, Kai Chen, Greg Corrado, and Jeffrey Dean.
+\newblock Efficient estimation of word representations in vector space, 2013.
+
+\bibitem[MMV22]{Machova2022Comparison}
 Kristina Machova, Marian Mach, and Matej Vasilko.
 \newblock Comparison of machine learning and sentiment analysis in detection of
   suspicious online reviewers on different type of data.
 \newblock {\em Sensors}, 22(1), 2022.
 
-\bibitem{Mikolov2013Word2vec}
-Tomas Mikolov, Kai Chen, Greg Corrado, and Jeffrey Dean.
-\newblock Efficient estimation of word representations in vector space, 2013.
-
-\bibitem{Mosteller1964Federalist}
+\bibitem[MW64]{Mosteller1964Federalist}
 Frederick Mosteller and David L. (David~Lee) Wallace.
 \newblock {\em Inference and disputed authorship: {The} {Federalist}}.
 \newblock Reading, Mass., Addison-Wesley, 1964.
 
-\bibitem{Pascucci2020Misogyny}
+\bibitem[PMMM20]{Pascucci2020Misogyny}
 Antonio Pascucci, Raffaele Manna, Vincenzo Masucci, and Johanna Monti.
 \newblock The role of computational stylometry in identifying (misogynistic)
   aggression in english social media text.
 \newblock In {\em Second Workshop on Trolling, Aggression and Cyberbullying},
   2020.
 
-\bibitem{PerezRosas2018Stylometry}
+\bibitem[PRKLM18]{PerezRosas2018Stylometry}
 Ver{\'o}nica P{\'e}rez-Rosas, Bennett Kleinberg, Alexandra Lefevre, and Rada
   Mihalcea.
 \newblock Automatic detection of fake news.
@@ -124,13 +125,19 @@ Ver{\'o}nica P{\'e}rez-Rosas, Bennett Kleinberg, Alexandra Lefevre, and Rada
   Linguistics}, pages 3391--3401, Santa Fe, New Mexico, USA, August 2018.
   Association for Computational Linguistics.
 
-\bibitem{Ruediger2022TopicModellingRevisited}
+\bibitem[RAJS22]{Ruediger2022TopicModellingRevisited}
 Matthias Rüdiger, David Antons, Amol~M. Joshi, and Torsten-Oliver Salge.
 \newblock Topic modeling revisited:  new evidence on algorithm performance and
   quality metrics.
 \newblock {\em PloS one}, 17:e0266325, 2022.
 
-\bibitem{Sari2018Features}
+\bibitem[SSSB20]{Schuster2020}
+Tal Schuster, Roei Schuster, Darsh~J. Shah, and Regina Barzilay.
+\newblock The limitations of stylometry for detecting machine-generated fake
+  news.
+\newblock In {\em Booktitle}, 2020.
+
+\bibitem[SSV18]{Sari2018Features}
 Yunita Sari, Mark Stevenson, and Andreas Vlachos.
 \newblock Topic or {Style}? {Exploring} the {Most} {Useful} {Features} for
   {Authorship} {Attribution}.
@@ -139,13 +146,7 @@ Yunita Sari, Mark Stevenson, and Andreas Vlachos.
   {Linguistics}}, pages 343--353, Santa Fe, New Mexico, USA, August 2018.
   Association for Computational Linguistics.
 
-\bibitem{Schuster2020}
-Tal Schuster, Roei Schuster, Darsh~J. Shah, and Regina Barzilay.
-\newblock The limitations of stylometry for detecting machine-generated fake
-  news.
-\newblock In {\em Booktitle}, 2020.
-
-\bibitem{Suler2004}
+\bibitem[Sul04]{Suler2004}
 John Suler.
 \newblock The {Online} {Disinhibition} {Effect}.
 \newblock {\em CyberPsychology \& Behavior}, 7(3):321--326, June 2004.

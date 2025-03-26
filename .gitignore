@@ -1,5 +1,13 @@
 sources/pdfs/
-testing/workspace/data
-testing/workspace/checkpoints
-testing/wrorkspace/__pycache__/
-testing/__pycache__/
+workspace/data
+workspace/checkpoints
+wrorkspace/__pycache__/
+__pycache__/
+workspace/checkpoints
+workspace/.ipynb_checkpoints
+workspace/czech_data.ipynb
+workspace/stylometry.ipynb
+workspace/processed_data
+workspace/troll_analysis_results.csv
+workspace/predict_results_old
+workspace/extracted_comments

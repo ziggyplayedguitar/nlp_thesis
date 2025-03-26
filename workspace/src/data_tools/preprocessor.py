@@ -21,6 +21,7 @@ class TweetPreprocessor:
         self.multiple_whitespace = re.compile(r'\s+')
         self.hashtag_pattern = re.compile(r'#\w+')
         self.mention_pattern = re.compile(r'@\w+')
+        self.quote_pattern = re.compile(r'"([^"]*)"')
         
         # Define custom stop words for social media content
         self.custom_stop_words = {
@@ -40,6 +41,7 @@ class TweetPreprocessor:
         text = self.pic_pattern.sub('', text)
         text = self.hashtag_pattern.sub('', text)
         text = self.mention_pattern.sub('', text)
+        text = self.quote_pattern.sub('', text)
 
         # Split into words and filter out stop words
         words = text.split()
@@ -50,7 +52,6 @@ class TweetPreprocessor:
         text = self.multiple_whitespace.sub(' ', text)
 
         return text.strip()
-
 
 def load_twitter_json(json_folder: Path) -> pd.DataFrame:
     """Load and preprocess tweets from all JSON files in the specified folder."""
@@ -140,6 +141,49 @@ def load_and_clean_data(data_dir: str) -> pd.DataFrame:
     
     return all_tweets
 
+#def load_and_clean_machova_data(data_dir: str) -> pd.DataFrame:
+    """Load and preprocess Czech troll/non-troll comment data."""
+    data_path = Path(data_dir)
+    preprocessor = TweetPreprocessor()
+    
+    # Load troll and non-troll data
+    logger.info("Loading Czech troll/non-troll data...")
+    
+    # Load non-troll comments
+    nontroll_path = data_path / "machova/Is_not_troll_body.csv"
+    nontroll_df = pd.read_csv(nontroll_path)
+    logger.info(f"Non-troll data columns: {nontroll_df.columns.tolist()}")
+    nontroll_df['troll'] = 0
+    
+    # Load troll comments
+    troll_path = data_path / "machova/Is_troll_body.csv"
+    troll_df = pd.read_csv(troll_path)
+    logger.info(f"Troll data columns: {troll_df.columns.tolist()}")
+    troll_df['troll'] = 1
+    
+    # Combine datasets
+    all_comments = pd.concat([troll_df, nontroll_df], ignore_index=True)
+    
+    # Create sequential account IDs since we don't have actual account information
+    all_comments['account'] = [f"user_{i}" for i in range(len(all_comments))]
+    
+    # Rename columns to match existing pipeline
+    all_comments = all_comments.rename(columns={
+        'body': 'tweet'
+    })
+    
+    # Apply preprocessing to comment text
+    all_comments['tweet'] = all_comments['tweet'].apply(preprocessor.preprocess_tweet)
+    
+    # Remove empty comments after preprocessing
+    all_comments = all_comments[all_comments['tweet'].str.len() > 0]
+    
+    logger.info(f"Loaded {len(all_comments)} Czech comments")
+    logger.info(f"Class distribution:")
+    logger.info(all_comments['troll'].value_counts())
+    
+    return all_comments
+
 class TrollTweetDataset(Dataset):
     def __init__(self, 
                  tweets_df: pd.DataFrame,
@@ -186,27 +230,6 @@ class TrollTweetDataset(Dataset):
             'label': torch.tensor(account_tweets['troll'].iloc[0], dtype=torch.long)
         }
 
-def create_data_splits(df: pd.DataFrame, 
-                      train_ratio: float = 0.8,
-                      val_ratio: float = 0.1) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """Split data into train/val/test sets at account level"""
-    accounts = df['account'].unique()
-    np.random.shuffle(accounts)
-    
-    n_accounts = len(accounts)
-    n_train = int(n_accounts * train_ratio)
-    n_val = int(n_accounts * val_ratio)
-    
-    train_accounts = accounts[:n_train]
-    val_accounts = accounts[n_train:n_train + n_val]
-    test_accounts = accounts[n_train + n_val:]
-    
-    train_df = df[df['account'].isin(train_accounts)]
-    val_df = df[df['account'].isin(val_accounts)]
-    test_df = df[df['account'].isin(test_accounts)]
-    
-    return train_df, val_df, test_df
-
 def collate_batch(batch: List[Dict[str, torch.Tensor]]) -> Dict[str, torch.Tensor]:
     """Custom collate function to handle batches of tweet sequences.
     
@@ -239,41 +262,42 @@ def load_and_clean_data_json_test(data_dir: str) -> pd.DataFrame:
     
     return twitter_data
 
-def plot_tweet_lengths(tweets_df: pd.DataFrame):
-    """
-    Plots the distribution of tweet lengths in the dataset.
-
-    Args:
-        tweets_df (pd.DataFrame): DataFrame containing tweets in a column named 'tweet'.
-    """
-    import matplotlib.pyplot as plt
-
-    # Calculate tweet lengths, handling NaN values gracefully
-    tweet_lengths = tweets_df['tweet'].fillna("").astype(str).apply(lambda x: len(x.split()))
-
-    plt.figure(figsize=(10, 6))
-    plt.hist(tweet_lengths, bins=50, color='skyblue', edgecolor='black')
-    plt.title('Distribution of Tweet Lengths')
-    plt.xlabel('Tweet Length (number of words)')
-    plt.ylabel('Number of Tweets')
-    plt.grid(axis='y', linestyle='--', alpha=0.7)
-    plt.tight_layout()
-    plt.show()
-
-
-if __name__ == "__main__":
-    import pandas as pd
-
-    data_dir = "./data"
-
-    # Load and preprocess data
-    all_tweets = load_and_clean_data(data_dir)
-    logger.info(f"Loaded {len(all_tweets)} tweets from {len(all_tweets['account'].unique())} accounts")
-
-    # Plot tweet lengths
-    plot_tweet_lengths(all_tweets)
-
-    # The rest of your existing main function
-    pass  # (Existing implementation here)
-
+def load_czech_media_data(data_dir: str = "./data/MediaSource") -> pd.DataFrame:
+    """Load and process Czech media data from JSON files"""
+    data_path = Path(data_dir)
+    all_comments = []
+    
+    # Look for all JSON files
+    json_files = list(data_path.glob("*.json"))
+    
+    for json_file in tqdm(json_files, desc="Loading files"):
+        try:
+            with open(json_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                
+                # Process each entry in the JSON file
+                for entry in data:
+                    if entry.get('articleType') == 'Comment':
+                        comment_data = {
+                            'text': entry.get('content', ''),
+                            'author': entry.get('author', ''),
+                            'timestamp': entry.get('publishDate', ''),
+                            'article_title': entry.get('title', ''),
+                            'url': entry.get('url', ''),
+                            'article_id': entry.get('articleId', ''),
+                            'sentiment': entry.get('attributes', {}).get('sentiment', ''),
+                        }
+                        all_comments.append(comment_data)
+                        
+        except Exception as e:
+            print(f"Error loading {json_file}: {e}")
+    
+    # Create DataFrame
+    df = pd.DataFrame(all_comments)
+    
+    # Convert timestamp to datetime if present
+    if 'timestamp' in df.columns:
+        df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
+    
+    return df
 

@@ -16,7 +16,7 @@ import json
 from typing import Dict, List, Tuple, Optional
 
 from model import TrollDetector
-from preprocess_data import TrollTweetDataset, load_and_clean_data, create_data_splits, collate_batch
+from preprocess_data import TrollTweetDataset, load_and_clean_data, create_data_splits, collate_batch, load_and_clean_machova_data
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -271,71 +271,47 @@ def check_dataset_balance(train_df: pd.DataFrame, val_df: pd.DataFrame, test_df:
     print_class_distribution(val_df, "Validation")
     print_class_distribution(test_df, "Test")
 
-def main():
-    # Training configuration optimized for gaming PC
+def main(data_source: str = 'twitter'):
+    """
+    Train model on either English tweets or Czech comments.
+    
+    Args:
+        data_source: Either 'twitter' or 'reddit'
+    """
+    # Training configuration
     config = {
-        'model_name': "distilbert-base-multilingual-cased",  # Smaller model
-        'max_length': 128,  # Reduced sequence length
-        'tweets_per_account': 10,  # Fewer tweets per account
-        'batch_size': 8,  # Increased batch size due to mixed precision
-        'learning_rate': 1e-5,  # Slightly higher learning rate
-        'num_epochs': 3,  # Fewer epochs
-        'warmup_steps': 50,  # Fewer warmup steps
-        'weight_decay': 0.02,
-        'max_grad_norm': 0.6,
-        'use_wandb': False,  # Set to True to enable wandb logging
+        'model_name': "distilbert-base-multilingual-cased",
+        'max_length': 128,
+        'tweets_per_account': 10 if data_source == 'english' else 5,  # Fewer for Czech
+        'batch_size': 8,
+        'learning_rate': 1e-5,
+        'num_epochs': 3,
+        'warmup_steps': 50,
+        'weight_decay': 0.05,
+        'max_grad_norm': 0.5,
+        'use_wandb': False,
         'dropout_rate': 0.2
     }
 
     # Load and preprocess data
     data_dir = "./data"
-    all_tweets = load_and_clean_data(data_dir)
-    train_df, val_df, test_df = create_data_splits(all_tweets)
+    if data_source == 'twitter':
+        all_data = load_and_clean_data(data_dir)
+        model_prefix = 'twitter'
+    else:
+        all_data = load_and_clean_machova_data(data_dir)
+        model_prefix = 'reddit'
 
+    train_df, val_df, test_df = create_data_splits(all_data)
+    
     # Check dataset balance
     check_dataset_balance(train_df, val_df, test_df)
 
-    # Create datasets
-    train_dataset = TrollTweetDataset(
-        train_df,
-        tokenizer_name=config['model_name'],
-        max_length=config['max_length'],
-        tweets_per_account=config['tweets_per_account']
-    )
-    val_dataset = TrollTweetDataset(
-        val_df,
-        tokenizer_name=config['model_name'],
-        max_length=config['max_length'],
-        tweets_per_account=config['tweets_per_account']
-    )
-    test_dataset = TrollTweetDataset(
-        test_df,
-        tokenizer_name=config['model_name'],
-        max_length=config['max_length'],
-        tweets_per_account=config['tweets_per_account']
-    )
+    # Create datasets and dataloaders
+    # ... existing dataset and dataloader creation code ...
 
-    # Create dataloaders
-    train_loader = DataLoader(
-        train_dataset,
-        batch_size=config['batch_size'],
-        shuffle=True,
-        collate_fn=collate_batch
-    )
-    val_loader = DataLoader(
-        val_dataset,
-        batch_size=config['batch_size'],
-        shuffle=False,
-        collate_fn=collate_batch
-    )
-    test_loader = DataLoader(
-        test_dataset,
-        batch_size=config['batch_size'],
-        shuffle=False,
-        collate_fn=collate_batch
-    )
-
-    # Initialize model
+    # Initialize model with language-specific checkpoint directory
+    checkpoint_dir = f"checkpoints_{model_prefix}"
     model = TrollDetector(model_name=config['model_name'])
 
     # Initialize trainer
@@ -349,7 +325,8 @@ def main():
         warmup_steps=config['warmup_steps'],
         weight_decay=config['weight_decay'],
         max_grad_norm=config['max_grad_norm'],
-        use_wandb=config['use_wandb']
+        use_wandb=config['use_wandb'],
+        checkpoint_dir=checkpoint_dir
     )
 
     # Train model
@@ -357,4 +334,10 @@ def main():
     logger.info(f"Training completed. Final metrics: {final_metrics}")
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--data', type=str, choices=['twitter', 'reddit'], default='twitter',
+                       help='Which dataset to use for training')
+    args = parser.parse_args()
+    
+    main(data_source=args.data)

@@ -19,7 +19,7 @@
 
 % LaTeX logo with better kerning in sf bf font
 \makeatletter
-\newcommand\LaTeX@lmss@bx{L\kern -.33em{\sbox \z@ T\vbox to\ht \z@ {\hbox {\check@mathfonts \fontsize \sf@size \z@ \math@fontsfalse \selectfont A}\vss }}\kern -.15em\TeX}
+\newcommand\LaTeX@lmss@bx{L\kern-.33em{\sbox\z@ T\vboxto\ht\z@{\hbox{\check@mathfonts\fontsize\sf@size\z@\math@fontsfalse\selectfont A}\vss}}\kern-.15em\TeX}
 \DeclareRobustCommand\myLaTeX{%
 	\ifcsname LaTeX@\f@family @\f@series\endcsname
 		\csname LaTeX@\f@family @\f@series\endcsname
@@ -88,7 +88,7 @@
 	{ \raggedright \footnotesize \sffamily #1 }
 }
 \cs_generate_variant:Nn \ctuman_domarginpar:n { x }
-\DeclareDocumentCommand \ctump { m } {
+\DeclareDocumentCommand\ctump{m}{
 	\clist_set:Nn \ctuman_temp_clist { #1 }
 	\ctuman_domarginpar:x { \clist_use:Nnnn \ctuman_temp_clist { \\ } { \\ } { \\ } }
 	\clist_map_inline:Nn \ctuman_temp_clist { \index{##1|indexmp} }
@@ -240,7 +240,7 @@ BERTopic is another state-of-the-art technique that can be used for dynamic topi
 
 \printindex
 
-\bibliographystyle{abbrvnat} 
+\bibliographystyle{alpha} 
 \bibliography{../sources/library.bib}
 
 \end{document}
