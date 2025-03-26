@@ -2,11 +2,13 @@ import json
 from pathlib import Path
 import pandas as pd
 from tqdm import tqdm
+from src.data_tools.preprocessor import TweetPreprocessor
 
 def load_czech_media_data(data_dir: str = "./data/MediaSource") -> pd.DataFrame:
     """Load and process Czech media data from JSON files"""
     data_path = Path(data_dir)
     all_comments = []
+    preprocessor = TweetPreprocessor()
     
     # Look for all JSON files
     json_files = list(data_path.glob("*.json"))
@@ -19,16 +21,21 @@ def load_czech_media_data(data_dir: str = "./data/MediaSource") -> pd.DataFrame:
                 # Process each entry in the JSON file
                 for entry in data:
                     if entry.get('articleType') == 'Comment':
-                        comment_data = {
-                            'text': entry.get('content', ''),
-                            'author': entry.get('author', ''),
-                            'timestamp': entry.get('publishDate', ''),
-                            'article_title': entry.get('title', ''),
-                            'url': entry.get('url', ''),
-                            'article_id': entry.get('articleId', ''),
-                            'sentiment': entry.get('attributes', {}).get('sentiment', ''),
-                        }
-                        all_comments.append(comment_data)
+                        # Preprocess the comment text same as the training data
+                        text = preprocessor.preprocess_tweet(entry.get('content', ''))
+
+                        if text.strip():
+                            comment_data = {
+                                'text': text, # Store preprocessed text
+                                'raw_text': entry.get('content', ''), # Keep original for reference
+                                'author': entry.get('author', ''),
+                                'timestamp': entry.get('publishDate', ''),
+                                'article_title': entry.get('title', ''),
+                                'url': entry.get('url', ''),
+                                'article_id': entry.get('articleId', ''),
+                                'sentiment': entry.get('attributes', {}).get('sentiment', ''),
+                            }
+                            all_comments.append(comment_data)
                         
         except Exception as e:
             print(f"Error loading {json_file}: {e}")
@@ -39,8 +46,6 @@ def load_czech_media_data(data_dir: str = "./data/MediaSource") -> pd.DataFrame:
     # Convert timestamp to datetime if present
     if 'timestamp' in df.columns:
         df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
-    
-    # TODO add same data cleaning to czech data as the training data
 
     return df
 
