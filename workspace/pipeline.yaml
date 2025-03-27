@@ -13,3 +13,9 @@ tasks:
       model: checkpoints/best_model.pt
       metrics: checkpoints/best_model_info.json
       results: checkpoints/training_results.json
+
+  - source: notebooks/03_benchmark.ipynb
+    product:
+      nb: output/03_benchmark.ipynb
+    params:
+      model_path: "checkpoints/best_model.pt"

@@ -6,6 +6,13 @@ from src.data_tools.dataset import create_data_splits, TrollDataset, collate_bat
 from src.models.bert_model import TrollDetector
 from src.models.trainer import TrollDetectorTrainer
 from torch.utils.data import DataLoader
+import logging
+from typing import Dict, Any
+import json
+
+from src.data_tools.czech_data_tools import load_czech_media_data
+from src.models.predictor import TrollPredictor
+from src.data_tools.benchmark import CzechBenchmark
 
 def preprocess(data_dir: str = '../data', 
               output_dir: str = '../data/processed',
@@ -135,3 +142,88 @@ def train(
         'model_path': str(Path(model_dir) / 'best_model.pt'),
         'metrics_path': str(Path(model_dir) / 'best_model_info.json')
     }
+
+def run_benchmark(
+    model_path: str,
+    benchmark_dir: str = '../data/benchmark',
+    config: dict = None
+) -> Dict[str, str]:
+    """Run benchmark tests on Czech data using trained model
+    
+    Args:
+        model_path: Path to trained model checkpoint
+        benchmark_dir: Directory for benchmark data and results
+        config: Optional configuration dictionary
+        
+    Returns:
+        Dictionary with paths to benchmark outputs
+    """
+    if config is None:
+        config = {
+            'comments_per_user': 5,
+            'max_length': 64,
+            'manual_authors': [
+                "Pavel Hanzl",
+                "Jitka Bártová",
+                "Roman Myška"
+            ]
+        }
+    
+    # Load Czech data
+    czech_comments = load_czech_media_data()
+    
+    # Initialize benchmark
+    benchmark = CzechBenchmark(benchmark_path=benchmark_dir)
+    
+    # Create or update benchmark set
+    if not benchmark.data_file.exists():
+        # Create automatic benchmark set
+        benchmark.create_benchmark_set(
+            comments_df=czech_comments,
+            n_authors=10,
+            min_comments=config['comments_per_user']
+        )
+        # Add manual authors
+        benchmark.add_authors(config['manual_authors'], czech_comments)
+    
+    # Initialize predictor
+    predictor = TrollPredictor(
+        model_path=model_path,
+        comments_per_user=config['comments_per_user'],
+        max_length=config['max_length']
+    )
+    
+    # Run benchmark
+    results = benchmark.run_benchmark(predictor)
+    
+    # Save latest results
+    benchmark_path = Path(benchmark_dir)
+    latest_results = benchmark_path / "latest_results.json"
+    history_file = benchmark_path / "history.json"
+    
+    with open(latest_results, 'w', encoding='utf-8') as f:
+        json.dump(results, f, ensure_ascii=False, indent=2)
+    
+    # Update history
+    if history_file.exists():
+        with open(history_file, 'r', encoding='utf-8') as f:
+            history = json.load(f)
+    else:
+        history = []
+    
+    # Add current results to history
+    history.append({
+        'timestamp': pd.Timestamp.now().strftime('%Y%m%d_%H%M%S'),
+        'model_path': model_path,
+        'results': results
+    })
+    
+    with open(history_file, 'w', encoding='utf-8') as f:
+        json.dump(history, f, ensure_ascii=False, indent=2)
+    
+    return {
+        'benchmark_data': str(benchmark.data_file),
+        'latest_results': str(latest_results),
+        'history': str(history_file)
+    }
+

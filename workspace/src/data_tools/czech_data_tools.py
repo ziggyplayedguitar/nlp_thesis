@@ -49,8 +49,6 @@ def load_czech_media_data(data_dir: str = "./data/MediaSource") -> pd.DataFrame:
 
     return df
 
-
-
 def analyze_duplicates(df: pd.DataFrame) -> pd.DataFrame:
     """
     Analyze duplicate comments in the dataset and return cleaned DataFrame
