@@ -5,21 +5,43 @@ This project implements a multilingual troll detection system using transformer-
 
 ## Project Structure
 ```
-├── preprocess_data.py   # Data preprocessing and dataset creation
-├── train.py             # Training script for the model
-├── model.py             # Model definition using DistilBERT/mBERT/XLM-R
-├── predict.py           # Prediction and explanation script
-├── data/                # Directory containing dataset files
-├── checkpoints/         # Directory for saving trained models
-└── README.md            # Project documentation
+├── notebooks/                  # Jupyter notebooks for exploration and analysis
+│   ├── 01_preprocess.ipynb     # Data preprocessing
+│   ├── 02_train.ipynb          # Model training
+│   ├── 03_benchmark.ipynb      # Model benchmark test
+│   └── 04_visualize.ipynb      # Visualizing data and model output
+├── src/  
+│   ├── analysis/               # Model analysis utilities
+│   │   ├── benchmark.py         # Benchmark to test model on same cases
+│   ├── data_tools/             # Data processing utilities
+│   │   ├── czech_data_tools.py # Novinky.cz data loading tools
+│   │   ├── preprocessor.py     # Text preprocessing utilities
+│   │   └── dataset.py          # Dataset creation utilities
+│   ├── models/                 # Model definitions and training code
+│   │   ├── troll_detector.py   # Transformer-based model
+│   │   └── predictor.py        # Prediction and explanation utilities
+├── output/                     # Ploomber generated output notebooks and other outputs
+├── data/                       # Data storage (not in repo)
+│   ├── MediaSource/            # Novinky.cz comments, unlabeled
+│   ├── russian_troll_tweets/   # Russian troll tweet dataset
+│   ├── sentiment140/           # Twitter regular user dataset
+│   ├── information_operations  # Information operations troll dataset
+│   ├── non_troll_politics/     # Political non-troll twitter accounts
+│   ├── celebrity_tweets/       # Verified non-troll accounts
+│   └── processed/              # Processed data files
+├── checkpoints/                # Saved model checkpoints
+├── pipeline.yaml               # Python task definitions for Ploomber
+├── tasks.py                    # Ploomber pipeline configuration
 ```
 
 ## Features
-- **Multi-lingual Support**: Trained on multilingual but mostly English data.
+- **Czech Media Comment Analysis**: Focuses on detecting trolls in Czech online news comment sections.
+- **Ploomber Pipeline**: Structured workflow for reproducible machine learning execution.
 - **Data Preprocessing**: Cleans and formats tweets, removes unnecessary elements like URLs, and organizes data for training.
-- **Custom Dataset**: Structures tweets at an account level rather than tweet-by-tweet classification.
+- **Custom Dataset**: Structures tweets and comments at an account level rather than tweet-by-tweet classification.
 - **Multi-Tweet Attention Mechanism**: Assigns different weights to tweets when making an account-level decision.
-- **Transformer-based Model**: Utilizes pre-trained DistilBERT, mBERT, or XLM-R for feature extraction.
+- **Transformer-based Model**: Utilizes pre-trained DistilBERT or XLM-R for feature extraction.
+- **Multi-stage Processing**: Separate preprocessing, training, evaluation and prediction steps.
 - **Configurable Training Pipeline**: Implements gradient clipping, learning rate scheduling, and mixed precision training.
 - **Prediction & Explainability**: Provides an interface for making predictions and generating explanations for model decisions.
 
@@ -28,10 +50,14 @@ The project uses multiple data sources:
 1. Russian Troll Tweets (labeled troll accounts)
 2. Sentiment140 Dataset (regular Twitter users)
 3. Celebrity Tweets (verified non-troll accounts)
+4. Information Operations (additional troll dataset)
+5. Political Non-troll Tweets (tweets from legitimate accounts)
+6. Czech Novinky.cz discussion comments (Main dataset of comments from Czech newssite novinky.cz)
 
 ## Installation
 ### Prerequisites
 - Python 3.8+
+- ploomber
 - PyTorch
 - Transformers (Hugging Face)
 - scikit-learn
@@ -39,55 +65,44 @@ The project uses multiple data sources:
 - Pandas
 - tqdm
 - wandb (optional for experiment tracking)
+- matplotlib
+- seaborn
+- jupyter
+- pathlib
+- papermill
+
+```bash
+pip install -r requirements.txt
+```
 
 ## Usage
 
-### Training the Model
-To train the model, run:
+### Running the Pipeline
+To execute the full pipeline:
 ```bash
-python train.py
-```
-This will:
-- Load and preprocess data
-- Train DistilBERT/mBERT/XLM-R with attention layers
-- Save the best model checkpoints
-
-### Making Predictions
-To predict whether an account is a troll based on tweets:
-```bash
-python predict.py --model_path checkpoints/best_model.pt --input_file "tweets_file.json"
-```
-or
-
-```bash
-python predict.py --model_path checkpoints/best_model.pt --tweets "tweet1" "tweet2" ...
+ploomber build
 ```
 
-### Explainability
-To get explanations for predictions:
+To run a specific task:
 ```bash
-python predict.py --model_path checkpoints/best_model.pt --input_file "tweets_file.json" --explain
+ploomber task <task_name>
 ```
-This runs occlusion-based analysis to highlight important tokens in the prediction.
 
 ## Configuration
 Key configuration parameters in `train.py`:
 ```python
 config = {
-    'model_name': "distilbert-base-multilingual-cased",
-    'max_length': 128,
-    'tweets_per_account': 10,
-    'batch_size': 8,
+    'model_name': 'distilbert-base-multilingual-cased',
+    'max_length': 64,
+    'batch_size': 64,
     'learning_rate': 2e-5,
-    'num_epochs': 10,
-    'warmup_steps': 100,
     'weight_decay': 0.01,
+    'num_epochs': 3,
+    'warmup_steps': 0,
     'max_grad_norm': 1.0,
+    'comments_per_user': 5,
     'use_wandb': False,
-    'data_dir': "/workspace/data",
-    'min_tweets_per_account': 10,
-    'train_ratio': 0.8,
-    'val_ratio': 0.1
+    'random_state': 42  # Default if config not found
 }
 ```
 
