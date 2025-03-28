@@ -93,16 +93,19 @@ Key configuration parameters in `train.py`:
 ```python
 config = {
     'model_name': 'distilbert-base-multilingual-cased',
-    'max_length': 64,
+    'max_length': 128,
     'batch_size': 64,
     'learning_rate': 2e-5,
-    'weight_decay': 0.01,
+    'weight_decay': 0.03,
     'num_epochs': 3,
-    'warmup_steps': 0,
+    'dropout_rate': 0.2,
+    'warmup_steps': 50,
     'max_grad_norm': 1.0,
     'comments_per_user': 5,
+    'early_stopping_patience': 3,
     'use_wandb': False,
-    'random_state': 42  # Default if config not found
+    'random_state': 17,
+    'label_smoothing': 0.1       
 }
 ```
 
@@ -120,112 +123,6 @@ The model is evaluated on:
 ## Future Improvements
 - Fine-tuning with more diverse datasets
 - Adding Czech test set evaluation
-
-## File Structure
-
-File: preprocess_data.py
-
-Class: TweetPreprocessor
-
-Purpose: Cleans tweet texts by removing URLs, picture links, and extra spaces.
-
-Method:
-
-preprocess_tweet(text: str): Cleans an individual tweet's text, removes links, and extra whitespace.
-
-Functions:
-
-load_and_clean_data(data_dir: str): Loads tweet datasets (Russian troll tweets, Sentiment140, and celebrity tweets), merges them, labels troll accounts, and filters accounts with too few tweets.
-
-create_data_splits(df: pd.DataFrame, train_ratio: float, val_ratio: float): Splits data into training, validation, and test datasets, ensuring each account is in only one set.
-
-collate_batch(batch: List[Dict[str, torch.Tensor]]): Prepares batches of tweet data for model training by stacking tweet data and labels.
-
-Class:
-
-TrollTweetDataset
-
-A custom dataset class that groups tweets by account and formats them for training.
-
-Methods:
-
-__len__: Counts the number of accounts in the dataset.
-
-__getitem__(idx: int): Retrieves processed tweet data and labels for each account, ensuring a fixed number of tweets per account.
-
-File: model.py
-
-Classes:
-
-TrollDetector
-
-Implements a neural network model using DistilBERT to detect troll accounts based on tweet text.
-
-Methods:
-
-forward(input_ids, attention_mask, tweets_per_account): Processes tweet inputs, calculates importance weights (attention), aggregates tweet representations, and predicts whether an account is a troll or not.
-
-predict(input_ids, attention_mask, tweets_per_account): Predicts if an account is a troll, returning predictions and confidence scores.
-
-TrollDetectorWithPooling
-
-Similar to TrollDetector, but uses simpler pooling techniques (mean or max) instead of attention.
-
-Methods:
-
-forward(input_ids, attention_mask, tweets_per_account): Processes tweet embeddings with pooling.
-
-predict(input_ids, attention_mask, tweets_per_account): Generates predictions and probabilities.
-
-File: train.py
-
-Class:
-
-TrollDetectorTrainer
-
-Handles the training and evaluation of the troll detection model.
-
-Key methods:
-
-train_epoch(): Trains the model for one epoch, handles gradient scaling, and updates model weights.
-
-evaluate(dataloader): Evaluates model performance on validation or test sets.
-
-calculate_metrics(preds, labels, probs=None): Calculates accuracy, precision, recall, F1-score, and ROC-AUC.
-
-save_checkpoint(epoch, metrics, is_best=False): Saves the trained model checkpoints.
-
-train(): Runs the full training cycle for multiple epochs and evaluates the model performance.
-
-Main Function:
-
-main(): Sets up data loaders, initializes the model and trainer with configurations, and starts training.
-
-File: predict.py
-
-Class:
-
-TrollPredictor
-
-Loads the trained model to predict if accounts are trolls based on their tweets.
-
-Methods:
-
-preprocess_tweets(tweets): Preprocesses a list of tweets.
-
-prepare_input(tweets): Prepares and tokenizes tweets for prediction.
-
-predict(tweets): Predicts whether an account is a troll and provides confidence scores and attention details if available.
-
-explain_prediction(tweets): Generates explanations highlighting influential tokens using occlusion sensitivity analysis.
-
-explain_with_correlation(tweets): Provides explanations based on token correlation with model predictions.
-
-Main function (main()):
-
-Handles command-line arguments, prepares input data, performs predictions, and optionally generates explanations.
-
-Each component works together to preprocess data, train a DistilBERT-based classifier to detect troll accounts from tweets, and provide insights into model predictions through explainability methods.
 
 ## Acknowledgments
 - Hugging Face Transformers
