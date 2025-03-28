@@ -183,39 +183,54 @@ def extract_author_comments_simple(df: pd.DataFrame, author: str = None, output_
         print(comment)
         print("-" * 80)
 
-def export_troll_comments_by_confidence(predictions_df: pd.DataFrame, 
-                                      comments_df: pd.DataFrame,
-                                      min_confidence: float = 0.9,
-                                      output_file: str = "troll_comments.json") -> None:
+def export_comments_by_prediction(predictions_df: pd.DataFrame, 
+                              comments_df: pd.DataFrame,
+                              prediction_class: str = 'troll',
+                              min_confidence: float = 0.9,
+                              max_confidence: float = 1.0,
+                              max_authors: int = 50,
+                              output_file: str = "predicted_comments.json") -> None:
     """
-    Export troll comments sorted by prediction confidence to JSON.
+    Export comments sorted by prediction confidence to JSON.
 
     Args:
         predictions_df: DataFrame with prediction results containing 'author' and 'confidence'
         comments_df: DataFrame with original comments containing 'text', 'author', 'url'
+        prediction_class: Class to export ('troll' or 'not_troll')
         min_confidence: Minimum confidence threshold (default: 0.9)
+        max_confidence: Maximum confidence threshold (default: 1.0)
+        max_authors: Maximum number of authors to include (default: None, includes all)
         output_file: Output JSON file path
     """
-    # Filter high confidence troll predictions
-    high_conf_trolls = predictions_df[
-        (predictions_df['prediction'] == 'troll') & 
-        (predictions_df['confidence'] >= min_confidence)
+    # Validate prediction_class
+    if prediction_class not in ['troll', 'not_troll']:
+        raise ValueError("prediction_class must be either 'troll' or 'not_troll'")
+    
+    # Filter high confidence predictions for the specified class
+    filtered_predictions = predictions_df[
+        (predictions_df['prediction'] == prediction_class) & 
+        (predictions_df['confidence'] >= min_confidence) &
+        (predictions_df['confidence'] <= max_confidence)
     ].sort_values('confidence', ascending=False)
     
+    # Limit number of authors if specified
+    if max_authors is not None:
+        filtered_predictions = filtered_predictions.head(max_authors)
+        
     # Prepare data structure for JSON
-    troll_data = []
+    output_data = []
     
-    # Process each high confidence troll
-    for _, prediction in tqdm(high_conf_trolls.iterrows(), 
-                            desc="Processing comments",
-                            total=len(high_conf_trolls)):
+    # Process each filtered prediction
+    for _, prediction in tqdm(filtered_predictions.iterrows(), 
+                            desc=f"Processing {prediction_class} comments",
+                            total=len(filtered_predictions)):
         
         # Get all comments from this author
         author_comments = comments_df[comments_df['author'] == prediction['author']]
         
         # Add each comment to the data structure
         for _, comment in author_comments.iterrows():
-            troll_data.append({
+            output_data.append({
                 'author': comment['author'],
                 'confidence': float(prediction['confidence']),  # Convert to float for JSON serialization
                 'comment': comment['text'],
@@ -227,7 +242,7 @@ def export_troll_comments_by_confidence(predictions_df: pd.DataFrame,
     output_path.parent.mkdir(parents=True, exist_ok=True)
     
     with open(output_path, 'w', encoding='utf-8') as f:
-        json.dump(troll_data, f, ensure_ascii=False, indent=2)
+        json.dump(output_data, f, ensure_ascii=False, indent=2)
         
-    print(f"\nExported {len(troll_data)} comments from {len(high_conf_trolls)} authors")
+    print(f"\nExported {len(output_data)} comments from {len(filtered_predictions)} authors")
     print(f"Output saved to: {output_path}")

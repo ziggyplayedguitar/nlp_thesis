@@ -24,27 +24,27 @@ class TrollDataset(Dataset):
         self.max_length = max_length
         self.comments_per_user = comments_per_user
         
-        # Group comments by account
-        self.users = list(data.groupby('account'))
+        # Group comments by author
+        self.users = list(data.groupby('author'))
         
     def __len__(self) -> int:
         return len(self.users)
     
     def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
-        account, account_comments = self.users[idx]
+        author, author_comments = self.users[idx]
         
-        # Sample comments for this account
-        if len(account_comments) > self.comments_per_user:
-            account_comments = account_comments.sample(n=self.comments_per_user)
+        # Sample comments for this author
+        if len(author_comments) > self.comments_per_user:
+            author_comments = author_comments.sample(n=self.comments_per_user)
         else:
             # If fewer comments than needed, sample with replacement
-            account_comments = account_comments.sample(
+            author_comments = author_comments.sample(
                 n=self.comments_per_user, 
                 replace=True
             )
         
         # Get comment texts
-        comments = account_comments['text'].tolist()
+        comments = author_comments['text'].tolist()
         
         # Tokenize all comments
         encodings = self.tokenizer(
@@ -58,7 +58,7 @@ class TrollDataset(Dataset):
         return {
             'input_ids': encodings['input_ids'],
             'attention_mask': encodings['attention_mask'],
-            'label': torch.tensor(account_comments['troll'].iloc[0], dtype=torch.long)
+            'label': torch.tensor(author_comments['troll'].iloc[0], dtype=torch.long)
         }
 
 def create_data_splits(
@@ -68,29 +68,29 @@ def create_data_splits(
     test_size: float = 0.15,
     random_state: int = 42
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """Create train/val/test splits ensuring accounts don't overlap"""
+    """Create train/val/test splits ensuring authors don't overlap"""
     
-    # Get unique accounts
-    accounts = df['account'].unique()
+    # Get unique authors
+    authors = df['author'].unique()
     
     # Create splits
-    n_accounts = len(accounts)
-    train_idx = int(n_accounts * train_size)
-    val_idx = int(n_accounts * (train_size + val_size))
+    n_authors = len(authors)
+    train_idx = int(n_authors * train_size)
+    val_idx = int(n_authors * (train_size + val_size))
     
-    # Shuffle accounts
+    # Shuffle authors
     rng = np.random.RandomState(random_state)
-    accounts = rng.permutation(accounts)
+    authors = rng.permutation(authors)
     
-    # Split accounts
-    train_accounts = accounts[:train_idx]
-    val_accounts = accounts[train_idx:val_idx]
-    test_accounts = accounts[val_idx:]
+    # Split authors
+    train_authors = authors[:train_idx]
+    val_authors = authors[train_idx:val_idx]
+    test_authors = authors[val_idx:]
     
     # Create DataFrames
-    train_df = df[df['account'].isin(train_accounts)]
-    val_df = df[df['account'].isin(val_accounts)]
-    test_df = df[df['account'].isin(test_accounts)]
+    train_df = df[df['author'].isin(train_authors)]
+    val_df = df[df['author'].isin(val_authors)]
+    test_df = df[df['author'].isin(test_authors)]
     
     return train_df, val_df, test_df
 

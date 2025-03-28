@@ -1,0 +1,449 @@
+{
+  "predictions": {
+    "Jan Novák": {
+      "prediction": "troll",
+      "confidence": 0.5624353289604187,
+      "probabilities": [
+        0.4375646412372589,
+        0.5624353289604187
+      ]
+    },
+    "Pavel Hanzl": {
+      "prediction": "not_troll",
+      "confidence": 0.8843374252319336,
+      "probabilities": [
+        0.8843374252319336,
+        0.11566262692213058
+      ]
+    },
+    "Petr Novák": {
+      "prediction": "not_troll",
+      "confidence": 0.7902351021766663,
+      "probabilities": [
+        0.7902351021766663,
+        0.20976494252681732
+      ]
+    },
+    "Pavel Novák": {
+      "prediction": "not_troll",
+      "confidence": 0.6772783994674683,
+      "probabilities": [
+        0.6772783994674683,
+        0.32272160053253174
+      ]
+    },
+    "Martin Holý": {
+      "prediction": "troll",
+      "confidence": 0.773159921169281,
+      "probabilities": [
+        0.22684010863304138,
+        0.773159921169281
+      ]
+    },
+    "Pavel Dvořák": {
+      "prediction": "not_troll",
+      "confidence": 0.853226900100708,
+      "probabilities": [
+        0.853226900100708,
+        0.1467730700969696
+      ]
+    },
+    "Pavel Sladovník": {
+      "prediction": "not_troll",
+      "confidence": 0.628215491771698,
+      "probabilities": [
+        0.628215491771698,
+        0.3717845380306244
+      ]
+    },
+    "Vladimír Mrkva": {
+      "prediction": "troll",
+      "confidence": 0.7692818641662598,
+      "probabilities": [
+        0.23071815073490143,
+        0.7692818641662598
+      ]
+    },
+    "Lubomir Kvasnicka": {
+      "prediction": "troll",
+      "confidence": 0.8119903206825256,
+      "probabilities": [
+        0.18800967931747437,
+        0.8119903206825256
+      ]
+    },
+    "Petr Dvořák": {
+      "prediction": "troll",
+      "confidence": 0.5767749547958374,
+      "probabilities": [
+        0.4232250452041626,
+        0.5767749547958374
+      ]
+    },
+    "Martin Novák": {
+      "prediction": "not_troll",
+      "confidence": 0.7882519960403442,
+      "probabilities": [
+        0.7882519960403442,
+        0.2117479294538498
+      ]
+    },
+    "Jiří Černohorský": {
+      "prediction": "troll",
+      "confidence": 0.5207549333572388,
+      "probabilities": [
+        0.4792450964450836,
+        0.5207549333572388
+      ]
+    },
+    "Zdeněk Hübner": {
+      "prediction": "troll",
+      "confidence": 0.7789940237998962,
+      "probabilities": [
+        0.22100600600242615,
+        0.7789940237998962
+      ]
+    },
+    "Tomáš Ruprecht": {
+      "prediction": "troll",
+      "confidence": 0.955200731754303,
+      "probabilities": [
+        0.04479927197098732,
+        0.955200731754303
+      ]
+    },
+    "Zdeněk Veselý": {
+      "prediction": "not_troll",
+      "confidence": 0.9448724389076233,
+      "probabilities": [
+        0.9448724389076233,
+        0.05512753501534462
+      ]
+    },
+    "Jiří Novotný": {
+      "prediction": "not_troll",
+      "confidence": 0.787357747554779,
+      "probabilities": [
+        0.787357747554779,
+        0.21264226734638214
+      ]
+    },
+    "Petr Novotný": {
+      "prediction": "not_troll",
+      "confidence": 0.9414764642715454,
+      "probabilities": [
+        0.9414764642715454,
+        0.05852353572845459
+      ]
+    },
+    "Jan Sykora": {
+      "prediction": "troll",
+      "confidence": 0.7670632004737854,
+      "probabilities": [
+        0.23293672502040863,
+        0.7670632004737854
+      ]
+    },
+    "Josef Procházka": {
+      "prediction": "troll",
+      "confidence": 0.8342840075492859,
+      "probabilities": [
+        0.1657160222530365,
+        0.8342840075492859
+      ]
+    },
+    "Jiří Řezníček": {
+      "prediction": "troll",
+      "confidence": 0.9684920310974121,
+      "probabilities": [
+        0.03150797635316849,
+        0.9684920310974121
+      ]
+    },
+    "Pavel Sobola": {
+      "prediction": "troll",
+      "confidence": 0.7638850212097168,
+      "probabilities": [
+        0.23611494898796082,
+        0.7638850212097168
+      ]
+    },
+    "Petr Šikýř": {
+      "prediction": "not_troll",
+      "confidence": 0.9891993403434753,
+      "probabilities": [
+        0.9891993403434753,
+        0.010800725780427456
+      ]
+    },
+    "Petr Svoboda": {
+      "prediction": "not_troll",
+      "confidence": 0.9887726902961731,
+      "probabilities": [
+        0.9887726902961731,
+        0.011227301321923733
+      ]
+    },
+    "Zdeněk Svoboda": {
+      "prediction": "not_troll",
+      "confidence": 0.9517676830291748,
+      "probabilities": [
+        0.9517676830291748,
+        0.04823236167430878
+      ]
+    },
+    "Miroslava Klimová": {
+      "prediction": "not_troll",
+      "confidence": 0.8906205296516418,
+      "probabilities": [
+        0.8906205296516418,
+        0.10937944054603577
+      ]
+    },
+    "Pavel Kozák": {
+      "prediction": "not_troll",
+      "confidence": 0.9400597214698792,
+      "probabilities": [
+        0.9400597214698792,
+        0.05994025245308876
+      ]
+    },
+    "Tomáš Novotný": {
+      "prediction": "not_troll",
+      "confidence": 0.802939236164093,
+      "probabilities": [
+        0.802939236164093,
+        0.19706077873706818
+      ]
+    },
+    "Vladimír Vlk": {
+      "prediction": "troll",
+      "confidence": 0.5921614170074463,
+      "probabilities": [
+        0.4078386127948761,
+        0.5921614170074463
+      ]
+    },
+    "Jiří Šimoník": {
+      "prediction": "troll",
+      "confidence": 0.5475507378578186,
+      "probabilities": [
+        0.4524492621421814,
+        0.5475507378578186
+      ]
+    },
+    "Leoš Novak": {
+      "prediction": "not_troll",
+      "confidence": 0.6117490530014038,
+      "probabilities": [
+        0.6117490530014038,
+        0.3882509768009186
+      ]
+    },
+    "Jaromir David": {
+      "prediction": "not_troll",
+      "confidence": 0.9628697633743286,
+      "probabilities": [
+        0.9628697633743286,
+        0.03713022917509079
+      ]
+    },
+    "Petr Kovařík": {
+      "prediction": "troll",
+      "confidence": 0.5205948352813721,
+      "probabilities": [
+        0.4794051945209503,
+        0.5205948352813721
+      ]
+    },
+    "Vlastimil Zbořil": {
+      "prediction": "troll",
+      "confidence": 0.8895457983016968,
+      "probabilities": [
+        0.11045421659946442,
+        0.8895457983016968
+      ]
+    },
+    "Petr Burian": {
+      "prediction": "not_troll",
+      "confidence": 0.846820592880249,
+      "probabilities": [
+        0.846820592880249,
+        0.15317945182323456
+      ]
+    },
+    "Miroslav Šilhavý": {
+      "prediction": "not_troll",
+      "confidence": 0.9433411359786987,
+      "probabilities": [
+        0.9433411359786987,
+        0.05665888637304306
+      ]
+    },
+    "Jaroslav Novák": {
+      "prediction": "not_troll",
+      "confidence": 0.5944802165031433,
+      "probabilities": [
+        0.5944802165031433,
+        0.4055197536945343
+      ]
+    },
+    "Jan Novotný": {
+      "prediction": "not_troll",
+      "confidence": 0.6015587449073792,
+      "probabilities": [
+        0.6015587449073792,
+        0.39844122529029846
+      ]
+    },
+    "Oleg Pastrňák": {
+      "prediction": "troll",
+      "confidence": 0.6487745046615601,
+      "probabilities": [
+        0.35122546553611755,
+        0.6487745046615601
+      ]
+    },
+    "Martin Jedlička": {
+      "prediction": "not_troll",
+      "confidence": 0.5507577657699585,
+      "probabilities": [
+        0.5507577657699585,
+        0.4492422044277191
+      ]
+    },
+    "Radana Broučková": {
+      "prediction": "not_troll",
+      "confidence": 0.7623184323310852,
+      "probabilities": [
+        0.7623184323310852,
+        0.2376815378665924
+      ]
+    },
+    "Viktor Náprstek": {
+      "prediction": "not_troll",
+      "confidence": 0.6355713605880737,
+      "probabilities": [
+        0.6355713605880737,
+        0.36442866921424866
+      ]
+    },
+    "Stanislav Hrouzek": {
+      "prediction": "troll",
+      "confidence": 0.6162247061729431,
+      "probabilities": [
+        0.3837752640247345,
+        0.6162247061729431
+      ]
+    },
+    "Stanislava": {
+      "prediction": "not_troll",
+      "confidence": 0.6337190270423889,
+      "probabilities": [
+        0.6337190270423889,
+        0.3662809729576111
+      ]
+    },
+    "Jan Brabenec": {
+      "prediction": "not_troll",
+      "confidence": 0.8496809005737305,
+      "probabilities": [
+        0.8496809005737305,
+        0.15031911432743073
+      ]
+    },
+    "Jan Proksik": {
+      "prediction": "not_troll",
+      "confidence": 0.6671081185340881,
+      "probabilities": [
+        0.6671081185340881,
+        0.3328918516635895
+      ]
+    },
+    "Martin Provazník": {
+      "prediction": "not_troll",
+      "confidence": 0.6524365544319153,
+      "probabilities": [
+        0.6524365544319153,
+        0.3475634753704071
+      ]
+    },
+    "Dana Polanecká": {
+      "prediction": "not_troll",
+      "confidence": 0.9138325452804565,
+      "probabilities": [
+        0.9138325452804565,
+        0.08616745471954346
+      ]
+    },
+    "Martin Horák": {
+      "prediction": "troll",
+      "confidence": 0.6115504503250122,
+      "probabilities": [
+        0.3884495198726654,
+        0.6115504503250122
+      ]
+    },
+    "Tomáš Urban": {
+      "prediction": "not_troll",
+      "confidence": 0.5829001665115356,
+      "probabilities": [
+        0.5829001665115356,
+        0.41709983348846436
+      ]
+    },
+    "Dana Plíšková": {
+      "prediction": "troll",
+      "confidence": 0.8683390021324158,
+      "probabilities": [
+        0.13166099786758423,
+        0.8683390021324158
+      ]
+    },
+    "Jitka Bártová": {
+      "prediction": "troll",
+      "confidence": 0.923107385635376,
+      "probabilities": [
+        0.07689259201288223,
+        0.923107385635376
+      ]
+    },
+    "Roman Myška": {
+      "prediction": "troll",
+      "confidence": 0.9655571579933167,
+      "probabilities": [
+        0.03444286063313484,
+        0.9655571579933167
+      ]
+    },
+    "Hosek Miroslav": {
+      "prediction": "not_troll",
+      "confidence": 0.9769402742385864,
+      "probabilities": [
+        0.9769402742385864,
+        0.02305970899760723
+      ]
+    },
+    "Roman Dostál": {
+      "prediction": "troll",
+      "confidence": 0.8709428310394287,
+      "probabilities": [
+        0.1290571391582489,
+        0.8709428310394287
+      ]
+    },
+    "Tomáš Volf": {
+      "prediction": "not_troll",
+      "confidence": 0.9698115587234497,
+      "probabilities": [
+        0.9698115587234497,
+        0.030188435688614845
+      ]
+    }
+  },
+  "summary": {
+    "total_authors": 55,
+    "total_comments": 36311,
+    "troll_predictions": 23
+  }
+}
