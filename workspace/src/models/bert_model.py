@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from transformers import DistilBertModel, DistilBertConfig
+from transformers import AutoModel, AutoConfig
 from typing import Dict, Tuple
 
 class TrollDetector(nn.Module):
@@ -14,7 +15,7 @@ class TrollDetector(nn.Module):
         super().__init__()
         
         # Load pre-trained DistilBERT
-        self.bert = DistilBertModel.from_pretrained(model_name)
+        self.bert = AutoModel.from_pretrained(model_name)
         self.config = self.bert.config
         
         # Freeze BERT parameters if specified
@@ -86,7 +87,8 @@ class TrollDetector(nn.Module):
         
         return {
             'logits': logits,
-            'tweet_attention_weights': attention_weights.squeeze(-1)
+            'tweet_attention_weights': attention_weights.squeeze(-1),
+            'account_embedding': account_embedding
         }
     
     def predict(

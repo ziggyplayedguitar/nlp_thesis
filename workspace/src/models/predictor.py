@@ -13,10 +13,11 @@ from src.data_tools.preprocessor import TweetPreprocessor
 class TrollPredictor:
     def __init__(
         self,
-        model_path: str,
+        model_path: str = None,  # Optional checkpoint path
+        model_name: str = None,  # Optional Hugging Face model name
         device: str = None,
         comments_per_user: int = 5,
-        max_length: int = 64  # Reduced from 96 to match training
+        max_length: int = 96
     ):
         # Set device
         if device is None:
@@ -25,14 +26,26 @@ class TrollPredictor:
             self.device = torch.device(device)
         
         # Initialize model
-        self.model = TrollDetector()
-        checkpoint = torch.load(model_path, map_location=self.device, weights_only=False)
-        self.model.load_state_dict(checkpoint["model_state_dict"])
+        if model_name:
+            # Load pretrained model from Hugging Face
+            self.model = TrollDetector(model_name=model_name)
+        elif model_path:
+            # Load model from checkpoint
+            self.model = TrollDetector()
+            checkpoint = torch.load(model_path, map_location=self.device)
+            self.model.load_state_dict(checkpoint["model_state_dict"])
+        else:
+            raise ValueError("Either model_path or model_name must be provided.")
+        
+        # Move model to the correct device
         self.model.to(self.device)
         self.model.eval()
         
         # Initialize tokenizer and preprocessor
-        self.tokenizer = AutoTokenizer.from_pretrained("distilbert-base-multilingual-cased")
+        if model_name:
+            self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        else:
+            self.tokenizer = AutoTokenizer.from_pretrained("distilbert-base-multilingual-cased")  # Default tokenizer
         self.preprocessor = TweetPreprocessor()
         
         # Set parameters
