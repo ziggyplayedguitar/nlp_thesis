@@ -82,7 +82,7 @@ def load_and_clean_data(data_dir: str) -> pd.DataFrame:
     troll_files = list(data_path.glob("russian_troll_tweets/*.csv"))
     troll_tweets = pd.concat([pd.read_csv(f) for f in troll_files])
     troll_tweets = troll_tweets[['author', 'content', 'language']]
-    troll_tweets = troll_tweets[troll_tweets['language'] == 'English']
+    # troll_tweets = troll_tweets[troll_tweets['language'] == 'English']
     troll_tweets.rename(columns={'author': 'account', 'content': 'tweet'}, inplace=True)
     troll_tweets['troll'] = 1
 
