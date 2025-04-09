@@ -24,3 +24,5 @@ workspace/notebooks/importance_tweet_5.png
 workspace/output/high_confidence_predictions.csv
 workspace/output/medium_confidence_predictions.csv
 workspace/src/extracted_comments/Roman_Dostál_20250327_012941.json
+workspace/user_anomaly_scores_lof.csv
+workspace/user_anomaly_scores_lof.csv
