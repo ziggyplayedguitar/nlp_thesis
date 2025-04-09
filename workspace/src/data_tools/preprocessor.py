@@ -107,12 +107,14 @@ def load_and_clean_data(data_dir: str) -> pd.DataFrame:
     celeb_tweets['troll'] = 0
     
     # Load Twitter JSON files from "non_troll_politics" folder
+    logger.info("Loading manualy scraped tweets...")
     twitter_data = pd.DataFrame()
     json_folder = data_path / "non_troll_politics"
     if json_folder.exists():
         twitter_data = load_twitter_json(json_folder)
     
     # Load Parquet files from "information_operations" folder
+    logger.info("Loading information operations tweets...")
     parquet_folder = data_path / "information_operations"
     parquet_files = list(parquet_folder.glob("*.parquet"))
     parquet_data = pd.concat([pd.read_parquet(f) for f in parquet_files])
@@ -120,13 +122,29 @@ def load_and_clean_data(data_dir: str) -> pd.DataFrame:
     parquet_data.rename(columns={'accountid': 'account', 'post_text': 'tweet'}, inplace=True)
     parquet_data['troll'] = 1
 
+    # Load files from machova et al
+    logger.info("Loading data collected by Machova...")
+    nontroll_path = data_path / "machova/Is_not_troll_body.csv"
+    nontroll_df = pd.read_csv(nontroll_path)
+    nontroll_df['troll'] = 0
+    troll_path = data_path / "machova/Is_troll_body.csv"
+    troll_df = pd.read_csv(troll_path)
+    troll_df['troll'] = 1
+    # Add account column and rename existing body column
+    combined_df = pd.concat([troll_df, nontroll_df], ignore_index=True)
+    combined_df['account'] = [f"user_{i}" for i in range(len(combined_df))]
+    combined_df = combined_df.rename(columns={
+        'body': 'tweet'
+    })
+
     # Combine all datasets
     logger.info("Combining datasets...")
     all_tweets = pd.concat([
         troll_tweets[['account', 'tweet', 'troll']],
         sentiment_tweets[['account', 'tweet', 'troll']],
         celeb_tweets[['account', 'tweet', 'troll']],
-        twitter_data[['account', 'tweet', 'troll']]
+        twitter_data[['account', 'tweet', 'troll']],
+        combined_df[['account', 'tweet', 'troll']]
     ], ignore_index=True)
 
     # Apply preprocessing to tweet text
@@ -142,49 +160,6 @@ def load_and_clean_data(data_dir: str) -> pd.DataFrame:
     all_tweets = all_tweets[all_tweets['account'].isin(valid_accounts)]
     
     return all_tweets
-
-#def load_and_clean_machova_data(data_dir: str) -> pd.DataFrame:
-    """Load and preprocess Czech troll/non-troll comment data."""
-    data_path = Path(data_dir)
-    preprocessor = TweetPreprocessor()
-    
-    # Load troll and non-troll data
-    logger.info("Loading Czech troll/non-troll data...")
-    
-    # Load non-troll comments
-    nontroll_path = data_path / "machova/Is_not_troll_body.csv"
-    nontroll_df = pd.read_csv(nontroll_path)
-    logger.info(f"Non-troll data columns: {nontroll_df.columns.tolist()}")
-    nontroll_df['troll'] = 0
-    
-    # Load troll comments
-    troll_path = data_path / "machova/Is_troll_body.csv"
-    troll_df = pd.read_csv(troll_path)
-    logger.info(f"Troll data columns: {troll_df.columns.tolist()}")
-    troll_df['troll'] = 1
-    
-    # Combine datasets
-    all_comments = pd.concat([troll_df, nontroll_df], ignore_index=True)
-    
-    # Create sequential account IDs since we don't have actual account information
-    all_comments['account'] = [f"user_{i}" for i in range(len(all_comments))]
-    
-    # Rename columns to match existing pipeline
-    all_comments = all_comments.rename(columns={
-        'body': 'tweet'
-    })
-    
-    # Apply preprocessing to comment text
-    all_comments['tweet'] = all_comments['tweet'].apply(preprocessor.preprocess_tweet)
-    
-    # Remove empty comments after preprocessing
-    all_comments = all_comments[all_comments['tweet'].str.len() > 0]
-    
-    logger.info(f"Loaded {len(all_comments)} Czech comments")
-    logger.info(f"Class distribution:")
-    logger.info(all_comments['troll'].value_counts())
-    
-    return all_comments
 
 class TrollTweetDataset(Dataset):
     def __init__(self, 
