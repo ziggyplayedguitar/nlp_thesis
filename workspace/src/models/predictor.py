@@ -32,7 +32,7 @@ class TrollPredictor:
         elif model_path:
             # Load model from checkpoint
             self.model = TrollDetector()
-            checkpoint = torch.load(model_path, map_location=self.device)
+            checkpoint = torch.load(model_path, map_location=self.device, weights_only=False)
             self.model.load_state_dict(checkpoint["model_state_dict"])
         else:
             raise ValueError("Either model_path or model_name must be provided.")
