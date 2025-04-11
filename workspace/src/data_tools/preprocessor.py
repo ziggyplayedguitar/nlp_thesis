@@ -122,8 +122,12 @@ def load_and_clean_data(data_dir: str) -> pd.DataFrame:
     parquet_folder = data_path / "information_operations"
     parquet_files = list(parquet_folder.glob("*.parquet"))
     parquet_data = pd.concat([pd.read_parquet(f) for f in parquet_files])
-    parquet_data = parquet_data[['accountid', 'post_text', 'is_control', 'language']]
-    parquet_data.rename(columns={'accountid': 'account', 'post_text': 'tweet'}, inplace=True)
+    parquet_data = parquet_data[['accountid', 'post_text', 'is_control', 'post_language']]
+    parquet_data.rename(columns={
+        'accountid': 'account',
+        'post_text': 'tweet',
+        'post_language': 'language'
+    }, inplace=True)
     parquet_data['troll'] = ~parquet_data['is_control']  # troll is True when is_control is False
     parquet_data = parquet_data.drop('is_control', axis=1)
 
