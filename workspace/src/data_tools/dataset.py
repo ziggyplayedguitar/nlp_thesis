@@ -17,34 +17,79 @@ class TrollDataset(Dataset):
         data: pd.DataFrame,
         tokenizer_name: str = "distilbert-base-multilingual-cased",
         max_length: int = 128,
-        comments_per_user: int = 20
+        comments_per_user: int = 20,
+        max_samples_per_author: int = 100,  # Maximum comment batches per author
+        text_column: str = None  # Allow custom text column name
     ):
         self.data = data
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
         self.max_length = max_length
         self.comments_per_user = comments_per_user
+        self.max_samples_per_author = max_samples_per_author
         
-        # Group comments by author
-        self.users = list(data.groupby('author'))
+        # Determine text column name
+        if text_column is not None:
+            self.text_column = text_column
+        elif 'text' in data.columns:
+            self.text_column = 'text'
+        elif 'tweet' in data.columns:
+            self.text_column = 'tweet'
+        else:
+            raise ValueError("DataFrame must contain either 'text' or 'tweet' column")
+        
+        logger.info(f"Using '{self.text_column}' as text column")
+        
+        # Group comments by author and create multiple batches for each author
+        self.samples = []
+        author_groups = data.groupby('author')
+        
+        for author, comments in author_groups:
+            # Get the label for this author (should be consistent across all comments)
+            author_label = comments['troll'].iloc[0]
+            
+            if len(comments) <= comments_per_user:
+                # If author has fewer comments than needed, just add one sample
+                self.samples.append((author, comments, author_label))
+            else:
+                # If author has more comments, create multiple batches
+                # Calculate how many complete batches we can create
+                num_batches = min(len(comments) // comments_per_user, max_samples_per_author)
+                
+                # Shuffle the comments to ensure variety in batches
+                shuffled_comments = comments.sample(frac=1, random_state=42)
+                
+                # Create each batch
+                for i in range(num_batches):
+                    start_idx = i * comments_per_user
+                    end_idx = start_idx + comments_per_user
+                    batch_comments = shuffled_comments.iloc[start_idx:end_idx]
+                    self.samples.append((f"{author}_{i}", batch_comments, author_label))
+        
+        logger.info(f"Created {len(self.samples)} samples from {len(author_groups)} authors")
         
     def __len__(self) -> int:
-        return len(self.users)
+        return len(self.samples)
     
     def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
-        author, author_comments = self.users[idx]
+        author, author_comments, label = self.samples[idx]
         
-        # Sample comments for this author
-        if len(author_comments) > self.comments_per_user:
-            author_comments = author_comments.sample(n=self.comments_per_user)
-        else:
-            # If fewer comments than needed, sample with replacement
+        # Ensure we have exactly comments_per_user comments
+        if len(author_comments) < self.comments_per_user:
+            # If we have fewer comments than needed, sample with replacement
             author_comments = author_comments.sample(
                 n=self.comments_per_user, 
-                replace=True
+                replace=True,
+                random_state=42
+            )
+        elif len(author_comments) > self.comments_per_user:
+            # This shouldn't happen with our initialization, but just in case
+            author_comments = author_comments.sample(
+                n=self.comments_per_user,
+                random_state=42
             )
         
         # Get comment texts
-        comments = author_comments['text'].tolist()
+        comments = author_comments[self.text_column].tolist()
         
         # Tokenize all comments
         encodings = self.tokenizer(
@@ -58,7 +103,8 @@ class TrollDataset(Dataset):
         return {
             'input_ids': encodings['input_ids'],
             'attention_mask': encodings['attention_mask'],
-            'label': torch.tensor(author_comments['troll'].iloc[0], dtype=torch.long)
+            'label': torch.tensor(label, dtype=torch.long),
+            'author': author  # Include author ID for aggregating predictions later
         }
 
 def create_data_splits(
@@ -107,9 +153,77 @@ def collate_batch(batch: List[Dict[str, torch.Tensor]]) -> Dict[str, torch.Tenso
     input_ids = torch.cat([item['input_ids'] for item in batch], dim=0)
     attention_mask = torch.cat([item['attention_mask'] for item in batch], dim=0)
     labels = torch.stack([item['label'] for item in batch])
+    authors = [item['author'] for item in batch]
     
     return {
         'input_ids': input_ids,
         'attention_mask': attention_mask,
-        'label': labels
+        'label': labels,
+        'author': authors
     }
+
+def aggregate_author_predictions(
+    predictions: Dict[str, List], 
+    method: str = 'mean'
+) -> Dict[str, Dict]:
+    """
+    Aggregate predictions for the same author from multiple comment batches.
+    
+    Args:
+        predictions: Dictionary where keys are batch IDs and values contain predictions
+                    Must have an 'author' field to identify authors
+        method: Aggregation method ('mean', 'max', 'vote')
+    
+    Returns:
+        Dictionary with aggregated predictions per author
+    """
+    # Group by base author (removing batch index if present)
+    author_preds = {}
+    
+    for batch_id, pred_data in predictions.items():
+        for i, author in enumerate(pred_data['author']):
+            # Extract base author name (remove _0, _1, etc. suffixes)
+            base_author = author.split('_')[0] if '_' in author else author
+            
+            if base_author not in author_preds:
+                author_preds[base_author] = {
+                    'probs': [],
+                    'preds': [],
+                    'true_label': pred_data['label'][i]  # Assuming consistent label per author
+                }
+            
+            author_preds[base_author]['probs'].append(pred_data['probs'][i])
+            author_preds[base_author]['preds'].append(pred_data['pred'][i])
+    
+    # Aggregate predictions for each author
+    aggregated = {}
+    for author, data in author_preds.items():
+        if method == 'mean':
+            # Average probabilities
+            avg_prob = np.mean(data['probs'], axis=0)
+            final_pred = np.argmax(avg_prob)
+        elif method == 'max':
+            # Take prediction with highest confidence
+            # For troll detection, we're interested in the probability of being a troll (class 1)
+            troll_probs = [p[1] for p in data['probs']]
+            max_idx = np.argmax(troll_probs)
+            avg_prob = data['probs'][max_idx]
+            final_pred = data['preds'][max_idx]
+        elif method == 'vote':
+            # Majority vote
+            votes = np.bincount(data['preds'])
+            final_pred = np.argmax(votes)
+            # For probability, average the probabilities of the winning class
+            winning_indices = [i for i, p in enumerate(data['preds']) if p == final_pred]
+            avg_prob = np.mean([data['probs'][i] for i in winning_indices], axis=0)
+        else:
+            raise ValueError(f"Unknown aggregation method: {method}")
+        
+        aggregated[author] = {
+            'final_pred': final_pred,
+            'final_prob': avg_prob,
+            'true_label': data['true_label'],
+            'num_batches': len(data['probs'])
+        }
+    
+    return aggregated

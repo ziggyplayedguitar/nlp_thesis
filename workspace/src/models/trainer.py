@@ -12,6 +12,7 @@ from pathlib import Path
 from sklearn.metrics import classification_report, roc_auc_score
 import json
 from typing import Dict, List, Tuple, Optional
+from src.data_tools.dataset import aggregate_author_predictions
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -77,8 +78,8 @@ class TrollDetectorTrainer:
         """Train for one epoch"""
         self.model.train()
         total_loss = 0
-        all_preds = []
-        all_labels = []
+        batch_results = {}
+        batch_idx = 0
         
         pbar = tqdm(self.train_loader, desc="Training")
         for batch in pbar:
@@ -86,6 +87,7 @@ class TrollDetectorTrainer:
             input_ids = batch['input_ids'].to(self.device)
             attention_mask = batch['attention_mask'].to(self.device)
             labels = batch['label'].to(self.device)
+            authors = batch['author']  # List of author IDs
             
             # Forward pass with mixed precision
             with torch.cuda.amp.autocast():
@@ -112,17 +114,34 @@ class TrollDetectorTrainer:
             self.scheduler.step()
             self.optimizer.zero_grad()
             
-            # Store predictions and labels
-            preds = torch.argmax(outputs['logits'], dim=1)
-            all_preds.extend(preds.cpu().numpy())
-            all_labels.extend(labels.cpu().numpy())
+            # Get predictions
+            probs = torch.softmax(outputs['logits'], dim=1)
+            preds = torch.argmax(probs, dim=1)
+            
+            # Store results for this batch
+            batch_results[f"batch_{batch_idx}"] = {
+                'author': authors,
+                'pred': preds.cpu().detach().numpy(),
+                'probs': probs.cpu().detach().numpy(),
+                'label': labels.cpu().detach().numpy()
+            }
+            
+            batch_idx += 1
             
             # Update progress bar
             pbar.set_postfix({'loss': f"{loss.item():.4f}"})
 
-        # Calculate metrics
+        # Aggregate predictions by author
+        aggregated = aggregate_author_predictions(batch_results, method='mean')
+        
+        # Extract aggregated predictions and labels
+        all_preds = [data['final_pred'] for data in aggregated.values()]
+        all_labels = [data['true_label'] for data in aggregated.values()]
+        
+        # Calculate metrics based on aggregated predictions
         metrics = self.calculate_metrics(all_preds, all_labels)
         metrics['loss'] = total_loss / len(self.train_loader)
+        metrics['num_authors'] = len(aggregated)
         
         return metrics
 
@@ -131,14 +150,14 @@ class TrollDetectorTrainer:
         """Evaluate the model on the given dataloader"""
         self.model.eval()
         total_loss = 0
-        all_preds = []
-        all_labels = []
-        all_probs = []
+        batch_results = {}
+        batch_idx = 0
         
         for batch in tqdm(dataloader, desc="Evaluating"):
             input_ids = batch['input_ids'].to(self.device)
             attention_mask = batch['attention_mask'].to(self.device)
             labels = batch['label'].to(self.device)
+            authors = batch['author']  # List of author IDs
             
             outputs = self.model(
                 input_ids=input_ids,
@@ -152,12 +171,36 @@ class TrollDetectorTrainer:
             probs = torch.softmax(outputs['logits'], dim=1)
             preds = torch.argmax(probs, dim=1)
             
-            all_preds.extend(preds.cpu().numpy())
-            all_labels.extend(labels.cpu().numpy())
-            all_probs.extend(probs[:, 1].cpu().numpy())
+            # Store results for this batch
+            batch_results[f"batch_{batch_idx}"] = {
+                'author': authors,
+                'pred': preds.cpu().detach().numpy(),
+                'probs': probs.cpu().detach().numpy(),
+                'label': labels.cpu().detach().numpy()
+            }
+            
+            batch_idx += 1
         
+        # Aggregate predictions by author
+        aggregated = aggregate_author_predictions(batch_results, method='mean')
+        
+        # Extract aggregated predictions and labels
+        all_preds = [data['final_pred'] for data in aggregated.values()]
+        all_labels = [data['true_label'] for data in aggregated.values()]
+        all_probs = [data['final_prob'][1] for data in aggregated.values()]  # Probability of class 1 (troll)
+        
+        # Calculate metrics based on aggregated predictions
         metrics = self.calculate_metrics(all_preds, all_labels, all_probs)
         metrics['loss'] = total_loss / len(dataloader)
+        
+        # Add the number of unique authors
+        metrics['num_authors'] = len(aggregated)
+        
+        # Log additional information about multiple samples per author
+        multi_sample_authors = [author for author, data in aggregated.items() if data['num_batches'] > 1]
+        avg_batches = sum(data['num_batches'] for data in aggregated.values()) / len(aggregated)
+        logger.info(f"Evaluated {len(aggregated)} unique authors, {len(multi_sample_authors)} with multiple batches")
+        logger.info(f"Average batches per author: {avg_batches:.2f}")
         
         return metrics
 
