@@ -28,7 +28,16 @@ def load_data():
 df_comments, df_anomaly = load_data()
 
 # --- Author Selector ---
-authors = df_anomaly["author"].tolist()
+# Load existing annotations
+if Path(ANNOTATIONS_OUTPUT).exists():
+    df_labels = pd.read_csv(ANNOTATIONS_OUTPUT)
+    labeled_authors = set(df_labels["author"].tolist())
+else:
+    df_labels = pd.DataFrame()
+    labeled_authors = set()
+
+# Authors not yet labeled
+authors = [a for a in df_anomaly["author"].tolist() if a not in labeled_authors]
 selected_author = st.selectbox("Select an Author", authors)
 
 # --- Display Info ---
@@ -87,3 +96,4 @@ if st.button("Save Label"):
     df_labels = pd.concat([df_labels, pd.DataFrame([label_data])], ignore_index=True)
     df_labels.to_csv(ANNOTATIONS_OUTPUT, index=False)
     st.success(f"Labeled {selected_author} as {label}.")
+    st.rerun()
