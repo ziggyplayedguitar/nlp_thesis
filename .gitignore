@@ -28,3 +28,7 @@ workspace/user_anomaly_scores_lof.csv
 workspace/user_anomaly_scores_lof.csv
 /workspace/2025.04.05 ToPeraicaLiska
 workspace/output/
+.vscode/settings.json
+workspace/.vscode/settings.json
+workspace/notebooks/My model.txt
+.gitignore

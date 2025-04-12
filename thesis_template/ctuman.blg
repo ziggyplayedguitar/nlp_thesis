@@ -4,45 +4,45 @@ The top-level auxiliary file: ctuman.aux
 The style file: alpha.bst
 Database file #1: ../sources/library.bib
 Warning--empty institution in Bradshaw2017TroopsTrolls
-You've used 23 entries,
+You've used 21 entries,
             2543 wiz_defined-function locations,
-            731 strings with 9698 characters,
-and the built_in function-call counts, 10346 in all, are:
-= -- 1026
-> -- 562
-< -- 11
-+ -- 199
-- -- 195
-* -- 774
-:= -- 1715
-add.period$ -- 75
-call.type$ -- 23
-change.case$ -- 157
-chr.to.int$ -- 23
-cite$ -- 24
-duplicate$ -- 392
-empty$ -- 702
-format.name$ -- 220
-if$ -- 2116
+            718 strings with 9269 characters,
+and the built_in function-call counts, 9274 in all, are:
+= -- 918
+> -- 501
+< -- 10
++ -- 178
+- -- 174
+* -- 699
+:= -- 1551
+add.period$ -- 69
+call.type$ -- 21
+change.case$ -- 143
+chr.to.int$ -- 21
+cite$ -- 22
+duplicate$ -- 352
+empty$ -- 628
+format.name$ -- 197
+if$ -- 1885
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 22
-newline$ -- 121
-num.names$ -- 77
-pop$ -- 141
+missing$ -- 21
+newline$ -- 112
+num.names$ -- 69
+pop$ -- 122
 preamble$ -- 1
-purify$ -- 180
+purify$ -- 164
 quote$ -- 0
-skip$ -- 342
+skip$ -- 299
 stack$ -- 0
-substring$ -- 537
-swap$ -- 80
-text.length$ -- 11
+substring$ -- 475
+swap$ -- 65
+text.length$ -- 10
 text.prefix$ -- 4
 top$ -- 0
-type$ -- 180
+type$ -- 164
 warning$ -- 1
-while$ -- 97
-width$ -- 28
-write$ -- 309
+while$ -- 87
+width$ -- 26
+write$ -- 284
 (There was 1 warning)

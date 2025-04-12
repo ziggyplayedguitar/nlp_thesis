@@ -1,14 +1,6 @@
 \newcommand{\etalchar}[1]{$^{#1}$}
 \begin{thebibliography}{PRKLM18}
 
-\bibitem[AI24]{Angelov2024}
-Dimo Angelov and Diana Inkpen.
-\newblock Topic modeling: Contextual token embeddings are all you need.
-\newblock In Yaser Al-Onaizan, Mohit Bansal, and Yun-Nung Chen, editors, {\em
-  Findings of the Association for Computational Linguistics: EMNLP 2024}, pages
-  13528--13539, Miami, Florida, USA, November 2024. Association for
-  Computational Linguistics.
-
 \bibitem[BH17]{Bradshaw2017TroopsTrolls}
 S~Bradshaw and P~Howard.
 \newblock Troops, trolls and troublemakers: A global inventory of organized
@@ -93,10 +85,6 @@ Wincenty Lutoslawski.
 D.~Linvill and Patrick Warren.
 \newblock Troll factories: Manufacturing specialized disinformation on twitter.
 \newblock {\em Political Communication}, 37:1--21, 02 2020.
-
-\bibitem[MCCD13]{Mikolov2013Word2vec}
-Tomas Mikolov, Kai Chen, Greg Corrado, and Jeffrey Dean.
-\newblock Efficient estimation of word representations in vector space, 2013.
 
 \bibitem[MMV22]{Machova2022Comparison}
 Kristina Machova, Marian Mach, and Matej Vasilko.

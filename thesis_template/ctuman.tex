@@ -211,8 +211,8 @@ Though stylometry has proven useful for text classification, recent advancements
 \section{Sentiment Analysis}
 Sentiment analysis is a subfield of natural language processing that focuses on identifying and quantifying the emotional tone behind textual data. By analyzing words and their context  it aims to classify text according to its polarity - positive, negative or neutral.\par
 
-\subsection{Word2Vec}
-Word2Vec is a powerful word embedding technique used in NLP to represent words as dense numerical vectors~\cite{Mikolov2013Word2vec}. These vectors capture semantic relationships between words, allowing for meaningful comparisons and analysis. Word2Vec utilizes a shallow neural network to learn word embeddings from a large corpus of text, where the weights of the trained model serve as the embedding vectors. This technique has gained popularity in various NLP tasks, including   sentiment analysis.
+%\subsection{Word2Vec}
+%Word2Vec is a powerful word embedding technique used in NLP to represent words as dense numerical vectors~\cite{Mikolov2013Word2vec}. These vectors capture semantic relationships between words, allowing for meaningful comparisons and analysis. Word2Vec utilizes a shallow neural network to learn word embeddings from a large corpus of text, where the weights of the trained model serve as the embedding vectors. This technique has gained popularity in various NLP tasks, including   sentiment analysis.
 
 \subsection{Related Work}
 Jiang et al.~\cite{Jiang2021Sentiment} explored the use of sentiment analysis for troll detection on the chinese social media platform Weibo.  They employed a Word2Vec model trained on a dataset of Weibo comments to generate word embeddings. These embeddings were then used to calculate sentiment scores, incorporating features such as happiness, anger, disgust, and fear. The sentiment was used along with meta features such as the location of a comment in a thread or its like count to train XGBoost and SVM models for the troll detection task. The approach proved effective with the XGBoost model achieving an accuracy of up to 89\% and SVM up to 87\%.\par
@@ -220,14 +220,19 @@ In another paper leveraging sentiment analysis Machova et al.~\cite{Machova2022C
 
 \section{Topic Detection}
 
-\subsection{LDA}
-Topic detection methods like Latent Dirichlet Allocation (LDA)~\cite{Blei2001LDA} can analyze online messages, identify common patterns and then group them by topics. LDA is a probabilistic model that identifies latent topics in documents based on word co-occurrence patterns. It assumes that each document is a mixture of topics, and each topic is a distribution over words. By analyzing the distribution of words in troll messages, LDA can uncover the underlying topics that trolls frequently discuss. However, challenges exist in selecting the appropriate algorithm and determining the optimal number of topics~\cite{Ruediger2022TopicModellingRevisited}. Research has shown that LDA can be effectively used to analyze troll tweets during events like the 2016 US election, revealing coordinated campaigns focused on specific political issues~\cite{Golino2022Elections}.
+Topic modeling techniques are used to automatically identify hidden thematic structures within a collection of texts. In the context of online discussions, these methods can help uncover what people are talking about, identify dominant issues, and track the evolution of discussions over time. When dealing with large volumes of unstructured text, such as social media or news comment sections, topic modeling becomes a powerful tool for surfacing patterns without relying on predefined categories.
 
-\subsection{Top2Vec}
-Top2Vec is a state-of-the-art and well-established alternative to traditional topic modeling techniques like LDA. Unlike LDA, where the number of topics needs to be set manually, Top2Vec automatically determines the optimal number of topics. It achieves this by analyzing the density of document clusters in a vector space created using word embeddings. This is advantageous especially with datasets where the exact number of topics is not clear. Additionally, Top2Vec provides a unique topic representation by identifying the most representative documents and phrases for each topic. This representation, allows for a more nuanced understanding of the topics compared to traditional methods that primarily focus on individual words~\cite{Angelov2024}.
+\subsection{LDA}
+One of the most widely used topic modeling methods is Latent Dirichlet Allocation (LDA)~\cite{Blei2001LDA}. LDA is a probabilistic model that identifies latent topics in documents based on word co-occurrence patterns. It assumes that each document is a mixture of topics, and each topic is a distribution over words. By analyzing the distribution of these word co-occurrence in text, LDA tries to infer a topic for each document.\par
+LDA has been successfully used to analyze coordinated online activity, including troll campaigns. For example, Golino et al. ~\cite{Golino2022Elections} used LDA to uncover dominant themes in troll tweets during the 2016 U.S. presidential election, revealing coordinated messaging around divisive political issues. However, despite its popularity, LDA has limitations. It often requires manual tuning of the number of topics, may produce less coherent topic groupings, and struggles with short texts, such as comments or tweets~\cite{Ruediger2022TopicModellingRevisited}.\par
 
 \subsection{BERTopic}
 BERTopic is another state-of-the-art technique that can be used for dynamic topic modeling. It leverages pre-trained transformers and Class-based TF-IDF to create dense clusters allowing for easily interpretable topics while keeping important words in the topic descriptions. BERTopic also enables for the analysis of topic evolution by calculating the topic representation at different time step without the need to run the entire model several times~\cite{Grootendorst2022BERTopic}.
+
+%\subsection{Top2Vec}
+%Top2Vec is a state-of-the-art and well-established alternative to traditional topic modeling techniques like LDA. Unlike LDA, where the number of topics needs to be set manually, Top2Vec automatically determines the optimal number of topics. It achieves this by analyzing the density of document clusters in a vector space created using word embeddings. This is advantageous especially with datasets where the exact number of topics is not clear. Additionally, Top2Vec provides a unique topic representation by identifying the most representative documents and phrases for each topic. This representation, allows for a more nuanced understanding of the topics compared to traditional methods that primarily focus on individual words~\cite{Angelov2024}.
+
+
 
 
 
