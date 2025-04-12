@@ -231,10 +231,31 @@ BERTopic is another state-of-the-art technique that can be used for dynamic topi
 
 
 
-% ========================================== CHAPTER 3  ======================
-\chapter{}
+% ========================================== CHAPTER 3 EXPERIMENTS ======================
+\chapter{Experiments}
 
+\section{Dataset}
+The dataset used in this thesis consists of user-generated comments collected from the discussion sections under news articles published on Novinky.cz, one of the largest Czech news portals. Each article on Novinky.cz includes a public comment section where users actively engage in discussions about the content presented. These discussions are often extensive, with some articles attracting hundreds of user comments.\par
 
+In the Czech online media landscape, it is widely recognized that the comment sections on major news sites, particularly on Novinky.cz for example, frequently serve as hotbeds for controversy and emotionally charged discourse. They are often perceived by the public as spaces where individuals express grievances, frustrations, and polarizing viewpoints, sometimes in ways that border on or cross into what could be described as abusive, manipulative or troll like behavior. This cultural context makes Novinky.cz a relevant and interesting setting for exploring how online discussions develop, especially where conversations become heated or emotionally charged.\par
+
+For the purposes of this thesis, a large-scale dataset comprising approximately 350,000 comments posted by around 48,000 users was provided by Newton Media, a prominent media intelligence organization.\par 
+% TODO: add time frame of collected data
+
+Each data entry includes the following attributes:
+\begin{itemize}
+    \item \textbf{Comment content} – the full textual body of the comment.
+    
+    \item \textbf{Article metadata} – including the title and link to the article under which the comment was posted
+    
+    \item \textbf{Timestamp} – the date and time when the comment was published.
+    
+    \item \textbf{Author name} – full author name as collected from the discussion.
+    
+    \item \textbf{Sentiment label} – a sentiment category assigned by Newton Media, labeled as one of the following: \textit{Neutral}, \textit{Positive}, \textit{Negative}, or \textit{Ambivalent}.
+\end{itemize}
+
+A key challenge posed by this dataset is the absence of explicit troll/non-troll labels. Since there is no ground-truth annotation for trolling behavior,  we cannot directly apply supervised classification methods. Because of this, we have to rely on unsupervised or semi-supervised techniques, such as clustering, topic modeling, or anomaly detection, to try to find patterns that may point to trolling based on how the comments are written and their sentiment. The lack of labeled data also makes it difficult to verify the accuracy or effectiveness of any classifications or patterns identified during experimentation. Without labeled data, we cannot easily measure how accurate our models are, and must instead rely on manual checks, indirect indicators, or interpretation of the patterns found\par
 
 \appendix
 
