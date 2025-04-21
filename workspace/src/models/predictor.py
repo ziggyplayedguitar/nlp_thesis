@@ -108,16 +108,22 @@ class TrollPredictor:
     def predict(self, tweets: List[str]) -> Dict[str, Union[str, float]]:
         """
         Predict whether an account is a troll based on their tweets.
+        Now uses batching when there are more tweets than comments_per_user.
         
         Args:
             tweets: List of tweets from the account
-            
+                
         Returns:
             Dictionary containing:
                 prediction: "troll" or "not_troll"
                 confidence: Probability of the predicted class
                 attention_weights: Attention weights for each tweet (if using attention model)
         """
+        # Use batching if we have more tweets than comments_per_user
+        if len(tweets) > self.comments_per_user:
+            return self.predict_with_batching(tweets)
+            
+        # Rest of the existing implementation...
         # Prepare input
         inputs = self.prepare_input(tweets)
         
@@ -477,3 +483,76 @@ class TrollPredictor:
         }
         
         return explanation
+
+    def predict_with_batching(self, tweets: List[str]) -> Dict[str, Union[str, float]]:
+        """
+        Predict using multiple batches when there are more tweets than comments_per_user.
+        Takes batches of comments_per_user and averages the predictions.
+        
+        Args:
+            tweets: List of tweets from the account
+            
+        Returns:
+            Dictionary with the aggregated prediction
+        """
+        if len(tweets) <= self.comments_per_user:
+            # If we have fewer tweets than the batch size, use the regular predict method
+            return self.predict(tweets)
+        
+        # Process all tweets
+        processed_tweets = self.preprocess_tweets(tweets)
+        
+        # Split into batches of size comments_per_user
+        batches = [processed_tweets[i:i + self.comments_per_user] 
+                   for i in range(0, len(processed_tweets), self.comments_per_user)]
+        
+        # Collect predictions for each batch
+        all_probs = []
+        all_predictions = []
+        all_confidences = []
+        
+        for batch in batches:
+            # Handle case where the last batch might be smaller than comments_per_user
+            if len(batch) < self.comments_per_user:
+                # Repeat tweets to reach desired count
+                batch = (batch * ((self.comments_per_user // len(batch)) + 1))[:self.comments_per_user]
+            
+            # Tokenize
+            encodings = self.tokenizer(
+                batch,
+                padding='max_length',
+                truncation=True,
+                max_length=self.max_length,
+                return_tensors='pt'
+            )
+            
+            # Get prediction
+            with torch.no_grad():
+                outputs = self.model(
+                    input_ids=encodings['input_ids'].to(self.device),
+                    attention_mask=encodings['attention_mask'].to(self.device),
+                    tweets_per_account=self.comments_per_user
+                )
+                
+                # Get probabilities
+                probs = torch.softmax(outputs['logits'], dim=-1)
+                prediction = torch.argmax(probs, dim=-1).item()
+                confidence = probs[0][prediction].item()
+                
+                all_probs.append(probs[0].cpu().numpy())
+                all_predictions.append(prediction)
+                all_confidences.append(confidence)
+        
+        # Aggregate predictions (average probabilities)
+        avg_probs = np.mean(all_probs, axis=0)
+        final_prediction = np.argmax(avg_probs)
+        final_confidence = avg_probs[final_prediction]
+        
+        result = {
+            'prediction': 'troll' if final_prediction == 1 else 'not_troll',
+            'confidence': float(final_confidence),
+            'probabilities': avg_probs,
+            'num_batches': len(batches)
+        }
+        
+        return result

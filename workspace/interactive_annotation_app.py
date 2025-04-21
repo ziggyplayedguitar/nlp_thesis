@@ -123,11 +123,8 @@ for row in range(num_rows):
                 # Show article title and ID
                 st.markdown(f"*Article Title: {comment_data['article_title']}*")
                 
-                # Show truncated comment if too long
-                if len(comment_data['text']) > 200:
-                    st.markdown(f"{comment_data['text'][:200]}...")
-                else:
-                    st.markdown(comment_data['text'])
+                # Show full comment
+                st.markdown(comment_data['text'])
                 st.markdown("---")
 
 # --- Labeling ---
