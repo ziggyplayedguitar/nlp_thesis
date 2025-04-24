@@ -6,9 +6,12 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 from typing import List, Dict, Union
 import pandas as pd
+import logging
 
 from src.models.bert_model import TrollDetector
 from src.data_tools.preprocessor import TweetPreprocessor
+
+logger = logging.getLogger(__name__)
 
 class TrollPredictor:
     def __init__(
@@ -32,8 +35,7 @@ class TrollPredictor:
         elif model_path:
             # Load model from checkpoint
             self.model = TrollDetector()
-            checkpoint = torch.load(model_path, map_location=self.device, weights_only=False)
-            self.model.load_state_dict(checkpoint["model_state_dict"])
+            self.load_checkpoint(model_path)  # Call load_checkpoint here
         else:
             raise ValueError("Either model_path or model_name must be provided.")
         
@@ -556,3 +558,21 @@ class TrollPredictor:
         }
         
         return result
+
+    def load_checkpoint(self, checkpoint_path: str) -> None:
+        """Load model weights from checkpoint."""
+        try:
+            checkpoint = torch.load(checkpoint_path, map_location=self.device)
+            
+            # Handle both raw state dict and wrapped checkpoint formats
+            if isinstance(checkpoint, dict) and 'model_state_dict' in checkpoint:
+                state_dict = checkpoint['model_state_dict']
+            else:
+                state_dict = checkpoint
+                
+            self.model.load_state_dict(state_dict)
+            self.model.eval()
+            logger.info(f"Loaded model weights from {checkpoint_path}")
+        except Exception as e:
+            logger.error(f"Error loading checkpoint from {checkpoint_path}: {str(e)}")
+            raise
