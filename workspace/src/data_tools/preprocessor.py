@@ -12,6 +12,10 @@ from tqdm import tqdm
 import matplotlib.pyplot as pl
 import uuid
 import json
+from nltk.corpus import stopwords
+import nltk
+from datasets import load_dataset
+from data.stop_words import STOP_WORDS as CZECH_STOP_WORDS  # Import Czech stop words from your file
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -25,29 +29,39 @@ class TweetPreprocessor:
         self.mention_pattern = re.compile(r'@\w+')
         self.quote_pattern = re.compile(r'"([^"]*)"')
         
-        # Define custom stop words for social media content
+        # Download NLTK stop words if not already downloaded
+        try:
+            nltk.data.find('corpora/stopwords')
+        except LookupError:
+            nltk.download('stopwords')
+        
+        # Combine custom Twitter stop words
         self.custom_stop_words = {
             't', 's', 'm', 'rt', 'http', 'https',  # Common Twitter artifacts
             'amp', 'co', 've', 'll', 'd', 're',    # Contractions and common artifacts
             'twitter', 'tweet', 'retweet'         # Twitter-specific terms
         }
+        
+        # Combine English stop words from NLTK and Czech stop words from file
+        self.stop_words = set(stopwords.words('english')).union(
+            CZECH_STOP_WORDS
+        ).union(self.custom_stop_words)
 
     def preprocess_tweet(self, text: str) -> str:
-        """Basic tweet preprocessing while keeping hashtags and mentions"""
+        """Basic tweet preprocessing including stop word removal"""
         if pd.isna(text):
             return ""
         
         # Remove URLs, Twitter pics, hashtags, and mentions
-        # text = str(text).lower()
         text = self.url_pattern.sub('', text) 
         text = self.pic_pattern.sub('', text)
         text = self.hashtag_pattern.sub('', text)
         text = self.mention_pattern.sub('', text)
         text = self.quote_pattern.sub('', text)
 
-        # Split into words and filter out stop words
+        # Split into words and filter out stop words, keep case
         words = text.split()
-        words = [word for word in words if word not in self.custom_stop_words]
+        words = [word for word in words if word.lower() not in self.stop_words]
 
         # Rejoin and normalize whitespace
         text = ' '.join(words)
@@ -147,6 +161,36 @@ def load_and_clean_data(data_dir: str) -> pd.DataFrame:
     })
     combined_df['language'] = 'cs'
 
+    # Load Civil Comments dataset
+    logger.info("Loading Civil Comments dataset...")
+    civil_comments = load_dataset("google/civil_comments")
+    
+    # Load all splits and combine them
+    civil_train = pd.DataFrame(civil_comments['train'])
+    civil_test = pd.DataFrame(civil_comments['test'])
+    civil_val = pd.DataFrame(civil_comments['validation'])
+    
+    # Combine all splits
+    civil_df = pd.concat([civil_train, civil_test, civil_val], ignore_index=True)
+    
+    # Filter for low toxicity comments
+    civil_df = civil_df[civil_df['toxicity'] <= 0.1]
+    
+    # Create artificial authors by grouping comments
+    # Group size of 10 comments per author
+    GROUP_SIZE = 10
+    civil_df = civil_df.sort_index()  # Sort by index to ensure consistent grouping
+    civil_df['group_id'] = civil_df.index // GROUP_SIZE
+    civil_df['account'] = 'civil_author_' + civil_df['group_id'].astype(str)
+    
+    # Select and rename columns
+    civil_df = civil_df[['text', 'account']]
+    civil_df.rename(columns={
+        'text': 'tweet'
+    }, inplace=True)
+    civil_df['troll'] = 0
+    civil_df['language'] = 'en'
+
     # Combine all datasets
     logger.info("Combining datasets...")
     all_tweets = pd.concat([
@@ -155,7 +199,8 @@ def load_and_clean_data(data_dir: str) -> pd.DataFrame:
         celeb_tweets[['account', 'tweet', 'troll', 'language']],
         twitter_data[['account', 'tweet', 'troll', 'language']],
         parquet_data[['account', 'tweet', 'troll', 'language']],
-        combined_df[['account', 'tweet', 'troll', 'language']]
+        combined_df[['account', 'tweet', 'troll', 'language']],
+        civil_df[['account', 'tweet', 'troll', 'language']]
     ], ignore_index=True)
 
     # Apply preprocessing to tweet text
@@ -167,7 +212,7 @@ def load_and_clean_data(data_dir: str) -> pd.DataFrame:
     # Remove accounts with very few tweets
     logger.info("Filtering accounts with few tweets...")
     account_counts = all_tweets.groupby('account').size()
-    valid_accounts = account_counts[account_counts >= 10].index
+    valid_accounts = account_counts[account_counts >= 5].index
     all_tweets = all_tweets[all_tweets['account'].isin(valid_accounts)]
     
     return all_tweets
@@ -177,7 +222,7 @@ class TrollTweetDataset(Dataset):
                  tweets_df: pd.DataFrame,
                  tokenizer_name: str = "distilbert-base-multilingual-cased",
                  max_length: int = 128,
-                 tweets_per_account: int = 10):
+                 tweets_per_account: int = 5):
         self.tweets_df = tweets_df
         self.preprocessor = TweetPreprocessor()
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)

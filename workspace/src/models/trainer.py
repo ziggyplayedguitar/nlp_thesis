@@ -131,7 +131,7 @@ class TrollDetectorTrainer:
             # Update progress bar
             pbar.set_postfix({'loss': f"{loss.item():.4f}"})
 
-        # Aggregate predictions by author
+        # Aggregate predictions by author, choose method='mean'/'max'/'vote'
         aggregated = aggregate_author_predictions(batch_results, method='mean')
         
         # Extract aggregated predictions and labels

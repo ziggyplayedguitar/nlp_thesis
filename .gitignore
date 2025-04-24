@@ -31,4 +31,5 @@ workspace/output/
 .vscode/settings.json
 workspace/.vscode/settings.json
 workspace/notebooks/My model.txt
-.gitignore
+workspace/2025TrollDetection/CommentSentTopics/Working Copy of topic2comments_Full_5422.json
+workspace/2025TrollDetection/

@@ -218,7 +218,7 @@ def analyze_cluster_distribution(comments_df: pd.DataFrame) -> Dict:
     
     return result
 
-def analyze_author_clusters(comments_df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict]:
+def analyze_user_clusters(comments_df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict]:
     """
     Analyze which clusters each user posts to.
     
@@ -410,7 +410,7 @@ def load_and_process_data(json_file_path: str, topic_file_path: str,
     logger.info(f"Total number of comments: {len(comments_df)}")
     
     # Parse topic file and update articles with cluster information
-    article_id_to_cluster, _, _ = parse_topic_file(topic_file_path, articles_df)
+    article_id_to_cluster, topic_article_to_cluster, title_to_cluster = parse_topic_file(topic_file_path, articles_df)
     
     # Update comments with cluster information
     comments_df = update_comments_with_clusters(comments_df, articles_df)
@@ -514,3 +514,50 @@ def display_search_results(matching_comments, max_to_show=20, line_width=80):
     print("\n--- Top authors mentioning the search term ---")
     for author, count in sorted(authors.items(), key=lambda x: x[1], reverse=True)[:10]:
         print(f"{author}: {count} mentions")
+
+def read_comment_topic_clusters(file_path: str) -> pd.DataFrame:
+    """
+    Read comment-topic cluster JSON file and convert to DataFrame.
+    
+    Args:
+        file_path: Path to the JSON file containing comment-topic clusters
+        
+    Returns:
+        DataFrame with columns: comment_id, content, comment_cluster_id, cluster_title
+    """
+    try:
+        # Read the JSON file
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        # Create lists to store the data
+        comment_ids = []
+        contents = []
+        cluster_ids = []
+        cluster_titles = []
+        
+        # Process each entry
+        for comment_id, comment_data in data.items():
+            comment_ids.append(int(comment_id))  # Convert string ID to integer
+            contents.append(comment_data['artIdx'])  # artIdx contains the comment content
+            cluster_ids.append(comment_data['clusterId'])
+            cluster_titles.append(comment_data['clusterTitle'])
+        
+        # Create DataFrame
+        df = pd.DataFrame({
+            'comment_id': comment_ids,
+            'content': contents,
+            'comment_cluster_id': cluster_ids,
+            'cluster_title': cluster_titles
+        })
+        
+        # Sort by comment_id to maintain order
+        df = df.sort_values('comment_id').reset_index(drop=True)
+        
+        print(f"Successfully loaded {len(df)} comments with their topic clusters")
+        return df
+        
+    except Exception as e:
+        print(f"Error reading comment-topic clusters: {e}")
+        return pd.DataFrame()  # Return empty DataFrame if there's an error
+
