@@ -214,26 +214,24 @@ One of the most influential Transformer-based models for natural language unders
 
 % ========================================== CHAPTER 3 RELATED METHODS =====================
 \chapter{Related Methods}
-This chapter provides an overview of the methods and techniques used in the field of troll detection. We will explore various approaches, including stylometry, sentiment analysis, and topic modeling, which are commonly employed to analyze online discussions and identify trolling behavior. Each section will discuss the principles behind these methods, their applications in troll detection, and their strengths and limitations.\par
+This chapter provides an overview of the methods and techniques used in the field of troll detection. It explores various approaches, including stylometry, sentiment analysis, and topic modeling, commonly employed to analyze online discussions and identify trolling behavior. Each section will discuss the principles behind these methods, their applications in troll detection, and their strengths and limitations.\par
 
-\subsection{Stylometry}
+\section{Stylometry}
 An example of stylometry applied to fake news detection is presented in the work of Pérez-Rosas et al.~\cite{PerezRosas2018Stylometry}. They used a variety of stylometric features, including n-grams, punctuation frequency, readability metrics and syntactic features. They also incorporated psycholingustic features extracted from the LIWC lexicon which categorize words into various psychological categories. LIWC features capture psychological aspets of a text such as emotional tone or cognitive processes, potentially revealing underlying psychological differences between fake and legitimate news writers. A linear SVM classifier was trained on these features to differentiate between fake and legitimate news articles. Their results showed that stylometric features can be effective for the task, achieving accuracies of up to 76\% which outperformed two human annotators. The analysis uncovered distinct linguistic patterns in fake news, such as increased use of social and positive words, a focus on present and future actions, and a higher prevalence of adverbs, verbs, and punctuation marks. 
 
-In another paper, Kandasamy et at.~\cite{Kandasamy2021COVID} proposed a deep learning framework for sentiment analysis of COVID-19-related tweets. Their approach used an N-gram stacked autoencoder to capture text features. These features were then processed by a set of classifiers—decision trees, support vector machines, random forests, and k‑nearest neighbors. The highest accuracy was achieved using an ensemble model that combined all of these classifiers, this method achieved an accuracy of 87,75\%. The study demonstrated that using n‑grams greatly improved the classification of negative sentiment, an emotion that was prevalent during the pandemic.
+In another paper, Kandasamy et at.~\cite{Kandasamy2021COVID} proposed a deep learning framework for sentiment analysis of COVID-19-related tweets. Their approach used an N-gram stacked autoencoder to capture text features. These features were then processed by a set of classifiers—decision trees, support vector machines, random forests, and k‑nearest neighbors. The highest accuracy was achieved using an ensemble model that combined all of these classifiers, this method achieved an accuracy of 87.75\%. The study demonstrated that using n‑grams greatly improved the classification of negative sentiment, an emotion that was prevalent during the pandemic.\par
 
-Though stylometry has proven useful for text classification, recent advancements in large language models and their potential for misuse might pose a substantial challenge to its efficacy. As demonstrated by Schuster et al.~\cite{Schuster2020}, stylmoetry may struggle to differentiate between human-written and machine-generated text. In their study they find that while a state-of-the-art stylometry-based classifier could effectively detect the presence of machine-generated text within human-written content, it struggled to discern the truthfulness of the generated text.  For instance, even a single auto-generated sentence within a longer human-written text was easily detectable, but the veracity of that sentence remained largely undecidable.  Additionally, even a relatively weak LM could produce statement inversions that evaded detection by the stylometry-based model.
+Though stylometry has proven useful for text classification, recent advancements in large language models and their potential for misuse might pose a substantial challenge to its efficacy. As demonstrated by Schuster et al.~\cite{Schuster2020}, stylmoetry may struggle to differentiate between human-written and machine-generated text. In their study they find that while a state-of-the-art stylometry-based classifier could effectively detect the presence of machine-generated text within human-written content, it struggled to discern the truthfulness of the generated text.  For instance, even a single auto-generated sentence within a longer human-written text was easily detectable, but the veracity of that sentence remained largely undecidable.  Additionally, even a relatively weak LM could produce statement inversions that evaded detection by the stylometry-based model.\par
 
-%\section{Sentiment Analysis}
-%Sentiment analysis is a subfield of natural language processing that focuses on identifying and quantifying the emotional tone behind textual data. By analyzing words and their context  it aims to classify text according to its polarity - positive, negative or neutral.\par
+These findings collectively highlight stylometry's potential for detecting hidden manipulation in online text, although recent advancements in language generation models present new challenges.\par
 
-%\subsection{Word2Vec}
-%Word2Vec is a powerful word embedding technique used in NLP to represent words as dense numerical vectors~\cite{Mikolov2013Word2vec}. These vectors capture semantic relationships between words, allowing for meaningful comparisons and analysis. Word2Vec utilizes a shallow neural network to learn word embeddings from a large corpus of text, where the weights of the trained model serve as the embedding vectors. This technique has gained popularity in various NLP tasks, including   sentiment analysis.
 
-\subsection{Sentiment Analysis}
+\section{Sentiment Analysis}
 Jiang et al.~\cite{Jiang2021Sentiment} explored the use of sentiment analysis for troll detection on the chinese social media platform Weibo.  They employed a Word2Vec model trained on a dataset of Weibo comments to generate word embeddings. These embeddings were then used to calculate sentiment scores, incorporating features such as happiness, anger, disgust, and fear. The sentiment was used along with meta features such as the location of a comment in a thread or its like count to train XGBoost and SVM models for the troll detection task. The approach proved effective with the XGBoost model achieving an accuracy of up to 89\% and SVM up to 87\%.\par
-In another paper leveraging sentiment analysis Machova et al.~\cite{Machova2022Comparison} explored the detection of suspicious reviewers in online discussions, specifically focusing on trolls. Their lexicon-based approach analyzed the polarity of comments to identify trolls. It was based on the tendency of trolls to express extreme opinions that oppose the general sentiment of the discussion. They compared this approach with a Convolutional Neural Network (CNN) model, finding that both performed similarly on text data, achieving accuracies of 0.95 and 0.959, respectively.  The study also employed machine learning methods, such as Support Vector Machines (SVM), using non-textual features like comment karma, likes, and dislikes. With the SVM model they achieved an accuracy of 0.986.
+In a related study, Machová et al.~\cite{Machova2022Comparison} investigated the detection of suspicious reviewers in online discussions, focusing on trolls. . Their lexicon-based approach analyzed the polarity of comments to identify trolls. It was based on the tendency of trolls to express extreme opinions that oppose the general sentiment of the discussion. They compared this approach with a Convolutional Neural Network (CNN) model, finding that both performed similarly on text data, achieving accuracies of 0.95 and 0.959, respectively.  The study also employed machine learning methods, such as Support Vector Machines (SVM), using non-textual features like comment karma, likes, and dislikes. With the SVM model they achieved an accuracy of 0.986.
 
-\section{Topic Detection}
+\section{Transformers}
+The paper MetaTroll proposed MetaTroll, a few-shot troll detection framework designed to adapt quickly to new state-sponsored influence campaigns using minimal labeled data. Their approach is based on a meta-learning framework and incorporates campaign-specific transformer adapters to tackle catastrophic forgetting, a common problem where models lose the ability to detect trolls from older campaigns after continual updates. MetaTroll outperformed traditional n-gram SVM baselines, achieving a 92.3\% F1-score in 5-shot scenarios and demonstrating strong cross-lingual capabilities. 
 
 %Topic modeling techniques are used to automatically identify hidden thematic structures within a collection of texts. In the context of online discussions, these methods can help uncover what people are talking about, identify dominant issues, and track the evolution of discussions over time. When dealing with large volumes of unstructured text, such as social media or news comment sections, topic modeling becomes a powerful tool for surfacing patterns without relying on predefined categories.
 
@@ -252,15 +250,13 @@ In another paper leveraging sentiment analysis Machova et al.~\cite{Machova2022C
 %\subsection{Top2Vec}
 %Top2Vec is a state-of-the-art and well-established alternative to traditional topic modeling techniques like LDA. Unlike LDA, where the number of topics needs to be set manually, Top2Vec automatically determines the optimal number of topics. It achieves this by analyzing the density of document clusters in a vector space created using word embeddings. This is advantageous especially with datasets where the exact number of topics is not clear. Additionally, Top2Vec provides a unique topic representation by identifying the most representative documents and phrases for each topic. This representation, allows for a more nuanced understanding of the topics compared to traditional methods that primarily focus on individual words~\cite{Angelov2024}.
 
-% ========================================== CHAPTER 4 PROPOSED METHOD =====================
+
+% ========================================== CHAPTER 4 PROPOSED METHOD ======================
 \chapter{Proposed Method}
 
+Before outlining the proposed method, we first describe the dataset that forms the basis of our work.\par
 
-
-% ========================================== CHAPTER 5 EXPERIMENTS ======================
-\chapter{Experiments}
-
-\section{Dataset}
+\section{Main Dataset}
 The dataset used in this thesis consists of user-generated comments collected from the discussion sections under news articles published on Novinky.cz, one of the largest Czech news portals. Each article on Novinky.cz includes a public comment section where users actively engage in discussions about the content presented. These discussions are often extensive, with some articles attracting hundreds of user comments.\par
 
 In the Czech online media landscape, it is widely recognized that the comment sections on major news sites, particularly on Novinky.cz for example, frequently serve as hotbeds for controversy and emotionally charged discourse. They are often perceived by the public as spaces where individuals express grievances, frustrations, and polarizing viewpoints, sometimes in ways that border on or cross into what could be described as abusive, manipulative or troll like behavior. This cultural context makes Novinky.cz a relevant and interesting setting for exploring how online discussions develop, especially where conversations become heated or emotionally charged.\par
@@ -282,6 +278,18 @@ Each data entry includes the following attributes:
 \end{itemize}
 
 A key challenge posed by this dataset is the absence of explicit troll/non-troll labels. Since there is no ground-truth annotation for trolling behavior,  we cannot directly apply supervised classification methods. Because of this, we have to rely on unsupervised or semi-supervised techniques, such as clustering, topic modeling, or anomaly detection, to try to find patterns that may point to trolling based on how the comments are written and their sentiment. The lack of labeled data also makes it difficult to verify the accuracy or effectiveness of any classifications or patterns identified during experimentation. Without labeled data, we cannot easily measure how accurate our models are, and must instead rely on manual checks, indirect indicators, or interpretation of the patterns found\par
+
+\section{Additionall Datasets}
+
+In addition to the primary dataset collected from Novinky.cz, several publicly available labeled datasets were also used in this thesis. They were collected from different platforms such as Twitter or Reddit and the majority are in English, although some include other languages as well. While they differ in context and language, they offer valuable labeled examples that support the development and pre-training of models for the later analysis of Czech online discussions.\par
+
+
+\section{Proposed Method}
+
+
+% ========================================== CHAPTER 4 PROPOSED METHOD =====================
+\chapter{Proposed Method}
+
 
 \appendix
 
