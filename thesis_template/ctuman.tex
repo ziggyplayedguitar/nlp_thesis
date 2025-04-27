@@ -252,9 +252,9 @@ The paper MetaTroll proposed MetaTroll, a few-shot troll detection framework des
 
 
 % ========================================== CHAPTER 4 PROPOSED METHOD ======================
-\chapter{Proposed Method}
+\chapter{Dataset}
 
-Before outlining the proposed method, we first describe the dataset that forms the basis of our work.\par
+Before outlining the proposed method, I will first describe the dataset that forms the basis of our work. The properties of the dataset are important as it directly shape the choice of methods and defines the limitiations and the goals of the work. \par
 
 \section{Main Dataset}
 The dataset used in this thesis consists of user-generated comments collected from the discussion sections under news articles published on Novinky.cz, one of the largest Czech news portals. Each article on Novinky.cz includes a public comment section where users actively engage in discussions about the content presented. These discussions are often extensive, with some articles attracting hundreds of user comments.\par
@@ -297,12 +297,14 @@ Additionally, a small dataset of celebrity tweets was obtained from Kaggle. This
 
 Finally, a custom dataset was manually created by scraping tweets from Czech public figures and politicians. A selected list of Twitter accounts was compiled, and 20 tweets were collected from each account. \par
 
-\section{Proposed Method}
-
-
 % ========================================== CHAPTER 4 PROPOSED METHOD =====================
 \chapter{Proposed Method}
+In this chapter I will outline the proposed method for detecting troll-like behavior in online discussions. The core idea behind the method is the use of transformer-based models, specifically multilingual BERT based models, in a regression task designed to quantify the a users troll-like behavior. Instead of a binary classification task, the approach is to assign a user with a continous ``trolliness'' score, measured from 0 to 1.\par
+As the backbone of the method, I decided to use multilingual BERT based models, as they are trained across dozens of languages at once, which makes them a natural choice when trying to transfer knowledge from English or Russian troll datasets to Czech.Beyond their multilingual capabilities, BERT models are also able to capture and represent both syntactic and semantic relationships and dependencies within a text sequence. Instead of manually designing and extracting individual features like syntax counts, stylometric traits, sentiment scores, in theory BERT should be able to learn and encode much of this information into its embeddings.\cite{Rogers2020}\par
+The motivation to use a regression task instead of a binary classification task is twofold. First, the main dataset of Czech comments lacks troll/non-troll labels, so standart supervised classification methods cannot be applied. Second, troll behavior isn't a straight forward binary state, but rather a spectrum of behavior, with users displaying varying degrees and different types of distruptive behavior.\par
 
+
+% ========================================== CHAPTER X  =====================
 
 \appendix
 
