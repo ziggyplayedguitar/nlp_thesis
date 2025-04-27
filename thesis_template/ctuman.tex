@@ -281,8 +281,21 @@ A key challenge posed by this dataset is the absence of explicit troll/non-troll
 
 \section{Additionall Datasets}
 
-In addition to the primary dataset collected from Novinky.cz, several publicly available labeled datasets were also used in this thesis. They were collected from different platforms such as Twitter or Reddit and the majority are in English, although some include other languages as well. While they differ in context and language, they offer valuable labeled examples that support the development and pre-training of models for the later analysis of Czech online discussions.\par
+In addition to the primary dataset collected from Novinky.cz, several publicly available labeled datasets were also used in this thesis. They were collected from different platforms such as Twitter or Reddit and the majority are in English, although some include other languages as well. While they differ in context and language, they offer labeled examples that usd for pre-training of models for the later analysis of Czech online discussions.\par
 
+\subsection{IRA Troll Tweets}
+One of the external datasets used in this thesis is a collection of tweets linked to the Russian \textit{Internet Research Agency} (IRA), which was menitioned in the introductory chapter of the thesis. The dataset was published by FiveThirtyEight in connection with their article \textit{Why We’re Sharing 3 Million Russian Troll Tweets}, and was originally collected by researchers from Clemson University. It contains nearly 3 million tweets posted between February 2012 and May 2018 by accounts identified by Twitter as being linked to the IRA, which were provided to the US Congress for investigation into 2016 presidential election interference. In total, the dataset includes 2,973,371 tweets from 2,848 Twitter handles. Most of the tweets are in English, but some are in other languages, including Russian or German. The dataset is publicly available and can be accessed through the FiveThirtyEight GitHub repository.\footnote{\url{https://github.com/fivethirtyeight/russian-troll-tweets/}}
+
+\subsection{Information Operations Dataset}
+Another external resource used in this thesis is a collection of labeled datasets for research on information operations (IOs), introduced by Seckin et al.~\cite{Seckin2024}. The full collection contains over 13 million posts from approximately 303,000 accounts. The dataset includes both verified IO posts and control data from legitimate accounts, covering 26 distinct manipulation campaigns originating from different countries. The data is organized first by one of 16 identified state actors, such as Russia, China, or even Catalonia, and then further subdivided into distinct operations. The IO posts were identified and released by major social media platforms including Twitter, Facebook, and Reddit, while the control data captures organic user discussions on similar topics within the same time frames.
+
+\subsection{Non-troll Datasets}
+In addition to the troll datasets several non-troll datasets were also collected to ensure availability of apolitical and organic user discussion.\par
+The first non-troll dataset is the Civil Comments dataset, obtained from Hugging Face. It consists of public comments posted between 2015 and 2017 on approximately 50 English-language news sites. Each comment is labeled with values for toxicity, obscenity, and other attributes. For the purposes of this thesis, only comments labeled as non-toxic (toxicity score between 0 and 0.1) were used, which represent the majority of the dataset.\footnote{\url{https://huggingface.co/datasets/google/civil_comments}}\par
+
+Additionally, a small dataset of celebrity tweets was obtained from Kaggle. This dataset consists of posts by well-known public figures providing examples of casual and generally non-political online communication.\footnote{\url{https://www.kaggle.com/datasets/abaghyangor/celebrity-tweets}}.\par
+
+Finally, a custom dataset was manually created by scraping tweets from Czech public figures and politicians. A selected list of Twitter accounts was compiled, and 20 tweets were collected from each account. \par
 
 \section{Proposed Method}
 
