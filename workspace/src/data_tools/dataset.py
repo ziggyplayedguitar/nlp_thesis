@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class TrollDataset(Dataset):
-    """Dataset class for troll detection"""
+    """Dataset class for troll detection with continuous trolliness scores"""
     def __init__(
         self,
         data: pd.DataFrame,
@@ -19,13 +19,16 @@ class TrollDataset(Dataset):
         max_length: int = 128,
         comments_per_user: int = 20,
         max_samples_per_author: int = 100,  # Maximum comment batches per author
-        text_column: str = None  # Allow custom text column name
+        text_column: str = None,  # Allow custom text column name
+        label_column: str = 'troll',  # Column containing troll labels/scores
+        normalize_labels: bool = True  # Whether to normalize labels to [0,1]
     ):
         self.data = data
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
         self.max_length = max_length
         self.comments_per_user = comments_per_user
         self.max_samples_per_author = max_samples_per_author
+        self.normalize_labels = normalize_labels
         
         # Determine text column name
         if text_column is not None:
@@ -39,20 +42,43 @@ class TrollDataset(Dataset):
         
         logger.info(f"Using '{self.text_column}' as text column")
         
+        # Process labels
+        if normalize_labels:
+            # Get label statistics
+            label_min = data[label_column].min()
+            label_max = data[label_column].max()
+            
+            # Check if labels are already in [0,1]
+            if label_min >= 0 and label_max <= 1:
+                logger.info("Labels are already normalized between 0 and 1")
+                self.label_scaler = None
+            else:
+                logger.info(f"Normalizing labels from [{label_min}, {label_max}] to [0, 1]")
+                # Store scaling parameters for later use
+                self.label_scaler = {
+                    'min': label_min,
+                    'max': label_max
+                }
+        else:
+            self.label_scaler = None
+        
         # Group comments by author and create multiple batches for each author
         self.samples = []
         author_groups = data.groupby('author')
         
         for author, comments in author_groups:
-            # Get the label for this author (should be consistent across all comments)
-            author_label = comments['troll'].iloc[0]
+            # Get the label for this author
+            author_label = comments[label_column].iloc[0]
+            
+            # Normalize label if needed
+            if self.label_scaler is not None:
+                author_label = (author_label - self.label_scaler['min']) / (self.label_scaler['max'] - self.label_scaler['min'])
             
             if len(comments) <= comments_per_user:
                 # If author has fewer comments than needed, just add one sample
                 self.samples.append((author, comments, author_label))
             else:
                 # If author has more comments, create multiple batches
-                # Calculate how many complete batches we can create
                 num_batches = min(len(comments) // comments_per_user, max_samples_per_author)
                 
                 # Shuffle the comments to ensure variety in batches
@@ -103,8 +129,8 @@ class TrollDataset(Dataset):
         return {
             'input_ids': encodings['input_ids'],
             'attention_mask': encodings['attention_mask'],
-            'label': torch.tensor(label, dtype=torch.long),
-            'author': author  # Include author ID for aggregating predictions later
+            'label': torch.tensor(label, dtype=torch.float),  # Changed to float for regression
+            'author': author
         }
 
 def create_data_splits(
@@ -168,11 +194,12 @@ def aggregate_author_predictions(
 ) -> Dict[str, Dict]:
     """
     Aggregate predictions for the same author from multiple comment batches.
+    Now handles continuous trolliness scores.
     
     Args:
         predictions: Dictionary where keys are batch IDs and values contain predictions
                     Must have an 'author' field to identify authors
-        method: Aggregation method ('mean', 'max', 'vote')
+        method: Aggregation method ('mean', 'max', 'min')
     
     Returns:
         Dictionary with aggregated predictions per author
@@ -187,43 +214,28 @@ def aggregate_author_predictions(
             
             if base_author not in author_preds:
                 author_preds[base_author] = {
-                    'probs': [],
-                    'preds': [],
-                    'true_label': pred_data['label'][i]  # Assuming consistent label per author
+                    'scores': [],
+                    'true_label': pred_data['label'][i]
                 }
             
-            author_preds[base_author]['probs'].append(pred_data['probs'][i])
-            author_preds[base_author]['preds'].append(pred_data['pred'][i])
+            author_preds[base_author]['scores'].append(pred_data['pred'][i])
     
     # Aggregate predictions for each author
     aggregated = {}
     for author, data in author_preds.items():
         if method == 'mean':
-            # Average probabilities
-            avg_prob = np.mean(data['probs'], axis=0)
-            final_pred = np.argmax(avg_prob)
+            final_score = np.mean(data['scores'])
         elif method == 'max':
-            # Take prediction with highest confidence
-            # For troll detection, we're interested in the probability of being a troll (class 1)
-            troll_probs = [p[1] for p in data['probs']]
-            max_idx = np.argmax(troll_probs)
-            avg_prob = data['probs'][max_idx]
-            final_pred = data['preds'][max_idx]
-        elif method == 'vote':
-            # Majority vote
-            votes = np.bincount(data['preds'])
-            final_pred = np.argmax(votes)
-            # For probability, average the probabilities of the winning class
-            winning_indices = [i for i, p in enumerate(data['preds']) if p == final_pred]
-            avg_prob = np.mean([data['probs'][i] for i in winning_indices], axis=0)
+            final_score = np.max(data['scores'])
+        elif method == 'min':
+            final_score = np.min(data['scores'])
         else:
             raise ValueError(f"Unknown aggregation method: {method}")
         
         aggregated[author] = {
-            'final_pred': final_pred,
-            'final_prob': avg_prob,
+            'final_pred': final_score,
             'true_label': data['true_label'],
-            'num_batches': len(data['probs'])
+            'num_batches': len(data['scores'])
         }
     
     return aggregated

@@ -88,24 +88,44 @@ def load_twitter_json(json_folder: Path) -> pd.DataFrame:
 
 # TODO Remove UNK tokens
 # TODO Train only on english data maybe
-def load_and_clean_data(data_dir: str) -> pd.DataFrame:
-    """Load and combine all datasets including Twitter JSON files."""
+def load_and_clean_data(data_dir: str, max_tweets_per_source: int = None) -> pd.DataFrame:
+    """Load and combine all datasets including Twitter JSON files.
+    
+    Args:
+        data_dir (str): Directory containing the data
+        max_tweets_per_source (int, optional): Maximum number of tweets to load from each source.
+            If None, load all tweets. Defaults to None.
+    """
     data_path = Path(data_dir)
     preprocessor = TweetPreprocessor()
     
     # Load Russian troll tweets
     logger.info("Loading Russian troll tweets...")
     troll_files = list(data_path.glob("russian_troll_tweets/*.csv"))
-    troll_tweets = pd.concat([pd.read_csv(f) for f in troll_files])
+    if max_tweets_per_source:
+        troll_tweets = []
+        for f in troll_files:
+            df = pd.read_csv(f)
+            if len(df) > max_tweets_per_source:
+                df = df.sample(n=max_tweets_per_source, random_state=42)
+            troll_tweets.append(df)
+        troll_tweets = pd.concat(troll_tweets)
+    else:
+        troll_tweets = pd.concat([pd.read_csv(f) for f in troll_files])
     troll_tweets = troll_tweets[['author', 'content', 'language']]
     troll_tweets.rename(columns={'author': 'account', 'content': 'tweet'}, inplace=True)
     troll_tweets['troll'] = 1
-
+    
     # Load Sentiment140 tweets
     logger.info("Loading Sentiment140 tweets...")
     sentiment_path = data_path / "sentiment_tweets/training.1600000.processed.noemoticon.csv"
-    sentiment_tweets = pd.read_csv(sentiment_path, encoding='Latin-1',
-                                 names=['target', 'id', 'date', 'flag', 'username', 'tweet'])
+    if max_tweets_per_source:
+        sentiment_tweets = pd.read_csv(sentiment_path, encoding='Latin-1',
+                                     names=['target', 'id', 'date', 'flag', 'username', 'tweet'],
+                                     nrows=max_tweets_per_source)
+    else:
+        sentiment_tweets = pd.read_csv(sentiment_path, encoding='Latin-1',
+                                     names=['target', 'id', 'date', 'flag', 'username', 'tweet'])
     sentiment_tweets = sentiment_tweets[['username', 'tweet']]
     sentiment_tweets.rename(columns={'username': 'account'}, inplace=True)
     sentiment_tweets['troll'] = 0
@@ -133,9 +153,23 @@ def load_and_clean_data(data_dir: str) -> pd.DataFrame:
     
     # Load Parquet files from "information_operations" folder
     logger.info("Loading information operations tweets...")
-    parquet_folder = data_path / "information_operations"
-    parquet_files = list(parquet_folder.glob("*.parquet"))
-    parquet_data = pd.concat([pd.read_parquet(f) for f in parquet_files])
+    parquet_folders = [data_path / "information_operations/Russia", data_path / "information_operations/Spain"]
+    parquet_files = []
+    for folder in parquet_folders:
+        if folder.exists():
+            parquet_files.extend(list(folder.glob("*.parquet")))
+    logger.info(f"Found {len(parquet_files)} parquet files in information_operations folder and its subdirectories")
+    
+    if max_tweets_per_source:
+        parquet_dfs = []
+        for f in parquet_files:
+            df = pd.read_parquet(f)
+            if len(df) > max_tweets_per_source:
+                df = df.sample(n=max_tweets_per_source, random_state=42)
+            parquet_dfs.append(df)
+        parquet_data = pd.concat(parquet_dfs)
+    else:
+        parquet_data = pd.concat([pd.read_parquet(f) for f in parquet_files])
     parquet_data = parquet_data[['accountid', 'post_text', 'is_control', 'post_language']]
     parquet_data.rename(columns={
         'accountid': 'account',
@@ -143,6 +177,7 @@ def load_and_clean_data(data_dir: str) -> pd.DataFrame:
         'post_language': 'language'
     }, inplace=True)
     parquet_data['troll'] = ~parquet_data['is_control']  # troll is True when is_control is False
+    logger.info(f"Information operations data distribution - Trolls: {parquet_data['troll'].sum()}, Non-trolls: {(~parquet_data['troll']).sum()}")
     parquet_data = parquet_data.drop('is_control', axis=1)
 
     # Load files from machova et al
@@ -172,10 +207,8 @@ def load_and_clean_data(data_dir: str) -> pd.DataFrame:
     
     # Combine all splits
     civil_df = pd.concat([civil_train, civil_test, civil_val], ignore_index=True)
-    
     # Filter for low toxicity comments
     civil_df = civil_df[civil_df['toxicity'] <= 0.1]
-    
     # Create artificial authors by grouping comments
     # Group size of 10 comments per author
     GROUP_SIZE = 10

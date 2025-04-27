@@ -27,13 +27,22 @@ class TrollDetector(nn.Module):
         self.tweet_dropout = nn.Dropout(dropout_rate)
         self.tweet_attention = nn.Linear(self.config.hidden_size, 1)
         
-        # Layers for account-level classification
+        # # Layers for account-level classification
+        # self.account_dropout = nn.Dropout(dropout_rate)
+        # self.classifier = nn.Sequential(
+        #     nn.Linear(self.config.hidden_size, self.config.hidden_size // 2),
+        #     nn.ReLU(),
+        #     nn.Dropout(dropout_rate),
+        #     nn.Linear(self.config.hidden_size // 2, 2)  # Binary classification
+
+         # Layers for account-level regression
         self.account_dropout = nn.Dropout(dropout_rate)
-        self.classifier = nn.Sequential(
+        self.regressor = nn.Sequential(
             nn.Linear(self.config.hidden_size, self.config.hidden_size // 2),
             nn.ReLU(),
             nn.Dropout(dropout_rate),
-            nn.Linear(self.config.hidden_size // 2, 2)  # Binary classification
+            nn.Linear(self.config.hidden_size // 2, 1),  # Single output for regression
+            nn.Sigmoid()  # Ensure output is between 0 and 1
         )
         
     def forward(
@@ -52,8 +61,9 @@ class TrollDetector(nn.Module):
             
         Returns:
             Dictionary containing:
-                logits: Classification logits [batch_size, 2]
+                trolliness_score: Regression output [batch_size, 1]
                 tweet_attention_weights: Attention weights for tweets [batch_size, tweets_per_account]
+                account_embedding: Account-level embedding [batch_size, hidden_size]
         """
         batch_size = input_ids.size(0) // tweets_per_account
         
@@ -81,12 +91,16 @@ class TrollDetector(nn.Module):
             cls_embeddings  # [batch_size, tweets_per_account, hidden_size]
         ).squeeze(1)  # [batch_size, hidden_size]
         
-        # Apply dropout and classification layers
+        # # Apply dropout and classification layers
+        # account_embedding = self.account_dropout(account_embedding)
+        # logits = self.classifier(account_embedding)
+
+        # Apply dropout and regression layers
         account_embedding = self.account_dropout(account_embedding)
-        logits = self.classifier(account_embedding)
+        trolliness_score = self.regressor(account_embedding)
         
         return {
-            'logits': logits,
+            'trolliness_score': trolliness_score,
             'tweet_attention_weights': attention_weights.squeeze(-1),
             'account_embedding': account_embedding
         }
@@ -98,18 +112,18 @@ class TrollDetector(nn.Module):
         tweets_per_account: int
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
-        Make predictions and return class probabilities.
+        Make predictions and return trolliness scores.
         
         Args:
             Same as forward()
             
         Returns:
-            predictions: Class predictions [batch_size]
-            probabilities: Class probabilities [batch_size, 2]
+            trolliness_scores: Continuous scores between 0 and 1 [batch_size]
+            binary_predictions: Optional binary predictions using 0.5 threshold [batch_size]
         """
         self.eval()
         with torch.no_grad():
             outputs = self.forward(input_ids, attention_mask, tweets_per_account)
-            probabilities = F.softmax(outputs['logits'], dim=-1)
-            predictions = torch.argmax(probabilities, dim=-1)
-        return predictions, probabilities
+            scores = outputs['trolliness_score'].squeeze(-1)
+            binary_preds = (scores >= 0.5).float()  # Optional binary predictions
+        return scores, binary_preds

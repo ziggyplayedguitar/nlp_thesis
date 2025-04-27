@@ -9,7 +9,7 @@ from tqdm import tqdm
 import logging
 import wandb
 from pathlib import Path
-from sklearn.metrics import classification_report, roc_auc_score
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import json
 from typing import Dict, List, Tuple, Optional
 from src.data_tools.dataset import aggregate_author_predictions
@@ -33,7 +33,7 @@ class TrollDetectorTrainer:
         checkpoint_dir: str = "checkpoints",
         use_wandb: bool = False
     ):
-        # Initialize trainer attributes (same as in train.py)
+        # Initialize trainer attributes
         self.model = model.to(device)
         self.train_loader = train_loader
         self.val_loader = val_loader
@@ -48,8 +48,8 @@ class TrollDetectorTrainer:
         # Initialize mixed precision training
         self.scaler = GradScaler()
 
-        # Loss function
-        self.criterion = nn.CrossEntropyLoss()
+        # Loss function - using Huber Loss for regression (more robust than MSE)
+        self.criterion = nn.HuberLoss()
 
         # Optimizer
         self.optimizer = AdamW(
@@ -66,7 +66,7 @@ class TrollDetectorTrainer:
         )
 
         # Tracking best model
-        self.best_val_auc = 0.0
+        self.best_val_r2 = -float('inf')  # Using R² score instead of AUC
         self.best_epoch = 0
         
         # Initialize wandb if requested
@@ -86,19 +86,18 @@ class TrollDetectorTrainer:
             # Move batch to device
             input_ids = batch['input_ids'].to(self.device)
             attention_mask = batch['attention_mask'].to(self.device)
-            labels = batch['label'].to(self.device)
-            authors = batch['author']  # List of author IDs
+            labels = batch['label'].to(self.device).float()  # Convert to float for regression
+            authors = batch['author']
             
             # Forward pass with mixed precision
-            with torch.cuda.amp.autocast():
+            with autocast():
                 outputs = self.model(
                     input_ids=input_ids,
                     attention_mask=attention_mask,
                     tweets_per_account=self.train_loader.dataset.comments_per_user
                 )
-                loss = self.criterion(outputs['logits'], labels)
+                loss = self.criterion(outputs['trolliness_score'].squeeze(), labels)
             
-            # Rest of the training loop (same as in train.py)
             total_loss += loss.item()
             
             # Backward pass with gradient scaling
@@ -114,31 +113,24 @@ class TrollDetectorTrainer:
             self.scheduler.step()
             self.optimizer.zero_grad()
             
-            # Get predictions
-            probs = torch.softmax(outputs['logits'], dim=1)
-            preds = torch.argmax(probs, dim=1)
-            
             # Store results for this batch
             batch_results[f"batch_{batch_idx}"] = {
                 'author': authors,
-                'pred': preds.cpu().detach().numpy(),
-                'probs': probs.cpu().detach().numpy(),
-                'label': labels.cpu().detach().numpy()
+                'pred': outputs['trolliness_score'].squeeze().detach().cpu().numpy(),
+                'label': labels.cpu().numpy()
             }
             
             batch_idx += 1
-            
-            # Update progress bar
             pbar.set_postfix({'loss': f"{loss.item():.4f}"})
 
-        # Aggregate predictions by author, choose method='mean'/'max'/'vote'
+        # Aggregate predictions by author
         aggregated = aggregate_author_predictions(batch_results, method='mean')
         
         # Extract aggregated predictions and labels
         all_preds = [data['final_pred'] for data in aggregated.values()]
         all_labels = [data['true_label'] for data in aggregated.values()]
         
-        # Calculate metrics based on aggregated predictions
+        # Calculate metrics
         metrics = self.calculate_metrics(all_preds, all_labels)
         metrics['loss'] = total_loss / len(self.train_loader)
         metrics['num_authors'] = len(aggregated)
@@ -156,8 +148,8 @@ class TrollDetectorTrainer:
         for batch in tqdm(dataloader, desc="Evaluating"):
             input_ids = batch['input_ids'].to(self.device)
             attention_mask = batch['attention_mask'].to(self.device)
-            labels = batch['label'].to(self.device)
-            authors = batch['author']  # List of author IDs
+            labels = batch['label'].to(self.device).float()
+            authors = batch['author']
             
             outputs = self.model(
                 input_ids=input_ids,
@@ -165,18 +157,14 @@ class TrollDetectorTrainer:
                 tweets_per_account=dataloader.dataset.comments_per_user
             )
             
-            loss = self.criterion(outputs['logits'], labels)
+            loss = self.criterion(outputs['trolliness_score'].squeeze(), labels)
             total_loss += loss.item()
-            
-            probs = torch.softmax(outputs['logits'], dim=1)
-            preds = torch.argmax(probs, dim=1)
             
             # Store results for this batch
             batch_results[f"batch_{batch_idx}"] = {
                 'author': authors,
-                'pred': preds.cpu().detach().numpy(),
-                'probs': probs.cpu().detach().numpy(),
-                'label': labels.cpu().detach().numpy()
+                'pred': outputs['trolliness_score'].squeeze().cpu().numpy(),
+                'label': labels.cpu().numpy()
             }
             
             batch_idx += 1
@@ -187,40 +175,32 @@ class TrollDetectorTrainer:
         # Extract aggregated predictions and labels
         all_preds = [data['final_pred'] for data in aggregated.values()]
         all_labels = [data['true_label'] for data in aggregated.values()]
-        all_probs = [data['final_prob'][1] for data in aggregated.values()]  # Probability of class 1 (troll)
         
-        # Calculate metrics based on aggregated predictions
-        metrics = self.calculate_metrics(all_preds, all_labels, all_probs)
+        # Calculate metrics
+        metrics = self.calculate_metrics(all_preds, all_labels)
         metrics['loss'] = total_loss / len(dataloader)
-        
-        # Add the number of unique authors
         metrics['num_authors'] = len(aggregated)
-        
-        # Log additional information about multiple samples per author
-        multi_sample_authors = [author for author, data in aggregated.items() if data['num_batches'] > 1]
-        avg_batches = sum(data['num_batches'] for data in aggregated.values()) / len(aggregated)
-        logger.info(f"Evaluated {len(aggregated)} unique authors, {len(multi_sample_authors)} with multiple batches")
-        logger.info(f"Average batches per author: {avg_batches:.2f}")
         
         return metrics
 
     def calculate_metrics(
         self,
-        preds: List[int],
-        labels: List[int],
-        probs: Optional[List[float]] = None
+        preds: List[float],
+        labels: List[float]
     ) -> Dict[str, float]:
-        """Calculate classification metrics"""
-        report = classification_report(labels, preds, output_dict=True)
+        """Calculate regression metrics"""
         metrics = {
-            'accuracy': report['accuracy'],
-            'f1': report['weighted avg']['f1-score'],
-            'precision': report['weighted avg']['precision'],
-            'recall': report['weighted avg']['recall']
+            'mse': mean_squared_error(labels, preds),
+            'rmse': np.sqrt(mean_squared_error(labels, preds)),  # Calculate RMSE manually
+            'mae': mean_absolute_error(labels, preds),
+            'r2': r2_score(labels, preds)
         }
         
-        if probs is not None:
-            metrics['auc'] = roc_auc_score(labels, probs)
+        # Add binary classification metrics using 0.5 threshold for comparison
+        binary_preds = [1 if p >= 0.5 else 0 for p in preds]
+        binary_labels = [1 if l >= 0.5 else 0 for l in labels]
+        accuracy = sum(p == l for p, l in zip(binary_preds, binary_labels)) / len(preds)
+        metrics['binary_accuracy'] = accuracy
         
         return metrics
 
@@ -276,10 +256,10 @@ class TrollDetectorTrainer:
                 })
             
             # Save checkpoint if this is the best model
-            if val_metrics['auc'] > self.best_val_auc:
-                self.best_val_auc = val_metrics['auc']
+            if val_metrics['r2'] > self.best_val_r2:
+                self.best_val_r2 = val_metrics['r2']
                 self.best_epoch = epoch
-                logger.info(f"New best model with validation AUC: {self.best_val_auc:.4f}")
+                logger.info(f"New best model with validation R²: {self.best_val_r2:.4f}")
                 self.save_checkpoint(epoch, val_metrics, is_best=True)
             
             # Regular checkpoint saving
