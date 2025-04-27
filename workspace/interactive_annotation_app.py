@@ -13,8 +13,9 @@ Path("./annotations").mkdir(exist_ok=True)
 
 # Predictor from Checkpoint
 predictor = TrollPredictor(
-    model_path= "./checkpoints/best_model.pt",
-    comments_per_user=50,
+    # model_path= "./checkpoints/best_model.pt",
+    model_path= "./checkpoints/finetuned_model.pt",
+    comments_per_user=10,
     max_length=96
 )
 
@@ -37,7 +38,8 @@ else:
     labeled_authors = set()
 
 # Authors not yet labeled
-authors = [a for a in df_anomaly["author"].tolist() if a not in labeled_authors]
+# authors = [a for a in df_anomaly["author"].tolist() if a not in labeled_authors]
+authors = df_anomaly["author"].tolist()
 selected_author = st.selectbox("Select an Author", authors)
 
 # --- Display Info ---
@@ -49,27 +51,35 @@ author_comments = df_comments[df_comments["author"] == selected_author]["text"].
 
 # Get troll prediction
 pred_result = predictor.predict(author_comments)
-prediction = pred_result["prediction"]
-confidence = pred_result["confidence"]
+prediction = pred_result["prediction"]  # This is still 'troll' or 'not_troll' based on threshold
+trolliness_score = pred_result["trolliness_score"]  # New continuous score
+binary_confidence = pred_result["binary_confidence"]  # New confidence metric
 
 # Display all scores with color coding
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)  # Added an extra column for trolliness score
 
 with col1:
     st.metric(
-        label="Troll Classification",
-        value=prediction,
-        delta=f"{confidence:.3f} confidence"
+        label="Trolliness Score",
+        value=f"{trolliness_score:.3f}",
+        delta=f"Threshold: {predictor.threshold}"
     )
 
 with col2:
+    st.metric(
+        label="Binary Classification",
+        value=prediction,
+        delta=f"{binary_confidence:.3f} confidence"
+    )
+
+with col3:
     st.metric(
         label="Isolation Forest Score",
         value=f"{author_info['anomaly_score_iforest']:.3f}",
         delta="higher = more anomalous"
     )
 
-with col3:
+with col4:
     st.metric(
         label="LOF Score",
         value=f"{author_info['anomaly_score_lof']:.3f}",
@@ -137,6 +147,8 @@ if st.button("Save Label"):
         "author": selected_author,
         "iforest_score": author_info["anomaly_score_iforest"],
         "lof_score": author_info["anomaly_score_lof"],
+        "trolliness_score": trolliness_score,  # Add the continuous score
+        "binary_confidence": binary_confidence,  # Add the binary confidence
         "label": label_map[label]
     }
 
