@@ -3,46 +3,48 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: ctuman.aux
 The style file: alpha.bst
 Database file #1: ../sources/library.bib
+Warning--entry type for "Seckin2024" isn't style-file defined
+--line 949 of file ../sources/library.bib
 Warning--empty institution in Bradshaw2017TroopsTrolls
-You've used 21 entries,
+You've used 22 entries,
             2543 wiz_defined-function locations,
-            718 strings with 9269 characters,
-and the built_in function-call counts, 9274 in all, are:
-= -- 918
-> -- 501
-< -- 10
-+ -- 178
-- -- 174
-* -- 699
-:= -- 1551
-add.period$ -- 69
-call.type$ -- 21
-change.case$ -- 143
-chr.to.int$ -- 21
-cite$ -- 22
-duplicate$ -- 352
-empty$ -- 628
-format.name$ -- 197
-if$ -- 1885
+            717 strings with 9289 characters,
+and the built_in function-call counts, 9644 in all, are:
+= -- 939
+> -- 584
+< -- 7
++ -- 213
+- -- 207
+* -- 739
+:= -- 1646
+add.period$ -- 70
+call.type$ -- 22
+change.case$ -- 160
+chr.to.int$ -- 22
+cite$ -- 23
+duplicate$ -- 347
+empty$ -- 615
+format.name$ -- 229
+if$ -- 1928
 int.to.chr$ -- 1
 int.to.str$ -- 0
 missing$ -- 21
-newline$ -- 112
-num.names$ -- 69
-pop$ -- 122
+newline$ -- 115
+num.names$ -- 72
+pop$ -- 137
 preamble$ -- 1
-purify$ -- 164
+purify$ -- 182
 quote$ -- 0
-skip$ -- 299
+skip$ -- 304
 stack$ -- 0
-substring$ -- 475
-swap$ -- 65
-text.length$ -- 10
-text.prefix$ -- 4
+substring$ -- 419
+swap$ -- 55
+text.length$ -- 7
+text.prefix$ -- 3
 top$ -- 0
-type$ -- 164
+type$ -- 172
 warning$ -- 1
 while$ -- 87
-width$ -- 26
-write$ -- 284
-(There was 1 warning)
+width$ -- 24
+write$ -- 292
+(There were 2 warnings)

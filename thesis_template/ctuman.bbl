@@ -7,12 +7,6 @@ S~Bradshaw and P~Howard.
   social media manipulation.
 \newblock Technical report, 2017.
 
-\bibitem[BNJ01]{Blei2001LDA}
-David Blei, Andrew Ng, and Michael Jordan.
-\newblock Latent dirichlet allocation.
-\newblock In {\em The Journal of Machine Learning Research}, volume~3, pages
-  601--608, 01 2001.
-
 \bibitem[BS12]{Bennett2012DigitalMedia}
 Lance Bennett and Alexandra Segerberg.
 \newblock The logic of connective action: Digital media and the personalization
@@ -39,13 +33,17 @@ Walter Daelemans.
   Intelligent Text Processing}, pages 451--462, Berlin, Heidelberg, 2013.
   Springer Berlin Heidelberg.
 
-\bibitem[GCM{\etalchar{+}}22]{Golino2022Elections}
-Hudson Golino, Alexander~P. Christensen, Robert Moulder, Seohyun Kim, and
-  Steven~M. Boker.
-\newblock Modeling latent topics in social media using dynamic exploratory
-  graph analysis: The case of the right-wing and left-wing trolls in the 2016
-  us elections.
-\newblock {\em Psychometrika}, 87(1):156--187, 2022.
+\bibitem[DBGJS21]{Demsar2021}
+Vlad Demsar, Jan Brace-Govan, Gavin Jack, and Sean Sands.
+\newblock The social phenomenon of trolling: understanding the discourse and
+  social practices of online provocation.
+\newblock {\em Journal of Marketing Management}, 37:1--33, 03 2021.
+
+\bibitem[DCLT18]{Devlin2018}
+Jacob Devlin, Ming{-}Wei Chang, Kenton Lee, and Kristina Toutanova.
+\newblock {BERT:} pre-training of deep bidirectional transformers for language
+  understanding.
+\newblock {\em CoRR}, abs/1810.04805, 2018.
 
 \bibitem[GPV17]{GolfPapez2017DontFeedTheTroll}
 Maja Golf-Papez and Ekant Veer.
@@ -53,13 +51,6 @@ Maja Golf-Papez and Ekant Veer.
   defined and combated.
 \newblock {\em Journal of Marketing Management}, 33(15/16):1336--1354, November
   2017.
-
-\bibitem[Gro22]{Grootendorst2022BERTopic}
-Maarten Grootendorst.
-\newblock {BERTopic}: {Neural} topic modeling with a class-based {TF}-{IDF}
-  procedure.
-\newblock {\em arXiv preprint arXiv:2203.05794}, March 2022.
-\newblock arXiv:2203.05794 [cs].
 
 \bibitem[JTS21]{Jiang2021Sentiment}
 Zidong Jiang, Fabio~Di Troia, and Mark Stamp.
@@ -113,11 +104,16 @@ Ver{\'o}nica P{\'e}rez-Rosas, Bennett Kleinberg, Alexandra Lefevre, and Rada
   Linguistics}, pages 3391--3401, Santa Fe, New Mexico, USA, August 2018.
   Association for Computational Linguistics.
 
-\bibitem[RAJS22]{Ruediger2022TopicModellingRevisited}
-Matthias Rüdiger, David Antons, Amol~M. Joshi, and Torsten-Oliver Salge.
-\newblock Topic modeling revisited:  new evidence on algorithm performance and
-  quality metrics.
-\newblock {\em PloS one}, 17:e0266325, 2022.
+\bibitem[RKR20]{Rogers2020}
+Anna Rogers, Olga Kovaleva, and Anna Rumshisky.
+\newblock A primer in bertology: What we know about how {BERT} works.
+\newblock {\em CoRR}, abs/2002.12327, 2020.
+
+\bibitem[SPN{\etalchar{+}}24]{Seckin2024}
+Özgür~Can Seçkin, Manita Pote, Alexander Nwala, Lake Yin, Luca Luceri,
+  alessandro flammini, and Filippo Menczer.
+\newblock Labeled datasets for research on information operations, November
+  2024.
 
 \bibitem[SSSB20]{Schuster2020}
 Tal Schuster, Roei Schuster, Darsh~J. Shah, and Regina Barzilay.
@@ -138,5 +134,11 @@ Yunita Sari, Mark Stevenson, and Andreas Vlachos.
 John Suler.
 \newblock The {Online} {Disinhibition} {Effect}.
 \newblock {\em CyberPsychology \& Behavior}, 7(3):321--326, June 2004.
+
+\bibitem[VSP{\etalchar{+}}17]{Vaswani2017}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+  Aidan~N. Gomez, Lukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock {\em CoRR}, abs/1706.03762, 2017.
 
 \end{thebibliography}

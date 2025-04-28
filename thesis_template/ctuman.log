@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.8)  12 APR 2025 17:59
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.8)  28 APR 2025 00:15
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -853,7 +853,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmss' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-<ctu_logo_black.pdf, id=64, 366.36874pt x 279.0425pt>
+<ctu_logo_black.pdf, id=96, 366.36874pt x 279.0425pt>
 File: ctu_logo_black.pdf Graphic file (type pdf)
 <use ctu_logo_black.pdf>
 Package pdftex.def Info: ctu_logo_black.pdf  used on input line 164.
@@ -975,36 +975,52 @@ Chapter 1.
 
 ]
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10.95> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 190.
- [2]
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 189.
+ [2] [3] [4
+
+]
 Chapter 2.
-[3
 
-] [4] [5] [6]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [5] [6] [7] [8
+
+]
 Chapter 3.
-[7
+[9] [10] [11] [12
 
-] (./ctuman.ind) (./ctuman.bbl [8]
+]
+Chapter 4.
+[13]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <9> on input line 287.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 287.
+ [14] [15] [16
+
+]
+Chapter 5.
+[17] (./ctuman.ind) (./ctuman.bbl [18]
 Appendix A.
-[9
+[19
 
-] [10]) [11] (./ctuman.aux)
+] [20]) [21] (./ctuman.aux)
 Package rerunfilecheck Info: File `ctuman.out' has not changed.
-(rerunfilecheck)             Checksum: A5DFC5E12005B9023BD4395F821BB396;1930.
+(rerunfilecheck)             Checksum: 2100023801CFCDC835D60940B546C5C2;3211.
  ) 
 Here is how much of TeX's memory you used:
- 20610 strings out of 478287
- 337241 string characters out of 5849290
- 684014 words of memory out of 5000000
- 38215 multiletter control sequences out of 15000+600000
- 546786 words of font info for 165 fonts, out of 8000000 for 9000
+ 20708 strings out of 478287
+ 338252 string characters out of 5849290
+ 685073 words of memory out of 5000000
+ 38266 multiletter control sequences out of 15000+600000
+ 561636 words of font info for 185 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  68i,17n,78p,1176b,1144s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso10.pfb>
-Output written on ctuman.pdf (17 pages, 241816 bytes).
+{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr6.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt9.pfb>
+Output written on ctuman.pdf (27 pages, 304633 bytes).
 PDF statistics:
- 257 PDF objects out of 1000 (max. 8388607)
- 221 compressed objects within 3 object streams
- 58 named destinations out of 1000 (max. 500000)
- 41598 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 366 PDF objects out of 1000 (max. 8388607)
+ 315 compressed objects within 4 object streams
+ 80 named destinations out of 1000 (max. 500000)
+ 50366 words of extra memory for PDF output out of 51595 (max. 10000000)
 
