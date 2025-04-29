@@ -365,14 +365,19 @@ After preparing the dataset and implementing the proposed model, the next step i
 I compare three different versions of the model. 
 \begin{itemize} 
 	\item \textbf{Base model} — trained only on the foregin labeled troll datasets without any additional fine-tuning on Czech data. 
-	\item \textbf{Base + few-shot} — the base model further fine-tuned on a small manually annotated set of Czech users. 
-	\item \textbf{Adapter + few-shot} — the base model with a Czech domain adapter trained first, followed by fine-tuning on the manually annotated Czech users. 
+	\item \textbf{Base + Few-shot} — the base model further fine-tuned on a small manually annotated set of Czech users. 
+	\item \textbf{Base + Adapter + Few-shot} — the base model with a Czech domain adapter trained first, followed by fine-tuning on the manually annotated Czech users. 
 \end{itemize}
 Each model is evaluated based on the distribution of predicted trolliness scores across users, manual review of selected user cases and performace on a small hand annotated test set.
 
-\section{Topic Modelling Evaluation}
+\section{Adapter Training}
+TODO vyhodnoceni treninku adapteru
 
 \section{}
+TODO ukazka vysledku a provnani modelu
+
+\section{}
+TODO, s regresnim trolliness score jako zakladem zkusit hledat korelace napriklad v clusterech topicu?. Pri prvni analyze jsem ale nenasel korelaci mezi trolovosit a napriklad poctem ruznych topicu do kterych uzivatel prispiva. 
 
 \chapter{Annotation and Evaluation}
 
