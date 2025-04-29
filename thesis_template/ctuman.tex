@@ -219,7 +219,7 @@ This chapter provides an overview of the methods and techniques used in the fiel
 \section{Stylometry}
 An example of stylometry applied to fake news detection is presented in the work of Pérez-Rosas et al.~\cite{PerezRosas2018Stylometry}. They used a variety of stylometric features, including n-grams, punctuation frequency, readability metrics and syntactic features. They also incorporated psycholingustic features extracted from the LIWC lexicon which categorize words into various psychological categories. LIWC features capture psychological aspets of a text such as emotional tone or cognitive processes, potentially revealing underlying psychological differences between fake and legitimate news writers. A linear SVM classifier was trained on these features to differentiate between fake and legitimate news articles. Their results showed that stylometric features can be effective for the task, achieving accuracies of up to 76\% which outperformed two human annotators. The analysis uncovered distinct linguistic patterns in fake news, such as increased use of social and positive words, a focus on present and future actions, and a higher prevalence of adverbs, verbs, and punctuation marks. 
 
-In another paper, Kandasamy et at.~\cite{Kandasamy2021COVID} proposed a deep learning framework for sentiment analysis of COVID-19-related tweets. Their approach used an N-gram stacked autoencoder to capture text features. These features were then processed by a set of classifiers—decision trees, support vector machines, random forests, and k‑nearest neighbors. The highest accuracy was achieved using an ensemble model that combined all of these classifiers, this method achieved an accuracy of 87.75\%. The study demonstrated that using n‑grams greatly improved the classification of negative sentiment, an emotion that was prevalent during the pandemic.\par
+In another paper, Kandasamy et at.~\cite{Kandasamy2021COVID} proposed a deep learning framework for sentiment analysis of COVID-19-related tweets. Their approach used an N-gram stacked autoencoder to capture text features. These features were then processed by a set of classifiers—decision trees, support vector machines, random forests, and k-nearest neighbors. The highest accuracy was achieved using an ensemble model that combined all of these classifiers, this method achieved an accuracy of 87.75\%. The study demonstrated that using n-grams greatly improved the classification of negative sentiment, an emotion that was prevalent during the pandemic.\par
 
 Though stylometry has proven useful for text classification, recent advancements in large language models and their potential for misuse might pose a substantial challenge to its efficacy. As demonstrated by Schuster et al.~\cite{Schuster2020}, stylmoetry may struggle to differentiate between human-written and machine-generated text. In their study they find that while a state-of-the-art stylometry-based classifier could effectively detect the presence of machine-generated text within human-written content, it struggled to discern the truthfulness of the generated text.  For instance, even a single auto-generated sentence within a longer human-written text was easily detectable, but the veracity of that sentence remained largely undecidable.  Additionally, even a relatively weak LM could produce statement inversions that evaded detection by the stylometry-based model.\par
 
@@ -313,10 +313,37 @@ At the user level, the embeddings of all the comments from a single user are agg
 Finally, a regression head is applied on top of the aggregated user-level embedding vector. The regression head consists of a feed-forward neural network, which outputs a the final coutninous trolliness score between 0 and 1. This score should reflect how similar a users behavior is to that of known trolls, rather than to give a hard classification.\par
 
 \section{Training}
-The training of the model is done in two steps. First, the model is trained on the large labeled datasets collected from foreign domains. These include the Russian IRA troll tweets, information operations datasets, and the non-troll datasets like Civil Comments. The training is done using a regression objective, where the model is trained to predict the trolliness of the users instead of their binary class.\par
-Since the labeled training data comes from different domains and languages than our target Czech dataset, a second small fine-tuning step is performed. After the initial training, the model is fine-tuned on a small set of manually annoated Czech user comments from our target dataset. This data was created by me, by exploring the users in the who were classified with high or low trolliness scores and high confidence during preliminary runs. This few-shot tuning step helps the model better adapt to our specific domain.\par
+The training of the model is done in two steps. Larger training on the large labeled troll datasets from foreign domains, and a smaller fine-tune on manually annotated Czech comments from the target dataset.\par
+The first training step includes the Russian IRA troll tweets, information operations datasets, and the non-troll datasets like Civil Comments. The training is done using a regression objective, where the model is trained to predict the trolliness of the users instead of their binary class.\par
+Since the labeled training data comes from different domains and languages than our target Czech dataset, a second small fine-tuning step is performed. But first before starting this step, a lightweight adapter module was trained on the Czech comment corpus using a Masked Language Modeling (MLM) objective. This should help the model adapt for the Czech language domain better, but allows for the learned knowledge from the large foreign troll datasets to be kept.\par
+After the initial training, the model is fine-tuned on a small set of manually annoated Czech user comments from our target dataset. This data was created by me, by exploring the users in the who were classified with high or low trolliness scores and high confidence during preliminary runs. This few-shot tuning step helps the model better adapt to our specific domain.\par
+
+
+\section{Scoring}
+Once the model is trained, it can be used to score the trolliness of users in the target dataset. For each user, all available comments are collected and grouped into batches of a fixed size. If a user has fewer comments than needed to fill a batch the comments are padded with empty comments. Each batch of comments is then passed through the model to generate a score. When a user has multple batches, the final trolliness score is calculated as the average over all batches.\par
+The output of the model is then a continous trolliness score between 0 and 1. A binary predition can be obtained by applying a threshold. Additionally the model provides attention weights for individual comments, which how much each comment contributed to the final score and can be used for analysis and interpretation.\par
+
 
 % ========================================== CHAPTER X  =====================
+\chapter{Experiments}
+
+After preparing the dataset and implementing the proposed model, the next step is to evaluate and explore the models behavior. The goal of the experiemnts is to compare different training strategies and see how they do with trolliness scoring of the Czech dataset.\par
+I compare three different versions of the model. 
+\begin{itemize} 
+	\item \textbf{Base model} — trained only on the foregin labeled troll datasets without any additional fine-tuning on Czech data. 
+	\item \textbf{Base + few-shot} — the base model further fine-tuned on a small manually annotated set of Czech users. 
+	\item \textbf{Adapter + few-shot} — the base model with a Czech domain adapter trained first, followed by fine-tuning on the manually annotated Czech users. 
+\end{itemize}
+Each model is evaluated based on the distribution of predicted trolliness scores across users, manual review of selected user cases and performace on a small hand annotated test set.
+
+\section{Topic Modelling Evaluation}
+
+\section{}
+
+\chapter{Annotation and Evaluation}
+
+To help me work with the model and dataset, I created a simple annotation application. The main goal of the tool is to allows labeling of users from the Czech dataset and search for their comments. The app also shows the model's predicted trolliness scores and attention weights. The annotations can then be used both for few-shot fine-tuning and for manual exploration of the model's predictions.\par
+
 
 \appendix
 
