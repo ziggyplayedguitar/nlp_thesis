@@ -96,6 +96,8 @@
 }
 \ExplSyntaxOff
 
+\usepackage{graphicx}
+
 % Abstract in Czech
 \begin{abstract-czech}
 V záplavě mnoha zdrojů a množství mediálních zpráv není jednoduché se zorientovat i pro profesionální mediální analytiky. 
@@ -268,25 +270,34 @@ For the purposes of this thesis, a large-scale dataset comprising approximately 
 
 Each data entry includes the following attributes:
 \begin{itemize}
-    \item \textbf{Comment content} – the full textual body of the comment.
+    \item \textbf{Comment content} - the full textual body of the comment.
     
-    \item \textbf{Article metadata} – including the title and link to the article under which the comment was posted
+    \item \textbf{Article metadata} - including the title and link to the article under which the comment was posted
     
-    \item \textbf{Timestamp} – the date and time when the comment was published.
+    \item \textbf{Timestamp} - the date and time when the comment was published.
     
-    \item \textbf{Author name} – full author name as collected from the discussion.
+    \item \textbf{Author name} - full author name as collected from the discussion.
     
-    \item \textbf{Sentiment label} – a sentiment category assigned by Newton Media, labeled as one of the following: \textit{Neutral}, \textit{Positive}, \textit{Negative}, or \textit{Ambivalent}.
+    \item \textbf{Sentiment label} - a sentiment category assigned by Newton Media, labeled as one of the following: \textit{Neutral}, \textit{Positive}, \textit{Negative}, or \textit{Ambivalent}.
 \end{itemize}
 
-A key challenge posed by this dataset is the absence of explicit troll/non-troll labels. Since there is no ground-truth annotation for trolling behavior,  we cannot directly apply supervised classification methods. Because of this, we have to rely on unsupervised or semi-supervised techniques, such as clustering, topic modeling, or anomaly detection, to try to find patterns that may point to trolling based on how the comments are written and their sentiment. The lack of labeled data also makes it difficult to verify the accuracy or effectiveness of any classifications or patterns identified during experimentation. Without labeled data, we cannot easily measure how accurate our models are, and must instead rely on manual checks, indirect indicators, or interpretation of the patterns found\par
+A consideration for the work with this dataset is the nature of the comments. The comments in general seem to be mostly negative in tone and often emotionally charged, as can be seen by the distribution of setiment.
+
+\begin{figure}[htbp]          
+	\centering                 
+	\includegraphics[scale=0.7]{figures/sentiment.png}
+	\caption{Sentiment distribution of collected novinky.cz comments}    
+	\label{fig:myplot}          
+\end{figure}
+
+A key challenge posed by this dataset is the absence of explicit troll/non-troll labels. Since there is no ground-truth annotation for trolling behavior, we cannot directly apply supervised classification methods. Because of this, we have to rely on unsupervised or semi-supervised techniques, such as clustering, topic modeling, or anomaly detection, to try to find patterns that may point to trolling based on how the comments are written and their sentiment. The lack of labeled data also makes it difficult to verify the accuracy or effectiveness of any classifications or patterns identified during experimentation. Without labeled data, we cannot easily measure how accurate our models are, and have to instead rely on manual checks and interpretation of the results.\par
 
 \section{Additionall Datasets}
 
 In addition to the primary dataset collected from Novinky.cz, several publicly available labeled datasets were also used in this thesis. They were collected from different platforms such as Twitter or Reddit and the majority are in English, although some include other languages as well. While they differ in context and language, they offer labeled examples that usd for pre-training of models for the later analysis of Czech online discussions.\par
 
 \subsection{IRA Troll Tweets}
-One of the external datasets used in this thesis is a collection of tweets linked to the Russian \textit{Internet Research Agency} (IRA), which was menitioned in the introductory chapter of the thesis. The dataset was published by FiveThirtyEight in connection with their article \textit{Why We’re Sharing 3 Million Russian Troll Tweets}, and was originally collected by researchers from Clemson University. It contains nearly 3 million tweets posted between February 2012 and May 2018 by accounts identified by Twitter as being linked to the IRA, which were provided to the US Congress for investigation into 2016 presidential election interference. In total, the dataset includes 2,973,371 tweets from 2,848 Twitter handles. Most of the tweets are in English, but some are in other languages, including Russian or German. The dataset is publicly available and can be accessed through the FiveThirtyEight GitHub repository.\footnote{\url{https://github.com/fivethirtyeight/russian-troll-tweets/}}
+One of the external datasets used in this thesis is a collection of tweets linked to the Russian \textit{Internet Research Agency} (IRA), which was menitioned in the introductory chapter of the thesis. The dataset was published by FiveThirtyEight in connection with their article \textit{Why We're Sharing 3 Million Russian Troll Tweets}, and was originally collected by researchers from Clemson University. It contains nearly 3 million tweets posted between February 2012 and May 2018 by accounts identified by Twitter as being linked to the IRA, which were provided to the US Congress for investigation into 2016 presidential election interference. In total, the dataset includes 2,973,371 tweets from 2,848 Twitter handles. Most of the tweets are in English, but some are in other languages, including Russian or German. The dataset is publicly available and can be accessed through the FiveThirtyEight GitHub repository.\footnote{\url{https://github.com/fivethirtyeight/russian-troll-tweets/}}
 
 \subsection{Information Operations Dataset}
 Another external resource used in this thesis is a collection of labeled datasets for research on information operations (IOs), introduced by Seckin et al.~\cite{Seckin2024}. The full collection contains over 13 million posts from approximately 303,000 accounts. The dataset includes both verified IO posts and control data from legitimate accounts, covering 26 distinct manipulation campaigns originating from different countries. The data is organized first by one of 16 identified state actors, such as Russia, China, or even Catalonia, and then further subdivided into distinct operations. The IO posts were identified and released by major social media platforms including Twitter, Facebook, and Reddit, while the control data captures organic user discussions on similar topics within the same time frames.
@@ -308,6 +319,27 @@ The motivation to use a regression task instead of a binary classification task 
 \section{Data Collection and Preprocessing}
 The first step of the method is the collection and preprocessing of the data. The raw text data is cleaned and preprocessed using basic text preprocessing techniques to normalize it to a certain extend across the different data sources. Each comment is then grouped according to its author, creating sets of comments for each user.\par
 A key design decision in this work was to rate the trolliness at the user level, rather than at an individual comment level. This decision was based on the analysis and observations from the labeled troll datasets. A reccuring pattern was that many troll accounts did not only engage in disruptive and manipulative behavior all the time. Instead, in many cases trolls posted mostly ``normal'' content, perhaps to blend in with regular users, pushing their agenda more subdly in some posts and then only occasionally posting more overtly troll-like comments.\par
+For this thesis we will exclude all users with fewer than 5 comments, as our aim is to try to find broader patterns of troll-like behavior not only one-off examples of offensive or provocative comments. We do this both for the initial training as well as when working with the target Czech dataset. While this discards about half of the users in the dataset, it is only a small fraction of the comments, about ten precent.\par
+\begin{figure}[htbp]
+	\centering
+	% left image
+	\begin{minipage}[b]{0.48\linewidth}
+	  \centering
+	  \includegraphics[width=\linewidth]{figures/comments_per_author.png}
+	  \caption{First image}
+	  \label{fig:left}
+	\end{minipage}
+	\hfill                  
+	% right image
+	\begin{minipage}[b]{0.48\linewidth}
+	  \centering
+	  \includegraphics[width=\linewidth]{figures/comments_5_plus.png}
+	  \caption{Second image}
+	  \label{fig:right}
+	\end{minipage}
+	\caption{Distribution of comments per autor before and after filtering for 5+ comments}
+	\label{fig:pair}
+  \end{figure}
 
 \section{Model Architecture}
 The model architecture is designed in two levels: the comment level and the user level. At the comment level, each individual comment is first encoded using a pretrained multilingual BERT model. BERT processes the comments and produces fixed-length embeddings which capture both syntactic and semantic information.\par
