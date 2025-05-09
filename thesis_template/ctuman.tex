@@ -375,14 +375,25 @@ Finally, a regression head is applied on top of the aggregated user-level embedd
 \section{Training}
 The training of the model is done in two steps. Larger training on the large labeled troll datasets from foreign domains, and a smaller fine-tune on manually annotated Czech comments from the target dataset.\par
 The first training step includes the Russian IRA troll tweets, information operations datasets, and the non-troll datasets like Civil Comments. The training is done using a regression objective, where the model is trained to predict the trolliness of the users instead of their binary class.\par
-Since the labeled training data comes from different domains and languages than our target Czech dataset, a second small fine-tuning step is performed. But first before starting this step, a lightweight adapter module was trained on the Czech comment corpus using a Masked Language Modeling (MLM) objective. This should help the model adapt for the Czech language domain better, but allows for the learned knowledge from the large foreign troll datasets to be kept.\par
+Since the labeled training data comes from different domains and languages than our target Czech dataset, a second small fine-tuning step is performed.\par
+%But first before starting this step, a lightweight adapter module was trained on the Czech comment corpus using a Masked Language Modeling (MLM) objective. This should help the model adapt for the Czech language domain better, but allows for the learned knowledge from the large foreign troll datasets to be kept.\par
 After the initial training, the model is fine-tuned on a small set of manually annoated Czech user comments from our target dataset. This data was created by me, by exploring the users in the who were classified with high or low trolliness scores and high confidence during preliminary runs. This few-shot tuning step helps the model better adapt to our specific domain.\par
-
 
 \section{Scoring}
 Once the model is trained, it can be used to score the trolliness of users in the target dataset. For each user, all available comments are collected and grouped into batches of a fixed size. If a user has fewer comments than needed to fill a batch the comments are padded with empty comments. Each batch of comments is then passed through the model to generate a score. When a user has multple batches, the final trolliness score is calculated as the average over all batches.\par
 The output of the model is then a continous trolliness score between 0 and 1. A binary predition can be obtained by applying a threshold. Additionally the model provides attention weights for individual comments, which how much each comment contributed to the final score and can be used for analysis and interpretation.\par
 
+\section{Lightweight Annotation and Evaluation App}
+
+Additionally, to help me work with the model and dataset, I created a simple annotation application. The main goal of the tool is to allows labeling of users from the Czech dataset and search for their comments. The app also shows the model's predicted trolliness scores and attention weights. The annotations can then be used both for few-shot fine-tuning and for manual exploration of the model's predictions.\par
+The app loads a saved model checkpoint and available Czech comments from the dataset. It then allows a user to search for an author by name. It then displays the predicted trolliness score of the author and all of their comments along with their attention weights. Finally, the app allows the user to label the author as troll, non-troll or uncertain and saves the labels to a file. The app is implemented in Python using the Streamlit library, which allows for easy creation of interactive web applications.\par
+
+\begin{figure}[htbp]          
+	\centering                 
+	\includegraphics[scale=0.43]{figures/streamlit_app.png}
+	\caption{Annotation app interface}    
+	\label{fig:my_app}          
+\end{figure}
 
 % ========================================== CHAPTER X  =====================
 \chapter{Experiments}
@@ -454,14 +465,15 @@ I compare three different versions of the model.
 \begin{itemize} 
 	\item \textbf{Base model} - trained only on the foregin labeled troll datasets without any additional fine-tuning on Czech data. 
 	\item \textbf{Base + Few-shot} - the base model further fine-tuned on a small manually annotated set of Czech users. 
-	\item \textbf{Base + Adapter + Few-shot} - the base model with a Czech domain adapter trained first, followed by fine-tuning on the manually annotated Czech users. 
+	%\item \textbf{Base + Adapter + Few-shot} - the base model with a Czech domain adapter trained first, followed by fine-tuning on the manually annotated Czech users. 
 \end{itemize}
 Each model is evaluated based on the distribution of predicted trolliness scores across users, manual review of selected user cases and performace on a small hand annotated test set.
 
-\section{Adapter Training}
-The Czech adapter is intended to help the model adjust to the Czech language and the specific Czech news website comments domain. The adapter should capture lexical and stylistic patterns of our target domain while leaving the 134M parameters of the base model which we fine tuned earliner frozen.\par
-We instert a bottlenech adapter block after every tansformer layer of DistillBERT and train only these new weights, about 2,5M parameters together with the regression head. The implementation relies on HuggingFace AdapterHub's AutoAdapterModel API.\par
-The adapter is trained purely thorugh masked-language modeling (MLM) on the Czech comments dataset. In the MLM task a randomly selected 15\% of tokens in the input are masked with a special \texttt{[MASK]} token. The model is then trained to predict the original token based on the context provided by other tokens in the sequence. This task aims to make the adapter internalise Czech lexical and syntactic patterns as well as domain specifics of the news comments.\par
+% Mazu adapter jelikoz literatura rika ze natrenovani pouze jazykoveho adaptera bez prepracovani regresni hlavy nepujde, jen zhorsi vysledek
+%\section{Adapter Training}
+%The Czech adapter is intended to help the model adjust to the Czech language and the specific Czech news website comments domain. The adapter should capture lexical and stylistic patterns of our target domain while leaving the 134M parameters of the base model which we fine tuned earliner frozen.\par
+%We instert a bottlenech adapter block after every tansformer layer of DistillBERT and train only these new weights, about 2,5M parameters together with the regression head. The implementation relies on HuggingFace AdapterHub's AutoAdapterModel API.\par
+%The adapter is trained purely thorugh masked-language modeling (MLM) on the Czech comments dataset. In the MLM task a randomly selected 15\% of tokens in the input are masked with a special \texttt{[MASK]} token. The model is then trained to predict the original token based on the context provided by other tokens in the sequence. This task aims to make the adapter internalise Czech lexical and syntactic patterns as well as domain specifics of the news comments.\par
 
 
 \section{}
@@ -472,7 +484,7 @@ TODO, s regresnim trolliness score jako zakladem zkusit hledat korelace naprikla
 
 \chapter{Annotation and Evaluation}
 
-To help me work with the model and dataset, I created a simple annotation application. The main goal of the tool is to allows labeling of users from the Czech dataset and search for their comments. The app also shows the model's predicted trolliness scores and attention weights. The annotations can then be used both for few-shot fine-tuning and for manual exploration of the model's predictions.\par
+
 
 
 \chapter{Conclusion}
