@@ -235,40 +235,37 @@ In this section, we will introduce the basic ideas behind Transformer models.\pa
 
 \subsection{Self-Attention}
 
-The key innovation of Transformer models is the use of self-attention mechanisms. Instead of processing text word by word like earlier models, Transformers can consider all words in a sentence at once, deciding how much attention each word should pay to others. This allows the model to capture complex patterns and dependencies across long texts, making it very powerful for understanding the both the context and meaning of language.\par
-
-\begin{align}
-	\text{Attention}(Q, K, V) &= \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V \\
-	\text{MultiHead}(Q, K, V) &= \text{Concat}(\text{head}_1, \text{head}_2, \ldots, \text{head}_h)W^O \\
-	\text{head}_i &= \text{Attention}(QW_i^Q, KW_i^K, VW_i^V) \\
-	\text{FFN}(x) &= \text{ReLU}(xW_1 + b_1)W_2 + b_2 \\
-	x_{out} &= \text{LayerNorm}(x + \text{Sublayer}(x))
-	\end{align}
+The key innovation of Transformer models is the use of self-attention mechanisms, which allows the model to dynamically focus on different parts of the text sequence, regardless of position. Instead of processing text word by word like earlier models, Transformers can consider all words in a sentence at once, deciding how much attention each word should pay to others. This allows the model to capture complex patterns and dependencies across long texts, making it very powerful for understanding the both the context and meaning of language.\par
 
 Each word (token) creates three vectors which are used by the self-attention mechanism:
 \begin{list}{}{}
 	\itemsep=0pt
-	\item \textbf{Query (Q)} - a vector that represents the word we are currently focusing on in the input sequence. ("What am I looking for?")
-	\item \textbf{Key (K)} - a vector that represents other words form the input sequence which we are comapring the query to. ("What do I have?")
-	\item \textbf{Value (V)} - a vector that represents the information we want to extract from the words we are comparing to. ("What do I want to know?")
+	\item \textbf{Query (Q)} - a vector that represents the active word in the input sequence ("What am I looking for?").
+	\item \textbf{Key (K)} - a vector that represents other words form the input sequence which are compared to the query ("What do I have?").
+	\item \textbf{Value (V)} - a vector that represents the information we want to extract from the compared words ("What do I want to know?")
 \end{list}
+
 The model uses a dot product to calculate the similairy between the query and the key vectors. The result is then scaled and passed through a softmax function to create a probability distribution. This distribution is then used to weight the value vectors, allowing the model to focus on the most relevant information in the input sequence. The model does all of the above steps in paralel for sets of queries, keys and values - it works with matrices instead of separate vectors. The equation for the self-attention mechanism as described is then: \par
+
 \begin{equation}
 	\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
 \end{equation}
 
 
 \subsection{Multi-Head Attention}
+
 Additionally to the self-attention mechanism, Transformer models also use multi-head attention. This means that instead of having a single set of query, key and value vectors, the model has multiple sets (or heads) that can learn different aspects of the input data. Each head performs its own self-attention calculation, and the results are then concatenated and linearly transformed to create the final output. This allows the model to capture a wider range of relationships and patterns in the data.\par
 The multi-head attention mechanism is defined as follows:
+
 \begin{align}
 	\text{MultiHead}(Q, K, V) &= \text{Concat}(\text{head}_1, \text{head}_2, \ldots, \text{head}_h)W^O \\
 	\text{head}_i &= \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)
 \end{align}
 
 The output is finally passed through a feed-forward neural network (FFN) which consists of two linear transformations with a ReLU activation function in between. The FFN is applied to each position separately and identically.
+
 \begin{equation}
-	\text{FFN}(x) &= \text{ReLU}(xW_1 + b_1)W_2 + b_2 
+	\text{FFN}(x) = \text{ReLU}(xW_1 + b_1)W_2 + b_2 
 \end{equation}
 
 \subsection{BERT}
@@ -396,29 +393,30 @@ We used 5 stylometric features named in \cite{Machova2021Algorithms} - character
 
 We will compare the training results of the models through their mean square error (MSE) and the coefficient of determination (the $R^2$ score). The mean square error (MSE) is a measure of the average squared difference between the predicted and actual values. A lower MSE indicates a better fit of the model to the data. 
 % Mean-Squared Error
-\[
-\mathrm{MSE} = \frac{1}{n}\sum_{i=1}^{n}\bigl(y_i - \hat{y}_i\bigr)^2
-\]
+\begin{equation}
+	\mathrm{MSE} = \frac{1}{n}\sum_{i=1}^{n}\bigl(y_i - \hat{y}_i\bigr)^2
+\end{equation}
+
 The $R^2$ score is a statistical measure of what share of the original variance of the data the model explains. To explain how it works let's first define the equations. First we define two sums of squares:\par
 % --- Total Sum of Squares (TSS)
-\[
-\mathrm{TSS} \;=\; \sum_{i=1}^{n} \bigl(y_i - \bar{y}\bigr)^2,
-\qquad
-\bar{y} \;=\; \frac{1}{n}\sum_{i=1}^{n} y_i
-\]
+\begin{equation}
+	\mathrm{TSS} \;=\; \sum_{i=1}^{n} \bigl(y_i - \bar{y}\bigr)^2,
+	\qquad
+	\bar{y} \;=\; \frac{1}{n}\sum_{i=1}^{n} y_i
+\end{equation}
+
 
 % --- Residual Sum of Squares (RSS)
-\[
-\mathrm{RSS} \;=\; \sum_{i=1}^{n} \bigl(y_i - \hat{y}_i\bigr)^2
-\]
+\begin{equation}
+	\mathrm{RSS} \;=\; \sum_{i=1}^{n} \bigl(y_i - \hat{y}_i\bigr)^2
+\end{equation}
 
 The $R^2$ score is then:
 % R^2
 % --- Coefficient of Determination (R^2)
-\[
-R^{2} \;=\; 1 \;-\; \frac{\mathrm{RSS}}{\mathrm{TSS}}
-\]
-\par
+\begin{equation}
+	R^{2} \;=\; 1 \;-\; \frac{\mathrm{RSS}}{\mathrm{TSS}}
+\end{equation}
 
 The $R^2$ score quantifes the proportion of total variance (TSS) that is left unexplained by the model's residuals (RSS).  A value of 1 indicates a perfect fit and 0 indicates that the model does not explain any of the variance in the data. A negative $R^2$ score indicates that the model performs worse than simply guessing the mean of the target variable.\par
 
