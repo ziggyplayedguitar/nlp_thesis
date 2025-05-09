@@ -228,12 +228,50 @@ In a related study, Machová et al.~\cite{Machova2022Comparison} investigated th
 Topic detection is another essential NLP technique used to analyze and interpret corpora of text. It identifies main topics in large amounts of text and groups conversations based on these topics. This can help us understand conversation patterns and recognize signs of disruptive behavior. Trolls often move discussions off-topic, introduce controversial subjects, or focus repeatedly on divisive issues. We can analyze the kinds of topics a user engages with and how they behave within those topics to find clues about their intentions and their role in discussions.\par
 
 \section{Transformer Models}
-%TODO: Vysvletit vice do hlobky? -attention, encoder-decoder, pre-training etc., matika?
-In recent years, Transformer models have emerged as the state-of-the-art approach for a wide range of NLP tasks. Introduced by First introduced by Vaswani et al. in 2017~\cite{Vaswani2017}, Transformers offer a new way for machines to understand and generate language. Unlike earlier methods, they are designed to efficiently capture relationships and patterns within text, even over long passages. Their ability to handle large amounts of data and to adapt to complex language structures has made them a key tool in modern NLP applications. In this section, we will introduce the basic ideas behind Transformer models.\par
+
+In recent years, Transformer models have emerged as the state-of-the-art approach for a wide range of NLP tasks. Introduced by First introduced by Vaswani et al. in 2017~\cite{Vaswani2017}, Transformers offer a new way for machines to understand and generate language. Unlike earlier methods, they are designed to efficiently capture relationships and patterns within text, even over long passages. Their ability to handle large amounts of data and to adapt to complex language structures has made them a key tool in modern NLP applications.
+Another important reason for the success of Transformer models is that they are typically very large models pre-trained on massive datasets. Many of these datasets are multilingual, meaning that the models learn from several languages at once. As a result, we can often use the same embedding space for different languages, and the knowledge gained in one language can transfer to some extent to others. This makes pre-trained Transformers especially valuable when dealing with multilingual or cross-lingual data.\par
+In this section, we will introduce the basic ideas behind Transformer models.\par
+
+\subsection{Self-Attention}
 
 The key innovation of Transformer models is the use of self-attention mechanisms. Instead of processing text word by word like earlier models, Transformers can consider all words in a sentence at once, deciding how much attention each word should pay to others. This allows the model to capture complex patterns and dependencies across long texts, making it very powerful for understanding the both the context and meaning of language.\par
 
-An important reason for the success of Transformer models is that they are typically very large models pre-trained on massive datasets. Many of these datasets are multilingual, meaning that the models learn from several languages at once. As a result, we can often use the same embedding space for different languages, and the knowledge gained in one language can transfer to some extent to others. This makes pre-trained Transformers especially valuable when dealing with multilingual or cross-lingual data.\par
+\begin{align}
+	\text{Attention}(Q, K, V) &= \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V \\
+	\text{MultiHead}(Q, K, V) &= \text{Concat}(\text{head}_1, \text{head}_2, \ldots, \text{head}_h)W^O \\
+	\text{head}_i &= \text{Attention}(QW_i^Q, KW_i^K, VW_i^V) \\
+	\text{FFN}(x) &= \text{ReLU}(xW_1 + b_1)W_2 + b_2 \\
+	x_{out} &= \text{LayerNorm}(x + \text{Sublayer}(x))
+	\end{align}
+
+Each word (token) creates three vectors which are used by the self-attention mechanism:
+\begin{list}{}{}
+	\itemsep=0pt
+	\item \textbf{Query (Q)} - a vector that represents the word we are currently focusing on in the input sequence. ("What am I looking for?")
+	\item \textbf{Key (K)} - a vector that represents other words form the input sequence which we are comapring the query to. ("What do I have?")
+	\item \textbf{Value (V)} - a vector that represents the information we want to extract from the words we are comparing to. ("What do I want to know?")
+\end{list}
+The model uses a dot product to calculate the similairy between the query and the key vectors. The result is then scaled and passed through a softmax function to create a probability distribution. This distribution is then used to weight the value vectors, allowing the model to focus on the most relevant information in the input sequence. The model does all of the above steps in paralel for sets of queries, keys and values - it works with matrices instead of separate vectors. The equation for the self-attention mechanism as described is then: \par
+\begin{equation}
+	\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+\end{equation}
+
+
+\subsection{Multi-Head Attention}
+Additionally to the self-attention mechanism, Transformer models also use multi-head attention. This means that instead of having a single set of query, key and value vectors, the model has multiple sets (or heads) that can learn different aspects of the input data. Each head performs its own self-attention calculation, and the results are then concatenated and linearly transformed to create the final output. This allows the model to capture a wider range of relationships and patterns in the data.\par
+The multi-head attention mechanism is defined as follows:
+\begin{align}
+	\text{MultiHead}(Q, K, V) &= \text{Concat}(\text{head}_1, \text{head}_2, \ldots, \text{head}_h)W^O \\
+	\text{head}_i &= \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)
+\end{align}
+
+The output is finally passed through a feed-forward neural network (FFN) which consists of two linear transformations with a ReLU activation function in between. The FFN is applied to each position separately and identically.
+\begin{equation}
+	\text{FFN}(x) &= \text{ReLU}(xW_1 + b_1)W_2 + b_2 
+\end{equation}
+
+\subsection{BERT}
 
 One of the most influential Transformer-based models for natural language understanding is BERT (Bidirectional Encoder Representations from Transformers). Introduced by Devlin et al. in 2018~\cite{Devlin2018}, BERT builds on the Transformer encoder architecture and is pre-trained on large text corpora using masked language modeling and next sentence prediction tasks. Unlike traditional language models that read text from left to right, BERT is deeply bidirectional, meaning it learns information from both the left and right context at the same time. This bidirectional training allows BERT to capture richer information about language, making it highly effective for downstream tasks like text classification, question answering, and sentiment analysis.
 
@@ -405,11 +443,15 @@ With coarse stylometric features the SVR and GB regressors did not beat guessing
 	\end{tabular}
 \end{table}
 
+
+
 We thus show that BERT achieves similar or better results than a stylometric model and we validate why we chose to use it.
+
+TODO Muzu jeste pridal vyhodnoceni jednotlivych epoch. Bohuzel jsem nemel naimplemenotvane ukladani plne historie pri trenovani takze musim trenovani spustit znova.
 
 \section{Further Experiments with BERT Model}
 
-After preparing the dataset and implementing the proposed model, the next step is to evaluate and explore the models behavior. The goal of the experiemnts is to compare different training strategies and see how they do with trolliness scoring of the Czech dataset.\par
+After training fine-tuning the BERT model with our prepared data the next step is to explore the model behaviour on the Czech comments domain. The goal of the experiemnts is to compare different training strategies and see how they do with trolliness scoring of the Czech dataset.\par
 I compare three different versions of the model. 
 \begin{itemize} 
 	\item \textbf{Base model} - trained only on the foregin labeled troll datasets without any additional fine-tuning on Czech data. 
@@ -419,7 +461,10 @@ I compare three different versions of the model.
 Each model is evaluated based on the distribution of predicted trolliness scores across users, manual review of selected user cases and performace on a small hand annotated test set.
 
 \section{Adapter Training}
-TODO vyhodnoceni treninku adapteru
+The Czech adapter is intended to help the model adjust to the Czech language and the specific Czech news website comments domain. The adapter should capture lexical and stylistic patterns of our target domain while leaving the 134M parameters of the base model which we fine tuned earliner frozen.\par
+We instert a bottlenech adapter block after every tansformer layer of DistillBERT and train only these new weights, about 2,5M parameters together with the regression head. The implementation relies on HuggingFace AdapterHub's AutoAdapterModel API.\par
+The adapter is trained purely thorugh masked-language modeling (MLM) on the Czech comments dataset. In the MLM task a randomly selected 15\% of tokens in the input are masked with a special \texttt{[MASK]} token. The model is then trained to predict the original token based on the context provided by other tokens in the sequence. This task aims to make the adapter internalise Czech lexical and syntactic patterns as well as domain specifics of the news comments.\par
+
 
 \section{}
 TODO ukazka vysledku a provnani modelu
