@@ -13,10 +13,13 @@ Path("./annotations").mkdir(exist_ok=True)
 
 # Predictor from Checkpoint
 predictor = TrollPredictor(
-    # model_path= "./checkpoints/best_model.pt",
-    model_path= "./checkpoints/finetuned_model.pt",
+    # model_path= "./checkpoints/best_model_distilbert.pt",
+    model_path= "./checkpoints/best_model_english_medium",
+    model_name="distilbert-base-multilingual-cased",  # Add base model name
     comments_per_user=10,
-    max_length=96
+    max_length=96,
+    # adapter_path="./output/czech_comments_adapter",  # Add adapter path
+    # adapter_name="czech_comments_mlm"
 )
 
 # --- Load Data ---
@@ -56,7 +59,8 @@ trolliness_score = pred_result["trolliness_score"]  # New continuous score
 binary_confidence = pred_result["binary_confidence"]  # New confidence metric
 
 # Display all scores with color coding
-col1, col2, col3, col4 = st.columns(4)  # Added an extra column for trolliness score
+# col1 = st.columns(1)  # Added an extra column for trolliness score
+col1, col2, col3 = st.columns(3)  # Added an extra column for trolliness score
 
 with col1:
     st.metric(
@@ -79,12 +83,12 @@ with col3:
         delta="higher = more anomalous"
     )
 
-with col4:
-    st.metric(
-        label="LOF Score",
-        value=f"{author_info['anomaly_score_lof']:.3f}",
-        delta="higher = more anomalous"
-    )
+# with col4:
+#     st.metric(
+#         label="LOF Score",
+#         value=f"{author_info['anomaly_score_lof']:.3f}",
+#         delta="higher = more anomalous"
+#     )
 
 # --- Comments Preview ---
 st.markdown("#### Example Comments")
