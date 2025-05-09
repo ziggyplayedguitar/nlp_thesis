@@ -77,7 +77,7 @@
 \newtheorem{remark}[theorem]{Remark}
 
 % Marginpars used as navigation aids.
-\usepackage{mparhack}
+\usepackage{mparhack} 
 
 \newcommand\indexmp[1]{{\sffamily\bfseries#1}}
 
@@ -137,6 +137,8 @@ tzv. trollů.\end{abstract-czech}
 \usepackage{url}
 
 \usepackage{tabularx,array}
+\usepackage{multirow} % Required for \multirow command
+\usepackage{booktabs}  
 
 \usepackage{mathtools,amssymb}
 
@@ -352,10 +354,60 @@ The output of the model is then a continous trolliness score between 0 and 1. A 
 
 \section{Baseline Comparison}
 To evaluate the reasonability of the proposed method and how much a transfoer model really adds, we first reproduced a stylomtery-only baseline with the same trial/test/validation data splits used with the BERT model.
-We used 5 stylometric features named in \cite{Machova2021Algorithms} - character count, word count, average word length, capital-letter ratio and digit ratio. We then trained two regressors on them a linar support-vector regressor (SVR) and a gradient-boosint regressor (GBR). We also added a stronger bag-of-words baseline, usiung a TF-IDF representation of the comments with 50000 unigrams and bigrams and fitting on a ridge regressor.
+We used 5 stylometric features named in \cite{Machova2021Algorithms} - character count, word count, average word length, capital-letter ratio and digit ratio. We then trained two regressors on them a linar support-vector regressor (SVR) and a gradient-boosint regressor (GBR). We also added a stronger Term Frequency - Inverse Document Frequency (TF-IDF) based baseline with a representation of comments through 50000 unigrams and bigrams and fitting on a ridge regressor.\par
 
+We will compare the training results of the models through their mean square error (MSE) and the coefficient of determination (the $R^2$ score). The mean square error (MSE) is a measure of the average squared difference between the predicted and actual values. A lower MSE indicates a better fit of the model to the data. 
+% Mean-Squared Error
+\[
+\mathrm{MSE} = \frac{1}{n}\sum_{i=1}^{n}\bigl(y_i - \hat{y}_i\bigr)^2
+\]
+The $R^2$ score is a statistical measure of what share of the original variance of the data the model explains. To explain how it works let's first define the equations. First we define two sums of squares:\par
+% --- Total Sum of Squares (TSS)
+\[
+\mathrm{TSS} \;=\; \sum_{i=1}^{n} \bigl(y_i - \bar{y}\bigr)^2,
+\qquad
+\bar{y} \;=\; \frac{1}{n}\sum_{i=1}^{n} y_i
+\]
 
-With coarse stylometric features the SVR and GB regressors barely beat guessing the mean with an $R^2$ score of close to $0$ and a MSE of about 0.22. Adding lexical signals with TF-IDF improves the exaplined variance to 0.33 and mean square error to 0.152 but still doesnt perform near as well as the transformer model.
+% --- Residual Sum of Squares (RSS)
+\[
+\mathrm{RSS} \;=\; \sum_{i=1}^{n} \bigl(y_i - \hat{y}_i\bigr)^2
+\]
+
+The $R^2$ score is then:
+% R^2
+% --- Coefficient of Determination (R^2)
+\[
+R^{2} \;=\; 1 \;-\; \frac{\mathrm{RSS}}{\mathrm{TSS}}
+\]
+\par
+
+The $R^2$ score quantifes the proportion of total variance (TSS) that is left unexplained by the model's residuals (RSS).  A value of 1 indicates a perfect fit and 0 indicates that the model does not explain any of the variance in the data. A negative $R^2$ score indicates that the model performs worse than simply guessing the mean of the target variable.\par
+
+\subsection{Evaluation of the Baseline}
+With coarse stylometric features the SVR and GB regressors did not beat guessing the mean with a negative $R^2$ score and a MSE of about 0.26. This result is not too surprising as 5 features is much for the regression models to work with, but it shows notheless that few handpicked stylometric features are not enough. Extending to 50000 features (uni- and bi-gram counts) through TF-IDF improves $R^2$ score a lot, to 0.57 and has a mean square error of 0.09 but it still gets outperformed by the BERT model with a regression head which achieved a $R^2$ score of 0.65 and a MSE of 0.07. The results of the two best models TF-IDF and BERT are similiar, but the trained TF-IDF model cannot be used on other other language domains, whie the BERT model should be able to carry over some of its learned knowledge. The results of the model training and evaluation are shown in the table below.\par
+
+\begin{table}[ht]
+	\centering
+	\caption{Author-level results on English train/test/val data.}
+	\label{tab:en_author_results}
+	\begin{tabular}{lccccc}
+	  \hline
+	  \textbf{Model} & \textbf{Features} &
+	  \textbf{Val MSE} & \textbf{Val $R^{2}$} &
+	  \textbf{Test MSE} & \textbf{Test $R^{2}$} \\
+	  \hline
+	  Linear SVR & 5 stylometric          & 0.260 & $-0.211$ & 0.260 & $-0.211$ \\
+	  Ridge TF--IDF & 50\,000 1-2-grams   & 0.090 & 0.579   & 0.097 & 0.547    \\
+	  DistilBERT & contextual   & \textbf{0.087} & \textbf{0.592} &
+										   \textbf{0.082} & \textbf{0.618} \\
+	  \hline
+	\end{tabular}
+\end{table}
+
+We thus show that BERT achieves similar or better results than a stylometric model and we validate why we chose to use it.
+
+\section{Further Experiments with BERT Model}
 
 After preparing the dataset and implementing the proposed model, the next step is to evaluate and explore the models behavior. The goal of the experiemnts is to compare different training strategies and see how they do with trolliness scoring of the Czech dataset.\par
 I compare three different versions of the model. 
