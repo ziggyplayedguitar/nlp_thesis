@@ -97,6 +97,7 @@
 \ExplSyntaxOff
 
 \usepackage{graphicx}
+\usepackage{subcaption}
 
 % Abstract in Czech
 \begin{abstract-czech}
@@ -399,8 +400,17 @@ The app loads a saved model checkpoint and available Czech comments from the dat
 \chapter{Experiments}
 
 \section{Baseline Comparison}
-To evaluate the reasonability of the proposed method and how much a transfoer model really adds, we first reproduced a stylomtery-only baseline with the same trial/test/validation data splits used with the BERT model.
-We used 5 stylometric features named in \cite{Machova2021Algorithms} - character count, word count, average word length, capital-letter ratio and digit ratio. We then trained two regressors on them a linar support-vector regressor (SVR) and a gradient-boosint regressor (GBR). We also added a stronger Term Frequency - Inverse Document Frequency (TF-IDF) based baseline with a representation of comments through 50000 unigrams and bigrams and fitting on a ridge regressor.\par
+
+To evaluate the reasonability of the proposed method and how much a transformer model really adds, we first reproduced a stylometry-only baseline with the same train/test/validation data splits used with the BERT model. We used 5 stylometric features named in \cite{Machova2021Algorithms} - character count, word count, average word length, capital-letter ratio and digit ratio. We then trained two regressors on them: a linear support-vector regressor (SVR) and a gradient-boosting regressor (GBR). We also added a stronger Term Frequency - Inverse Document Frequency (TF-IDF) based baseline, where comments were represented through 50000 unigrams and bigrams, and fitted on a ridge regressor.\par
+
+For the BERT model, we used a regression head with a Sigmoid activation function, allowing it to output a continuous score between 0 and 1, which we interpret as a trolliness score. Although the model is structured as a regressor, we used Binary Cross-Entropy Loss (BCE Loss) during training. This choice ensures that the model learns to produce outputs that behave like probabilities - values closer to 1 indicate high trolliness, while values closer to 0 indicate low trolliness. BCE Loss is defined as follows:
+
+% Binary Cross-Entropy Loss (BCE)
+\begin{equation}
+L_{BCE}(y, \hat{y}) = - \left[ y \log(\hat{y}) + (1 - y) \log(1 - \hat{y}) \right]
+\end{equation}
+
+The decision to use BCE Loss, despite framing the problem as a regression task, was motivated by its ability to directly optimize for the probability of each label (0 or 1). Unlike standard regression losses (like Mean Squared Error or Huber Loss), BCE Loss is specifically designed to handle cases where the target values are binary, but the model's predictions are continuous probabilities. This setup helps the model avoid becoming overly biased towards low values, which was a problem with a test run with HuberLoss.\par 
 
 We will compare the training results of the models through their mean square error (MSE) and the coefficient of determination (the $R^2$ score). The mean square error (MSE) is a measure of the average squared difference between the predicted and actual values. A lower MSE indicates a better fit of the model to the data. 
 % Mean-Squared Error
@@ -452,19 +462,96 @@ With coarse stylometric features the SVR and GB regressors did not beat guessing
 	\end{tabular}
 \end{table}
 
-
-
 We thus show that BERT achieves similar or better results than a stylometric model and we validate why we chose to use it.
 
 TODO Muzu jeste pridal vyhodnoceni jednotlivych epoch. Bohuzel jsem nemel naimplemenotvane ukladani plne historie pri trenovani takze musim trenovani spustit znova.
 
 \section{Further Experiments with BERT Model}
 
+For further experiments we trained the BERT model on a mix of all of the availalbe troll comments not only the english language ones like in the baseline evaluation step. Two limitations were made to reduce the size of the training dataset slightly. First, wile loading the data each author was limited to a maximum of 50 comments. Secondly, after loading all the datasets  as the full dataset was heavily biased towards the non troll class with 40000 accounts and only 4000 troll accounts, and a ratio of 90\% to 10\% troll and non troll comments the dataset was balanced to a 50\% 50\% comment ratio and about a 66\% 33\% user ratio. The final training data split was as follows:
+
+% Tweet Distribution Table
+\begin{table}[ht]
+    \centering
+    \caption{Tweet distribution in the dataset.}
+    \label{tab:tweet_distribution}
+    \begin{tabular}{lcc}
+        \toprule
+        \textbf{Category} & \textbf{Count} & \textbf{Percentage} \\
+        \midrule
+        Troll tweets     & 144,563 & 51.1\% \\
+        Non-troll tweets & 138,340 & 48.9\% \\
+        \midrule
+        Total tweets     & 282,903 & 100\% \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% Author Statistics Table
+\begin{table}[ht]
+    \centering
+    \caption{Author statistics in the dataset.}
+    \label{tab:author_statistics}
+    \begin{tabular}{lcc}
+        \toprule
+        \textbf{Category} & \textbf{Count} & \textbf{Percentage} \\
+        \midrule
+        Troll authors     & 4,555 & 35.6\% \\
+        Non-troll authors & 8,236 & 64.4\% \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+
+% Dataset Size Table
+\begin{table}[ht]
+    \centering
+    \caption{Dataset sizes and author distribution.}
+    \label{tab:dataset_sizes}
+    \begin{tabular}{lcc}
+        \toprule
+        \textbf{Dataset} & \textbf{Samples} & \textbf{Authors} \\
+        \midrule
+        Train       & 198,385 & 8,953 \\
+        Validation  & 42,099  & 1,919 \\
+        Test        & 42,419  & 1,919 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The model was trained for 5 epochs on a single NVIDIA RTX 3060ti GPU (8GB memory) using a batch size of 16 and the AdamW optimizer with a learning rate of 1e-5 and weight decay of 0.01. A linear learning rate schedule was employed. The training, utilizing PyTorch and the HuggingFace Transformers library for the BERT model, took approximately 4 hours. The table and figure below show the training results, including training/validation loss and $R^2$ scores over epochs.\par
+
+% Best Epoch Results Table
+\begin{table}[ht]
+    \centering
+    \caption{Training and validation metrics at the best epoch (Epoch 2).}
+    \label{tab:best_epoch_results}
+    \begin{tabular}{lcc}
+        \toprule
+        \textbf{Metric} & \textbf{Training} & \textbf{Validation} \\
+        \midrule
+        Loss            & 0.5437 & 0.5557 \\
+        Mean Squared Error (MSE) & 0.0734 & 0.0746 \\
+        $R^2$ Score     & 0.6814 & 0.6641 \\
+        Binary Accuracy & 0.9134 & 0.9165 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% Training and Validation Loss Figure
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.35]{figures/training_full.png}
+	\caption{Training and validation loss over epochs}
+	\label{fig:training_stats}
+\end{figure}
+
+\subsection{Predictions on Czech Dataset}
 After training fine-tuning the BERT model with our prepared data the next step is to explore the model behaviour on the Czech comments domain. The goal of the experiemnts is to compare different training strategies and see how they do with trolliness scoring of the Czech dataset.\par
-I compare three different versions of the model. 
+I compare two different versions of the model. 
 \begin{itemize} 
-	\item \textbf{Base model} - trained only on the foregin labeled troll datasets without any additional fine-tuning on Czech data. 
-	\item \textbf{Base + Few-shot} - the base model further fine-tuned on a small manually annotated set of Czech users. 
+	\item \textbf{BERT + Troll Training} - DistillBERT fine tuned with foreign troll datasets as described above. 
+	\item \textbf{BERT + Troll Training + Few Shot Czech Fine-Tune} - model further fine-tuned on a small manually annotated set of Czech users. 
 	%\item \textbf{Base + Adapter + Few-shot} - the base model with a Czech domain adapter trained first, followed by fine-tuning on the manually annotated Czech users. 
 \end{itemize}
 Each model is evaluated based on the distribution of predicted trolliness scores across users, manual review of selected user cases and performace on a small hand annotated test set.
