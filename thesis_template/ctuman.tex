@@ -557,13 +557,70 @@ I compare two different versions of the model.
 \end{itemize}
 Each model is evaluated based on the distribution of predicted trolliness scores across users, manual review of selected user cases and performace on a small hand annotated test set.
 
+\section{Results}
+
+\subsection{First Experiment}
+The first set of experiments involved trying to directly plug in the Czech comments into the \textbf{BERT + Troll Training} model, which was fine-tuned on the international troll datasets.\par
+The results of this initial approach were concerning. The model exihibited a strong tendency to predict very low trolliness scores across all users, with the majority of scores falling bellow 0.1. The summary statitstics of these predictions are shown in the table below.
+
+% Best Epoch Results Table
+\begin{table}[ht]
+    \centering
+    \caption{Trolliness score distribution.}
+    \begin{tabular}{lcc}
+        \toprule
+        \textbf{Statistic} & \textbf{Value} \\
+        \midrule
+        Mean            & 0.00019  \\
+        Standard Deviation & 0.00572 \\
+        Median     & 0.00003  \\
+        Maximum & 0.41994  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+These results show that the model struggles to meaningfully capture variation of trolliness in the Czech comments and wasn't able to generalize well to the Czech domain. There could be several factors contributing to this issue. It could be language differences, as although the model is based on a multilingual BERT model, the nuances of the Czech language may not be well represented and may be important for the troll detection task. Additionally, the domain might be too widely missaligned, as the training data was collected from various platforms, various contexts and various time-frames. The missalignment of the training data could make it quite difficult for the model to use its learned knowledge on the specific Czech comments domain.\par 
+Recognizing the severe leimitations, we explored a strategy to overcome this problem by further fine-tuning the model on a small manually annotated dataset, which was menitoned previously when describing the annotation app.\par
+The next step, described bellow, demonstrated more promising results.\par
+
+\subsection{Fine-Tuned Experiment}
+After seeing the poor performace of the "plug and play" approach, we decided to try to explore the fine tuning of the model through a few shot training approach. The goal was to see if the model could learn to adapt to the Czech language and domain by training on a small set of manually annotated users.\par
+The model was trained for 5 epochs with a manually annotated dataset of 50 users. The performace of the the fine-tuned model on the Czech dataset improved significantly after fine-tuning, as can be seen in the new distribution of troliness scores in table below.
+
+% Best Epoch Results Table
+\begin{table}[ht]
+    \centering
+    \caption{Trolliness score distribution, fine-tuned model.}
+    \begin{tabular}{lcc}
+        \toprule
+        \textbf{Statistic} & \textbf{Value} \\
+        \midrule
+        Mean & 0.154568  \\
+        Standard Deviation & 0.253612 \\
+        Median     & 0.001407  \\
+        Maximum & 0.999692  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The results indicate improvement in the models ability to identify various levels of troll behavior. The mean trolliness score increased to 0.15, with a maximum score of 0.99. To better understand the model's behaviour, we visualized the distribution of trolliness predictions and scores across users in Figure 5.2.:\par
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.35]{figures/distribution_fine_tuned.png}
+	\caption{Trolliness score distribution, fine-tuned model.}
+	\label{fig:fine_tune}
+\end{figure}
+
+The pie chart indicates that the model classifes only 9\% of users as "Troll". This imbalance suggests that the model is conservative with assigning the a high trolliness score, which might not be a bad thing as it reduces the risk of false positives. And it also reflects what someone might expect, that only a small portion of users are trolls.\par
+The histogram further illustrates the spread of trolliness scores. Most predictions cluster around zero and low troliness scores, however the model does still produce a range of scores reaching up to 1, showing that it does differentiate various degress of troll behaviour.
+
+\subsection{Manual Review of Predictions}
+To further understand the model's predictions, we manually reviewed a selection of users with high, low and uncertain trolliness scores. The goal was to see if the model's predictions aligned with our expectations and to identify any potential issues or biases in the model.\par
 
 \section{Adaptery Jsem Nakonec vynechal}
 Jazykovy adapter se neukazal ze by bohuzel pomahal a nasel jsem take i v literature zminene ze prave jen jazykovy adapter nestaci a mohl by vykon dokonce zhorsit. Tak asi nebudu psat nebo mam zminit experiment?
 
-
-\section{TODO}
-Jeste pridat priklady predikci modelu na ceskych datech. Jeste s modelem bojuji.
 % Mazu adapter jelikoz literatura rika ze natrenovani pouze jazykoveho adaptera bez prepracovani regresni hlavy nepujde, jen zhorsi vysledek
 %\section{Adapter Training}
 %The Czech adapter is intended to help the model adjust to the Czech language and the specific Czech news website comments domain. The adapter should capture lexical and stylistic patterns of our target domain while leaving the 134M parameters of the base model which we fine tuned earliner frozen.\par
