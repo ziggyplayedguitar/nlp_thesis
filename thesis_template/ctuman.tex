@@ -388,6 +388,9 @@ The output of the model is then a continous trolliness score between 0 and 1. A 
 
 Additionally, to help me work with the model and dataset, I created a simple annotation application. The main goal of the tool is to allows labeling of users from the Czech dataset and search for their comments. The app also shows the model's predicted trolliness scores and attention weights. The annotations can then be used both for few-shot fine-tuning and for manual exploration of the model's predictions.\par
 The app loads a saved model checkpoint and available Czech comments from the dataset. It then allows a user to search for an author by name. It then displays the predicted trolliness score of the author and all of their comments along with their attention weights. Finally, the app allows the user to label the author as troll, non-troll or uncertain and saves the labels to a file. The app is implemented in Python using the Streamlit library, which allows for easy creation of interactive web applications.\par
+We used the app to manually label a small set of users from the Czech dataset. We focused on users with high or low trolliness scores, as well as those with uncertain scores. The task proved to be quite challanging. Most users tended to be quite negative and angry in general as mentioned in the previous section, but it was still difficult to rate them as troll. \par
+The manual labelling highlighted the inherent difficulty of the task of distinguishing between toxic behaviour and geinuine disagreement in online discussion. The challange of recognizing trolls from other disruptive or even geniune but negative users could be challangeing even for experts in political science or psychology and goes beyond the scope of this thesis. Depsite the complexity and the time-consuming nature of the annotation we created a small labeled dataset for further use. \par
+
 
 \begin{figure}[htbp]          
 	\centering                 
@@ -463,8 +466,6 @@ With coarse stylometric features the SVR and GB regressors did not beat guessing
 \end{table}
 
 We thus show that BERT achieves similar or better results than a stylometric model and we validate why we chose to use it.
-
-TODO Muzu jeste pridal vyhodnoceni jednotlivych epoch. Bohuzel jsem nemel naimplemenotvane ukladani plne historie pri trenovani takze musim trenovani spustit znova.
 
 \section{Further Experiments with BERT Model}
 
@@ -556,18 +557,19 @@ I compare two different versions of the model.
 \end{itemize}
 Each model is evaluated based on the distribution of predicted trolliness scores across users, manual review of selected user cases and performace on a small hand annotated test set.
 
+
+\section{Adaptery Jsem Nakonec vynechal}
+Jazykovy adapter se neukazal ze by bohuzel pomahal a nasel jsem take i v literature zminene ze prave jen jazykovy adapter nestaci a mohl by vykon dokonce zhorsit. Tak asi nebudu psat nebo mam zminit experiment?
+
+
+\section{TODO}
+Jeste pridat priklady predikci modelu na ceskych datech. Jeste s modelem bojuji.
 % Mazu adapter jelikoz literatura rika ze natrenovani pouze jazykoveho adaptera bez prepracovani regresni hlavy nepujde, jen zhorsi vysledek
 %\section{Adapter Training}
 %The Czech adapter is intended to help the model adjust to the Czech language and the specific Czech news website comments domain. The adapter should capture lexical and stylistic patterns of our target domain while leaving the 134M parameters of the base model which we fine tuned earliner frozen.\par
 %We instert a bottlenech adapter block after every tansformer layer of DistillBERT and train only these new weights, about 2,5M parameters together with the regression head. The implementation relies on HuggingFace AdapterHub's AutoAdapterModel API.\par
 %The adapter is trained purely thorugh masked-language modeling (MLM) on the Czech comments dataset. In the MLM task a randomly selected 15\% of tokens in the input are masked with a special \texttt{[MASK]} token. The model is then trained to predict the original token based on the context provided by other tokens in the sequence. This task aims to make the adapter internalise Czech lexical and syntactic patterns as well as domain specifics of the news comments.\par
-
-
-\section{}
-TODO ukazka vysledku a provnani modelu
-
-\section{}
-TODO, s regresnim trolliness score jako zakladem zkusit hledat korelace napriklad v clusterech topicu?. Pri prvni analyze jsem ale nenasel korelaci mezi trolovosit a napriklad poctem ruznych topicu do kterych uzivatel prispiva. 
+ 
 
 \chapter{Annotation and Evaluation}
 
