@@ -22,23 +22,20 @@ logger = logging.getLogger(__name__)
 
 class TweetPreprocessor:
     def __init__(self):
-        # Combine all patterns that need to be removed
-        self.patterns_to_remove = [
-            (re.compile(r'https?://\S+\b'), ''),  # URLs
-            (re.compile(r'pic\.twitter\.com/\w+\b'), ''),  # Twitter pics
-            (re.compile(r'#\w+'), ''),  # Hashtags
-            (re.compile(r'@\w+'), ''),  # Mentions
-            (re.compile(r'"([^"]*)"'), ''),  # Quotes
-            (re.compile(r'['
-                u"\U0001F600-\U0001F64F"  # emoticons
-                u"\U0001F300-\U0001F5FF"  # symbols & pictographs
-                u"\U0001F680-\U0001F6FF"  # transport & map symbols
-                u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
-                u"\U00002702-\U000027B0"
-                u"\U000024C2-\U0001F251"
-                "]+", flags=re.UNICODE), ''),  # Emojis
-            (re.compile(r'\s+'), ' ')  # Multiple whitespace
-        ]
+        self.url_pattern = re.compile(r'https?://\S+\b')
+        self.pic_pattern = re.compile(r'pic\.twitter\.com/\w+\b')
+        self.multiple_whitespace = re.compile(r'\s+')
+        self.hashtag_pattern = re.compile(r'#\w+')
+        self.mention_pattern = re.compile(r'@\w+')
+        self.quote_pattern = re.compile(r'"([^"]*)"')
+        self.emoji_pattern = re.compile("["
+            u"\U0001F600-\U0001F64F"  # emoticons
+            u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+            u"\U0001F680-\U0001F6FF"  # transport & map symbols
+            u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+            u"\U00002702-\U000027B0"
+            u"\U000024C2-\U0001F251"
+            "]+", flags=re.UNICODE)
         
         # Download NLTK stop words if not already downloaded
         try:
@@ -63,10 +60,14 @@ class TweetPreprocessor:
         if pd.isna(text):
             return ""
         
-        # Apply all patterns to remove unwanted elements
-        for pattern, replacement in self.patterns_to_remove:
-            text = pattern.sub(replacement, text)
-        
+        # Remove URLs, Twitter pics, hashtags, mentions, and emojis
+        text = self.url_pattern.sub('', text) 
+        text = self.pic_pattern.sub('', text)
+        text = self.hashtag_pattern.sub('', text)
+        text = self.mention_pattern.sub('', text)
+        text = self.quote_pattern.sub('', text)
+        text = self.emoji_pattern.sub('', text)
+
         # Split into words and filter out stop words, keep case
         words = text.split()
         words = [word for word in words if word.lower() not in self.stop_words]
