@@ -150,8 +150,12 @@ class TrollPredictor:
                     tweets_per_account=self.comments_per_user
                 )
                 
-                trolliness_score = outputs['trolliness_score'].squeeze().item()
-                all_scores.append(trolliness_score)
+                # Get raw logits from the model
+                raw_logits = outputs['trolliness_score'].squeeze() 
+                
+                # Apply sigmoid to get probabilities
+                probabilities = torch.sigmoid(raw_logits).item() # .item() if batch size is 1 for this specific call
+                all_scores.append(probabilities) # Now storing probabilities
                 
                 # Handle attention weights
                 attention = outputs['tweet_attention_weights'].squeeze().cpu().tolist()
@@ -160,15 +164,15 @@ class TrollPredictor:
                 else:
                     all_attention_weights.append(float(attention))
         
-        # Aggregate results
-        avg_score = np.mean(all_scores)
+        # Aggregate results (now averaging probabilities)
+        avg_probability = np.mean(all_scores) 
         
         result = {
-            'prediction': 'troll' if avg_score >= self.threshold else 'not_troll',
-            'trolliness_score': float(avg_score),
-            'binary_confidence': abs(avg_score - 0.5) * 2,
-            'attention_weights': all_attention_weights[:len(texts)],  # Only return weights for original texts
-            'batch_scores': all_scores,
+            'prediction': 'troll' if avg_probability >= self.threshold else 'not_troll',
+            'trolliness_score': float(avg_probability), # This is now a probability [0,1]
+            'binary_confidence': abs(avg_probability - 0.5) * 2, # More meaningful with probability
+            'attention_weights': all_attention_weights[:len(texts)],
+            'batch_scores': all_scores, # These are now probabilities per batch
             'num_batches': len(batches)
         }
         
