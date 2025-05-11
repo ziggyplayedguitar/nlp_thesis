@@ -22,12 +22,23 @@ logger = logging.getLogger(__name__)
 
 class TweetPreprocessor:
     def __init__(self):
-        self.url_pattern = re.compile(r'https?://\S+\b')
-        self.pic_pattern = re.compile(r'pic\.twitter\.com/\w+\b')
-        self.multiple_whitespace = re.compile(r'\s+')
-        self.hashtag_pattern = re.compile(r'#\w+')
-        self.mention_pattern = re.compile(r'@\w+')
-        self.quote_pattern = re.compile(r'"([^"]*)"')
+        # Combine all patterns that need to be removed
+        self.patterns_to_remove = [
+            (re.compile(r'https?://\S+\b'), ''),  # URLs
+            (re.compile(r'pic\.twitter\.com/\w+\b'), ''),  # Twitter pics
+            (re.compile(r'#\w+'), ''),  # Hashtags
+            (re.compile(r'@\w+'), ''),  # Mentions
+            (re.compile(r'"([^"]*)"'), ''),  # Quotes
+            (re.compile(r'['
+                u"\U0001F600-\U0001F64F"  # emoticons
+                u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+                u"\U0001F680-\U0001F6FF"  # transport & map symbols
+                u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+                u"\U00002702-\U000027B0"
+                u"\U000024C2-\U0001F251"
+                "]+", flags=re.UNICODE), ''),  # Emojis
+            (re.compile(r'\s+'), ' ')  # Multiple whitespace
+        ]
         
         # Download NLTK stop words if not already downloaded
         try:
@@ -52,22 +63,16 @@ class TweetPreprocessor:
         if pd.isna(text):
             return ""
         
-        # Remove URLs, Twitter pics, hashtags, and mentions
-        text = self.url_pattern.sub('', text) 
-        text = self.pic_pattern.sub('', text)
-        text = self.hashtag_pattern.sub('', text)
-        text = self.mention_pattern.sub('', text)
-        text = self.quote_pattern.sub('', text)
-
+        # Apply all patterns to remove unwanted elements
+        for pattern, replacement in self.patterns_to_remove:
+            text = pattern.sub(replacement, text)
+        
         # Split into words and filter out stop words, keep case
         words = text.split()
         words = [word for word in words if word.lower() not in self.stop_words]
-
+        
         # Rejoin and normalize whitespace
-        text = ' '.join(words)
-        text = self.multiple_whitespace.sub(' ', text)
-
-        return text.strip()
+        return ' '.join(words).strip()
 
 def load_twitter_json(json_folder: Path) -> pd.DataFrame:
     """Load and preprocess tweets from all JSON files in the specified folder."""
@@ -86,15 +91,23 @@ def load_twitter_json(json_folder: Path) -> pd.DataFrame:
     
     return pd.DataFrame(all_tweets)
 
-# TODO Remove UNK tokens
-# TODO Train only on english data maybe
-def load_and_clean_data(data_dir: str, max_tweets_per_source: int = None) -> pd.DataFrame:
+def limit_tweets_per_author(df: pd.DataFrame, max_tweets_per_author: int = None) -> pd.DataFrame:
+    """Helper function to limit tweets per author in a dataframe"""
+    if max_tweets_per_author is None:
+        return df
+    return df.groupby('account').apply(
+        lambda x: x.sample(n=min(len(x), max_tweets_per_author), random_state=42)
+    ).reset_index(drop=True)
+
+def load_and_clean_data(data_dir: str, max_tweets_per_source: int = None, max_tweets_per_author: int = None) -> pd.DataFrame:
     """Load and combine all datasets including Twitter JSON files.
     
     Args:
         data_dir (str): Directory containing the data
         max_tweets_per_source (int, optional): Maximum number of tweets to load from each source.
             If None, load all tweets. Defaults to None.
+        max_tweets_per_author (int, optional): Maximum number of tweets to keep per author.
+            If None, keep all tweets. Defaults to None.
     """
     data_path = Path(data_dir)
     preprocessor = TweetPreprocessor()
@@ -115,6 +128,7 @@ def load_and_clean_data(data_dir: str, max_tweets_per_source: int = None) -> pd.
     troll_tweets = troll_tweets[['author', 'content', 'language']]
     troll_tweets.rename(columns={'author': 'account', 'content': 'tweet'}, inplace=True)
     troll_tweets['troll'] = 1
+    troll_tweets = limit_tweets_per_author(troll_tweets, max_tweets_per_author)
     
     # Load Sentiment140 tweets
     logger.info("Loading Sentiment140 tweets...")
@@ -130,6 +144,7 @@ def load_and_clean_data(data_dir: str, max_tweets_per_source: int = None) -> pd.
     sentiment_tweets.rename(columns={'username': 'account'}, inplace=True)
     sentiment_tweets['troll'] = 0
     sentiment_tweets['language'] = 'en'
+    sentiment_tweets = limit_tweets_per_author(sentiment_tweets, max_tweets_per_author)
 
     # Load celebrity tweets
     logger.info("Loading celebrity tweets...")
@@ -142,6 +157,7 @@ def load_and_clean_data(data_dir: str, max_tweets_per_source: int = None) -> pd.
     celeb_tweets = celeb_tweets[['account', 'tweet']]
     celeb_tweets['troll'] = 0
     celeb_tweets['language'] = 'en'
+    celeb_tweets = limit_tweets_per_author(celeb_tweets, max_tweets_per_author)
     
     # Load Twitter JSON files from "non_troll_politics" folder
     logger.info("Loading manualy scraped tweets...")
@@ -150,6 +166,7 @@ def load_and_clean_data(data_dir: str, max_tweets_per_source: int = None) -> pd.
     if json_folder.exists():
         twitter_data = load_twitter_json(json_folder)
         twitter_data['language'] = 'en'
+        twitter_data = limit_tweets_per_author(twitter_data, max_tweets_per_author)
     
     # Load Parquet files from "information_operations" folder
     logger.info("Loading information operations tweets...")
@@ -179,6 +196,7 @@ def load_and_clean_data(data_dir: str, max_tweets_per_source: int = None) -> pd.
     parquet_data['troll'] = ~parquet_data['is_control']  # troll is True when is_control is False
     logger.info(f"Information operations data distribution - Trolls: {parquet_data['troll'].sum()}, Non-trolls: {(~parquet_data['troll']).sum()}")
     parquet_data = parquet_data.drop('is_control', axis=1)
+    parquet_data = limit_tweets_per_author(parquet_data, max_tweets_per_author)
 
     # Load files from machova et al
     logger.info("Loading data collected by Machova...")
@@ -194,35 +212,36 @@ def load_and_clean_data(data_dir: str, max_tweets_per_source: int = None) -> pd.
     combined_df = combined_df.rename(columns={
         'body': 'tweet'
     })
-    combined_df['language'] = 'cs'
+    combined_df['language'] = 'en'
+    combined_df = limit_tweets_per_author(combined_df, max_tweets_per_author)
 
-    # Load Civil Comments dataset
-    logger.info("Loading Civil Comments dataset...")
-    civil_comments = load_dataset("google/civil_comments")
+    # # Load Civil Comments dataset
+    # logger.info("Loading Civil Comments dataset...")
+    # civil_comments = load_dataset("google/civil_comments")
     
-    # Load all splits and combine them
-    civil_train = pd.DataFrame(civil_comments['train'])
-    civil_test = pd.DataFrame(civil_comments['test'])
-    civil_val = pd.DataFrame(civil_comments['validation'])
+    # # Load all splits and combine them
+    # civil_train = pd.DataFrame(civil_comments['train'])
+    # civil_test = pd.DataFrame(civil_comments['test'])
+    # civil_val = pd.DataFrame(civil_comments['validation'])
     
-    # Combine all splits
-    civil_df = pd.concat([civil_train, civil_test, civil_val], ignore_index=True)
-    # Filter for low toxicity comments
-    civil_df = civil_df[civil_df['toxicity'] <= 0.1]
-    # Create artificial authors by grouping comments
-    # Group size of 10 comments per author
-    GROUP_SIZE = 10
-    civil_df = civil_df.sort_index()  # Sort by index to ensure consistent grouping
-    civil_df['group_id'] = civil_df.index // GROUP_SIZE
-    civil_df['account'] = 'civil_author_' + civil_df['group_id'].astype(str)
+    # # Combine all splits
+    # civil_df = pd.concat([civil_train, civil_test, civil_val], ignore_index=True)
+    # # Filter for low toxicity comments
+    # civil_df = civil_df[civil_df['toxicity'] <= 0.1]
+    # # Create artificial authors by grouping comments
+    # # Group size of 10 comments per author
+    # GROUP_SIZE = 10
+    # civil_df = civil_df.sort_index()  # Sort by index to ensure consistent grouping
+    # civil_df['group_id'] = civil_df.index // GROUP_SIZE
+    # civil_df['account'] = 'civil_author_' + civil_df['group_id'].astype(str)
     
-    # Select and rename columns
-    civil_df = civil_df[['text', 'account']]
-    civil_df.rename(columns={
-        'text': 'tweet'
-    }, inplace=True)
-    civil_df['troll'] = 0
-    civil_df['language'] = 'en'
+    # # Select and rename columns
+    # civil_df = civil_df[['text', 'account']]
+    # civil_df.rename(columns={
+    #     'text': 'tweet'
+    # }, inplace=True)
+    # civil_df['troll'] = 0
+    # civil_df['language'] = 'en'
 
     # Combine all datasets
     logger.info("Combining datasets...")
@@ -231,9 +250,9 @@ def load_and_clean_data(data_dir: str, max_tweets_per_source: int = None) -> pd.
         sentiment_tweets[['account', 'tweet', 'troll', 'language']],
         celeb_tweets[['account', 'tweet', 'troll', 'language']],
         twitter_data[['account', 'tweet', 'troll', 'language']],
-        parquet_data[['account', 'tweet', 'troll', 'language']],
+        parquet_data[['account', 'troll', 'tweet', 'language']],
         combined_df[['account', 'tweet', 'troll', 'language']],
-        civil_df[['account', 'tweet', 'troll', 'language']]
+        # civil_df[['account', 'tweet', 'troll', 'language']]
     ], ignore_index=True)
 
     # Apply preprocessing to tweet text
@@ -316,178 +335,3 @@ def collate_batch(batch: List[Dict[str, torch.Tensor]]) -> Dict[str, torch.Tenso
         'label': labels
     }
 
-def save_data_to_json(data_dir: str, output_dir: str, preprocess: bool = False) -> None:
-    """
-    Load and save each dataset separately to individual JSON files.
-    
-    Args:
-        data_dir (str): Directory containing all the raw data files
-        output_dir (str): Directory where the JSON files will be saved
-        preprocess (bool): Whether to preprocess the text data before saving
-    """
-    data_path = Path(data_dir)
-    output_path = Path(output_dir)
-    output_path.mkdir(parents=True, exist_ok=True)
-    
-    preprocessor = TweetPreprocessor() if preprocess else None
-    
-    def process_text(text: str) -> str:
-        """Helper function to optionally preprocess text"""
-        if preprocess and preprocessor:
-            return preprocessor.preprocess_tweet(text)
-        return text
-    
-    # Save Russian troll tweets
-    logger.info("Saving Russian troll tweets...")
-    troll_files = list(data_path.glob("russian_troll_tweets/*.csv"))
-    troll_comments = []
-    for f in troll_files:
-        troll_tweets = pd.read_csv(f)
-        for _, row in troll_tweets.iterrows():
-            troll_comments.append({
-                "docId": str(uuid.uuid4()),
-                "docType": "Comment",
-                "author": row["author"],
-                "content": process_text(row["content"]),
-                "troll": 1,
-                "language": row.get("language", "unknown")
-            })
-    
-    with open(output_path / "russian_trolls.json", "w", encoding="utf-8") as f:
-        json.dump({"comments": troll_comments}, f, ensure_ascii=False, indent=4)
-    
-    # Save Sentiment140 tweets
-    logger.info("Saving Sentiment140 tweets...")
-    sentiment_path = data_path / "sentiment_tweets/training.1600000.processed.noemoticon.csv"
-    sentiment_comments = []
-    sentiment_tweets = pd.read_csv(sentiment_path, encoding='Latin-1',
-                                 names=['target', 'id', 'date', 'flag', 'username', 'tweet'])
-    for _, row in sentiment_tweets.iterrows():
-        sentiment_comments.append({
-            "docId": str(uuid.uuid4()),
-            "docType": "Comment",
-            "author": row["username"],
-            "content": process_text(row["tweet"]),
-            "troll": 0,
-            "language": "en"
-        })
-    
-    with open(output_path / "sentiment140.json", "w", encoding="utf-8") as f:
-        json.dump({"comments": sentiment_comments}, f, ensure_ascii=False, indent=4)
-    
-    # Save celebrity tweets
-    logger.info("Saving celebrity tweets...")
-    celeb_files = list(data_path.glob("celebrity_tweets/*.csv"))
-    celeb_comments = []
-    for f in celeb_files:
-        celeb_tweets = pd.read_csv(f)
-        for _, row in celeb_tweets.iterrows():
-            celeb_comments.append({
-                "docId": str(uuid.uuid4()),
-                "docType": "Comment",
-                "author": row.get("author", row.get("username", "unknown")),
-                "content": process_text(row.get("text", row.get("tweet", ""))),
-                "troll": 0,
-                "language": "en"
-            })
-    
-    with open(output_path / "celebrity_tweets.json", "w", encoding="utf-8") as f:
-        json.dump({"comments": celeb_comments}, f, ensure_ascii=False, indent=4)
-    
-    # Save Twitter JSON files
-    logger.info("Saving manually scraped tweets...")
-    json_folder = data_path / "non_troll_politics"
-    if json_folder.exists():
-        json_comments = []
-        for json_file in json_folder.glob("*.json"):
-            with open(json_file, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                for entry in data:
-                    json_comments.append({
-                        "docId": str(uuid.uuid4()),
-                        "docType": "Comment",
-                        "author": entry["user"].get("screen_name", ""),
-                        "content": process_text(entry.get("full_text", "")),
-                        "troll": 0
-                    })
-        
-        with open(output_path / "manual_tweets.json", "w", encoding="utf-8") as f:
-            json.dump({"comments": json_comments}, f, ensure_ascii=False, indent=4)
-    
-    # Save information operations tweets
-    logger.info("Saving information operations tweets...")
-    parquet_folder = data_path / "information_operations"
-    parquet_comments = []
-    for parquet_file in parquet_folder.glob("*.parquet"):
-        parquet_data = pd.read_parquet(parquet_file)
-        for _, row in parquet_data.iterrows():
-            parquet_comments.append({
-                "docId": str(uuid.uuid4()),
-                "docType": "Comment",
-                "author": row["accountid"],
-                "content": process_text(row["post_text"]),
-                "troll": 0 if row.get("is_control", False) else 1,
-                "language": row.get("post_language", "unknown")
-            })
-    
-    with open(output_path / "information_operations.json", "w", encoding="utf-8") as f:
-        json.dump({"comments": parquet_comments}, f, ensure_ascii=False, indent=4)
-    
-    # Save Machova et al data
-    logger.info("Saving Machova et al data...")
-    machova_comments = []
-    
-    # Load and save non-troll data
-    nontroll_path = data_path / "machova/Is_not_troll_body.csv"
-    if nontroll_path.exists():
-        nontroll_df = pd.read_csv(nontroll_path)
-        for _, row in nontroll_df.iterrows():
-            machova_comments.append({
-                "docId": str(uuid.uuid4()),
-                "docType": "Comment",
-                "author": f"user_{len(machova_comments)}",
-                "content": process_text(row["body"]),
-                "troll": 0
-            })
-    
-    # Load and save troll data
-    troll_path = data_path / "machova/Is_troll_body.csv"
-    if troll_path.exists():
-        troll_df = pd.read_csv(troll_path)
-        for _, row in troll_df.iterrows():
-            machova_comments.append({
-                "docId": str(uuid.uuid4()),
-                "docType": "Comment",
-                "author": f"user_{len(machova_comments)}",
-                "content": process_text(row["body"]),
-                "troll": 1
-            })
-    
-    with open(output_path / "machova_data.json", "w", encoding="utf-8") as f:
-        json.dump({"comments": machova_comments}, f, ensure_ascii=False, indent=4)
-    
-    logger.info(f"All datasets successfully saved to {output_dir}")
-
-def main():
-    """Main function to run the save_data_to_json function with command line arguments."""
-    import argparse
-    
-    parser = argparse.ArgumentParser(description='Convert raw tweet datasets to JSON format')
-    parser.add_argument('--data_dir', type=str, required=True,
-                      help='Directory containing the raw data files')
-    parser.add_argument('--output_dir', type=str, required=True,
-                      help='Directory where the JSON files will be saved')
-    parser.add_argument('--preprocess', action='store_true',
-                      help='Whether to preprocess the text data before saving')
-    
-    args = parser.parse_args()
-    
-    try:
-        save_data_to_json(args.data_dir, args.output_dir, args.preprocess)
-        logger.info("Successfully completed JSON conversion")
-    except Exception as e:
-        logger.error(f"Error during JSON conversion: {str(e)}")
-        raise
-
-if __name__ == "__main__":
-    main()
