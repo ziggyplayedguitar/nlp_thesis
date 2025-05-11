@@ -338,7 +338,7 @@ Finally, a custom dataset was manually created by scraping tweets from Czech pub
 
 % ========================================== CHAPTER 4 PROPOSED METHOD =====================
 \chapter{Proposed Method}
-In this chapter we will outline the proposed method for detecting troll-like behavior in online discussions. The core idea behind the method is the use of transformer-based models, specifically multilingual BERT based models, in a regression task designed to quantify the a users troll-like behavior. Instead of a binary classification task, the approach is to assign a user with a continous ''trolliness'' score, measured from 0 to 1.\par
+In this chapter we will outline the proposed method for detecting troll-like behavior in online discussions. The core idea behind the method is the use of transformer-based models, specifically multilingual BERT-based models, in a regression task designed to quantify the a users troll-like behavior. Instead of a binary classification task, the approach is to assign a user with a continous ''trolliness'' score, measured from 0 to 1.\par
 
 \section{Motivation}
 As the backbone of the method, I decided to use multilingual BERT based models, as they are trained across dozens of languages at once, which makes them a natural choice when trying to transfer knowledge from English or Russian troll datasets to Czech. Beyond their multilingual capabilities, BERT models are also able to capture and represent both syntactic and semantic relationships and dependencies within a text sequence. Instead of manually designing and extracting individual features like syntax counts, stylometric traits, sentiment scores, in theory BERT should be able to learn and encode much of this information into its embeddings and attention mechanism.\cite{Rogers2020}\par
@@ -347,7 +347,7 @@ The motivation to use a regression task instead of a binary classification task 
 
 \section{Data Collection and Preprocessing}
 The first step of the method is the collection and preprocessing of the data. The raw text data is cleaned and preprocessed using basic text preprocessing techniques to normalize it to a certain extend across the different data sources. Each comment is then grouped according to its author, creating sets of comments for each user.\par
-A key design decision in this work was to rate the trolliness at the user level, rather than at an individual comment level. This decision was based on the analysis and observations from the labeled troll datasets. A reccuring pattern was that many troll accounts did not only engage in disruptive and manipulative behavior all the time. Instead, in many cases trolls posted mostly ''normal'' content, perhaps to blend in with regular users, pushing their agenda more subdly in some posts and then only occasionally posting more overtly troll-like comments.\par
+A key design decision in this thesis was to rate the trolliness at the user level, rather than at an individual comment level. This decision was based on the analysis and observations from the labeled troll datasets. A reccuring pattern was that many troll accounts did not only engage in disruptive and manipulative behavior all the time. Instead, in many cases trolls posted mostly ''normal'' content, perhaps to blend in with regular users, pushing their agenda more subdly in some posts and then only occasionally posting more overtly troll-like comments.\par
 For this thesis we will exclude all users with fewer than 5 comments, as our aim is to try to find broader patterns of troll-like behavior not only one-off examples of offensive or provocative comments. We do this both for the initial training as well as when working with the target Czech dataset. While this discards about half of the users in the dataset, it is only a small fraction of the comments, about ten precent.\par
 \begin{figure}[htbp]
 	\centering
@@ -371,9 +371,48 @@ For this thesis we will exclude all users with fewer than 5 comments, as our aim
   \end{figure}
 
 \section{Model Architecture}
-The model architecture is designed in two levels: the comment level and the user level. At the comment level, each individual comment is first encoded using a pretrained multilingual BERT model. BERT processes the comments and produces fixed-length embeddings which capture both syntactic and semantic information.\par
-At the user level, the embeddings of all the comments from a single user are aggregated. To combine all the comments into a single user-level vector, an attention mechanism is used. The attention mechanism allows the model to assign different importance to different comments, depending on how strongly they contribute to the the users trolliness. This allows the model to give greater influence to comments which are more disruptive or otherwise suspicious when creating the final user representation.\par
-Finally, a regression head is applied on top of the aggregated user-level embedding vector. The regression head consists of a feed-forward neural network, which outputs a the final coutninous trolliness score between 0 and 1. This score should reflect how similar a users behavior is to that of known trolls, rather than to give a hard classification.\par
+The model architecture is designed in two levels: the comment level and the user level. 
+
+\subsection{Comment Processing and Aggregation}
+
+At the comment level, each individual comment is first encoded using a pretrained multilingual BERT model. Specifically, the model uses the [CLS] token embedding, which carries the summary of the entire comment, to generate a fixed-length representation for the text.\par
+
+\begin{equation}
+    E_{\text{cls}} = \text{BERT}_{\text{embeddings}}(\text{comment})_{[\text{CLS}]}
+\end{equation}
+
+At the user level, the embeddings of all the comments from a single user are aggregated by using a simple attention mechanism. The attention mechanism consists of a single linear layer forllowed by a softmax function. It assigns each comment a weight reflecting its importance for determining the the user's trolliness score. The final output for a user is a weighted sum of the comment embeddings, where the weights are determined by the attention mechanism.
+
+\begin{align}
+	s_i &= W_{att} \cdot E_i + b_{att} && \text{(Linear Layer)} \\
+	\alpha_i &= \frac{\exp(s_i)}{\sum_{j} \exp(s_j)} && \text{(Softmax)} \\
+	V &= \sum_i \alpha_i E_i && \text{(Weighted Sum)}
+\end{align}
+
+\subsection{Regression Head}
+
+Finally, a regression head is applied on top of the aggregated user-level embedding vector. The regression head consists of a feed-forward neural network composed of two fully connected layers with a ReLU acitvation function in between. The first layer maps the user embedding vector to a hidden representation:
+
+\begin{equation}
+	h = \mathrm{ReLU}(W_{reg,1} V + b_{reg,1}) \\
+\end{equation}
+
+where $W_{reg,1}$ and $b_{reg,1}$ are the weights and biases of the first layer. The hidden representation \textit{h} is passed through a second linear layer to produce a single scalar output:
+
+\begin{equation}
+	\hat{y} = W_{reg,2} h + b_{reg,2}
+\end{equation}
+
+The output $\hat{y}$ represents the predicted trolliness score for the user, which is a continuous value between 0 and 1. Regularization is applied to prevent overfitting, using dropout layers after each fully connected layer.\par
+
+The model is trained using Binary Cross-Entropy Loss (BCE Loss), which is defined as follows:
+
+% Binary Cross-Entropy Loss (BCE)
+\begin{equation}
+	L_{BCE}(y, \hat{y}) = - \left[ y \log(\hat{y}) + (1 - y) \log(1 - \hat{y}) \right]
+\end{equation}
+
+The decision to use BCE Loss, despite framing the problem as a regression task, was motivated by the fact that in the training data we work with binary labels and not continous target values. Unlike standard regression losses (like Mean Squared Error or Huber Loss), BCE Loss is specifically designed to handle cases where the target values are binary, but the model's predictions are continuous probabilities. This setup helps the model avoid becoming overly biased towards low values, which was a problem with a test run with HuberLoss.\par 
 
 \section{Training}
 The training of the model is done in two steps. Larger training on the large labeled troll datasets from foreign domains, and a smaller fine-tune on manually annotated Czech comments from the target dataset.\par
@@ -381,10 +420,6 @@ The first training step includes the Russian IRA troll tweets, information opera
 Since the labeled training data comes from different domains and languages than our target Czech dataset, a second small fine-tuning step is performed.\par
 %But first before starting this step, a lightweight adapter module was trained on the Czech comment corpus using a Masked Language Modeling (MLM) objective. This should help the model adapt for the Czech language domain better, but allows for the learned knowledge from the large foreign troll datasets to be kept.\par
 After the initial training, the model is fine-tuned on a small set of manually annoated Czech user comments from our target dataset. This data was created by me, by exploring the users in the who were classified with high or low trolliness scores and high confidence during preliminary runs. This few-shot tuning step helps the model better adapt to our specific domain.\par
-
-\section{Scoring}
-Once the model is trained, it can be used to score the trolliness of users in the target dataset. For each user, all available comments are collected and grouped into batches of a fixed size. If a user has fewer comments than needed to fill a batch the comments are padded with empty comments. Each batch of comments is then passed through the model to generate a score. When a user has multiple batches, the final trolliness score is calculated as the average over all batches.\par
-The output of the model is then a continous trolliness score between 0 and 1. A binary predition can be obtained by applying a threshold. Additionally the model provides attention weights for individual comments, which how much each comment contributed to the final score and can be used for analysis and interpretation.\par
 
 \section{Lightweight Annotation and Evaluation App}
 
@@ -408,14 +443,7 @@ The manual labelling highlighted the inherent difficulty of the task of distingu
 
 To evaluate the reasonability of the proposed method and how much a transformer model really adds, we first reproduced a stylometry-only baseline with the same train/test/validation data splits used with the BERT model. We used 5 stylometric features named in \cite{Machova2021Algorithms} - character count, word count, average word length, capital-letter ratio and digit ratio. We then trained two regressors on them: a linear support-vector regressor (SVR) and a gradient-boosting regressor (GBR). We also added a stronger Term Frequency - Inverse Document Frequency (TF-IDF) based baseline, where comments were represented through 50000 unigrams and bigrams, and fitted on a ridge regressor.\par
 
-For the BERT model, we used a regression head with a Sigmoid activation function, allowing it to output a continuous score between 0 and 1, which we interpret as a trolliness score. Although the model is structured as a regressor, we used Binary Cross-Entropy Loss (BCE Loss) during training. This choice ensures that the model learns to produce outputs that behave like probabilities - values closer to 1 indicate high trolliness, while values closer to 0 indicate low trolliness. BCE Loss is defined as follows:
-
-% Binary Cross-Entropy Loss (BCE)
-\begin{equation}
-L_{BCE}(y, \hat{y}) = - \left[ y \log(\hat{y}) + (1 - y) \log(1 - \hat{y}) \right]
-\end{equation}
-
-The decision to use BCE Loss, despite framing the problem as a regression task, was motivated by its ability to directly optimize for the probability of each label (0 or 1). Unlike standard regression losses (like Mean Squared Error or Huber Loss), BCE Loss is specifically designed to handle cases where the target values are binary, but the model's predictions are continuous probabilities. This setup helps the model avoid becoming overly biased towards low values, which was a problem with a test run with HuberLoss.\par 
+For the BERT model, we used a regression head with a Sigmoid activation function and used BCE Loss as the loss function as described before.\par
 
 We will compare the training results of the models through their mean square error (MSE) and the coefficient of determination (the $R^2$ score). The mean square error (MSE) is a measure of the average squared difference between the predicted and actual values. A lower MSE indicates a better fit of the model to the data. 
 % Mean-Squared Error
