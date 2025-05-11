@@ -3,7 +3,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torch.optim import AdamW
 from transformers import get_linear_schedule_with_warmup
-from torch.cuda.amp import autocast, GradScaler
+from torch.amp import autocast, GradScaler
 import numpy as np
 from tqdm import tqdm
 import logging
@@ -11,11 +11,36 @@ import wandb
 from pathlib import Path
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import json
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Tuple, Optional, Any
 from src.data_tools.dataset import aggregate_author_predictions
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+class MetricsCalculator:
+    """Helper class for calculating and tracking metrics."""
+    
+    @staticmethod
+    def calculate_metrics(preds: List[float], labels: List[float]) -> Dict[str, float]:
+        """Calculate regression metrics."""
+        return {
+            'mse': mean_squared_error(labels, preds),
+            'rmse': np.sqrt(mean_squared_error(labels, preds)),
+            'mae': mean_absolute_error(labels, preds),
+            'r2': r2_score(labels, preds),
+            'binary_accuracy': np.mean((np.array(preds) >= 0.5) == np.array(labels))
+        }
+    
+    @staticmethod
+    def update_history(history: Dict[str, Dict[str, List[float]]], 
+                      split: str, metrics: Dict[str, float]) -> None:
+        """Update metrics history."""
+        for metric, value in metrics.items():
+            if metric not in history[split]:
+                history[split][metric] = []
+            history[split][metric].append(value)
+
 
 class TrollDetectorTrainer:
     def __init__(
@@ -48,8 +73,8 @@ class TrollDetectorTrainer:
         # Initialize mixed precision training
         self.scaler = GradScaler()
 
-        # Loss function - using Huber Loss for regression (more robust than MSE)
-        self.criterion = nn.HuberLoss()
+        # Loss function
+        self.criterion = nn.BCEWithLogitsLoss()
 
         # Optimizer
         self.optimizer = AdamW(
@@ -66,7 +91,7 @@ class TrollDetectorTrainer:
         )
 
         # Tracking best model
-        self.best_val_r2 = -float('inf')  # Using R² score instead of AUC
+        self.best_val_r2 = -float('inf')
         self.best_epoch = 0
         
         # Initialize wandb if requested
@@ -74,207 +99,173 @@ class TrollDetectorTrainer:
             wandb.init(project="troll-detection")
             wandb.watch(self.model)
 
-    def train_epoch(self) -> Dict[str, float]:
-        """Train for one epoch"""
-        self.model.train()
-        total_loss = 0
-        batch_results = {}
-        batch_idx = 0
+        self.current_epoch = 0
+
+        # Initialize training history
+        self.history = {
+            'train': {metric: [] for metric in ['loss', 'mse', 'rmse', 'mae', 'r2', 'binary_accuracy']},
+            'val': {metric: [] for metric in ['loss', 'mse', 'rmse', 'mae', 'r2', 'binary_accuracy']},
+            'test': {metric: [] for metric in ['loss', 'mse', 'rmse', 'mae', 'r2', 'binary_accuracy']}
+        }
+
+    def _process_batch(self, batch: Dict[str, Any], is_training: bool = True) -> Dict[str, Any]:
+        """Process a single batch of data."""
+        # Move batch to device
+        input_ids = batch['input_ids'].to(self.device)
+        attention_mask = batch['attention_mask'].to(self.device)
+        labels = batch['label'].to(self.device).float()
+        authors = batch['author']
         
-        pbar = tqdm(self.train_loader, desc="Training")
-        for batch in pbar:
-            # Move batch to device
-            input_ids = batch['input_ids'].to(self.device)
-            attention_mask = batch['attention_mask'].to(self.device)
-            labels = batch['label'].to(self.device).float()  # Convert to float for regression
-            authors = batch['author']
-            
-            # Forward pass with mixed precision
-            with autocast():
+        # Forward pass
+        if is_training:
+            with autocast(device_type='cuda' if torch.cuda.is_available() else 'cpu'):
                 outputs = self.model(
                     input_ids=input_ids,
                     attention_mask=attention_mask,
                     tweets_per_account=self.train_loader.dataset.comments_per_user
                 )
                 loss = self.criterion(outputs['trolliness_score'].squeeze(), labels)
-            
-            total_loss += loss.item()
-            
-            # Backward pass with gradient scaling
-            self.scaler.scale(loss).backward()
-            
-            # Clip gradients
-            self.scaler.unscale_(self.optimizer)
-            torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.max_grad_norm)
-            
-            # Update weights with gradient scaling
-            self.scaler.step(self.optimizer)
-            self.scaler.update()
-            self.scheduler.step()
-            self.optimizer.zero_grad()
-            
-            # Store results for this batch
-            batch_results[f"batch_{batch_idx}"] = {
-                'author': authors,
-                'pred': outputs['trolliness_score'].squeeze().detach().cpu().numpy(),
-                'label': labels.cpu().numpy()
-            }
-            
-            batch_idx += 1
-            pbar.set_postfix({'loss': f"{loss.item():.4f}"})
+        else:
+            with torch.no_grad():
+                outputs = self.model(
+                    input_ids=input_ids,
+                    attention_mask=attention_mask,
+                    tweets_per_account=self.train_loader.dataset.comments_per_user
+                )
+                loss = self.criterion(outputs['trolliness_score'].squeeze(), labels)
+        
+        return {
+            'loss': loss,
+            'authors': authors,
+            'preds': outputs['trolliness_score'].squeeze().detach().cpu().numpy(),
+            'labels': labels.cpu().numpy()
+        }
 
-        # Aggregate predictions by author
-        aggregated = aggregate_author_predictions(batch_results, method='mean')
-        
-        # Extract aggregated predictions and labels
-        all_preds = [data['final_pred'] for data in aggregated.values()]
-        all_labels = [data['true_label'] for data in aggregated.values()]
-        
-        # Calculate metrics
-        metrics = self.calculate_metrics(all_preds, all_labels)
-        metrics['loss'] = total_loss / len(self.train_loader)
-        metrics['num_authors'] = len(aggregated)
-        
-        return metrics
-
-    @torch.no_grad()
-    def evaluate(self, dataloader: DataLoader) -> Dict[str, float]:
-        """Evaluate the model on the given dataloader"""
-        self.model.eval()
+    def _process_epoch(self, dataloader: DataLoader, is_training: bool = True) -> Dict[str, float]:
+        """Process a single epoch of data."""
+        self.model.train() if is_training else self.model.eval()
         total_loss = 0
         batch_results = {}
-        batch_idx = 0
         
-        for batch in tqdm(dataloader, desc="Evaluating"):
-            input_ids = batch['input_ids'].to(self.device)
-            attention_mask = batch['attention_mask'].to(self.device)
-            labels = batch['label'].to(self.device).float()
-            authors = batch['author']
+        pbar = tqdm(dataloader, desc="Training" if is_training else "Evaluating")
+        for batch_idx, batch in enumerate(pbar):
+            # Process batch
+            results = self._process_batch(batch, is_training)
             
-            outputs = self.model(
-                input_ids=input_ids,
-                attention_mask=attention_mask,
-                tweets_per_account=dataloader.dataset.comments_per_user
-            )
+            # Update loss
+            total_loss += results['loss'].item()
             
-            loss = self.criterion(outputs['trolliness_score'].squeeze(), labels)
-            total_loss += loss.item()
+            # Backward pass and optimization if training
+            if is_training:
+                self.scaler.scale(results['loss']).backward()
+                self.scaler.unscale_(self.optimizer)
+                torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.max_grad_norm)
+                self.scaler.step(self.optimizer)
+                self.scaler.update()
+                self.scheduler.step()
+                self.optimizer.zero_grad()
             
-            # Store results for this batch
+            # Store results
             batch_results[f"batch_{batch_idx}"] = {
-                'author': authors,
-                'pred': outputs['trolliness_score'].squeeze().cpu().numpy(),
-                'label': labels.cpu().numpy()
+                'author': results['authors'],
+                'pred': results['preds'],
+                'label': results['labels']
             }
             
-            batch_idx += 1
+            # Update progress bar
+            pbar.set_postfix({'loss': f"{results['loss'].item():.4f}"})
         
         # Aggregate predictions by author
         aggregated = aggregate_author_predictions(batch_results, method='mean')
         
-        # Extract aggregated predictions and labels
-        all_preds = [data['final_pred'] for data in aggregated.values()]
-        all_labels = [data['true_label'] for data in aggregated.values()]
-        
         # Calculate metrics
-        metrics = self.calculate_metrics(all_preds, all_labels)
+        metrics = MetricsCalculator.calculate_metrics(
+            [data['final_pred'] for data in aggregated.values()],
+            [data['true_label'] for data in aggregated.values()]
+        )
         metrics['loss'] = total_loss / len(dataloader)
         metrics['num_authors'] = len(aggregated)
         
         return metrics
 
-    def calculate_metrics(
-        self,
-        preds: List[float],
-        labels: List[float]
-    ) -> Dict[str, float]:
-        """Calculate regression metrics"""
-        metrics = {
-            'mse': mean_squared_error(labels, preds),
-            'rmse': np.sqrt(mean_squared_error(labels, preds)),  # Calculate RMSE manually
-            'mae': mean_absolute_error(labels, preds),
-            'r2': r2_score(labels, preds)
-        }
-        
-        # Add binary classification metrics using 0.5 threshold for comparison
-        binary_preds = [1 if p >= 0.5 else 0 for p in preds]
-        binary_labels = [1 if l >= 0.5 else 0 for l in labels]
-        accuracy = sum(p == l for p, l in zip(binary_preds, binary_labels)) / len(preds)
-        metrics['binary_accuracy'] = accuracy
-        
-        return metrics
+    def train_epoch(self) -> Dict[str, float]:
+        """Train for one epoch."""
+        return self._process_epoch(self.train_loader, is_training=True)
 
-    def save_checkpoint(self, epoch: int, metrics: Dict[str, float], is_best: bool = False):
-        """Save model checkpoint"""
+    @torch.no_grad()
+    def evaluate(self, dataloader: DataLoader) -> Dict[str, float]:
+        """Evaluate the model on the given dataloader."""
+        return self._process_epoch(dataloader, is_training=False)
+
+    def save_checkpoint(self, epoch: int, metrics: Dict[str, float], is_best: bool = False) -> None:
+        """Save model checkpoint."""
         checkpoint = {
             'epoch': epoch,
             'model_state_dict': self.model.state_dict(),
             'optimizer_state_dict': self.optimizer.state_dict(),
             'scheduler_state_dict': self.scheduler.state_dict(),
-            'metrics': metrics
+            'metrics': metrics,
+            'history': self.history
         }
         
-        # Save latest checkpoint
-        torch.save(checkpoint, self.checkpoint_dir / 'latest_checkpoint.pt')
+        # Save regular checkpoint
+        checkpoint_path = self.checkpoint_dir / f"checkpoint_epoch_{epoch}.pt"
+        torch.save(checkpoint, checkpoint_path)
         
-        # Save best model if this is the best so far
+        # Save best model if needed
         if is_best:
-            torch.save(checkpoint, self.checkpoint_dir / 'best_model.pt')
-            
-            # Save configuration and metrics
-            config = {
-                'model_name': self.model.__class__.__name__,
-                'best_epoch': epoch,
-                'best_metrics': metrics
-            }
-            with open(self.checkpoint_dir / 'best_model_info.json', 'w') as f:
-                json.dump(config, f, indent=4)
+            best_path = self.checkpoint_dir / "best_model.pt"
+            torch.save(checkpoint, best_path)
+            logger.info(f"Saved best model with R² score: {metrics['r2']:.4f}")
+        
+        # Log to wandb if enabled
+        if self.use_wandb:
+            wandb.save(str(checkpoint_path))
+            if is_best:
+                wandb.save(str(best_path))
 
     def train(self) -> Dict[str, float]:
-        """Main training loop"""
-        logger.info(f"Starting training on device: {self.device}")
-        logger.info(f"Training samples: {len(self.train_loader.dataset)}")
-        logger.info(f"Validation samples: {len(self.val_loader.dataset)}")
+        """Train the model for the specified number of epochs."""
+        logger.info("Starting training...")
         
         for epoch in range(self.num_epochs):
+            self.current_epoch = epoch
             logger.info(f"\nEpoch {epoch + 1}/{self.num_epochs}")
             
-            # Training phase
+            # Train and evaluate
             train_metrics = self.train_epoch()
-            logger.info(f"Training metrics: {train_metrics}")
-            
-            # Validation phase
             val_metrics = self.evaluate(self.val_loader)
-            logger.info(f"Validation metrics: {val_metrics}")
+            
+            # Update history
+            MetricsCalculator.update_history(self.history, 'train', train_metrics)
+            MetricsCalculator.update_history(self.history, 'val', val_metrics)
             
             # Log metrics
+            logger.info(f"Train metrics: {train_metrics}")
+            logger.info(f"Val metrics: {val_metrics}")
+            
             if self.use_wandb:
                 wandb.log({
-                    'epoch': epoch,
-                    **{f'train_{k}': v for k, v in train_metrics.items()},
-                    **{f'val_{k}': v for k, v in val_metrics.items()}
+                    **{f"train/{k}": v for k, v in train_metrics.items()},
+                    **{f"val/{k}": v for k, v in val_metrics.items()},
+                    'epoch': epoch
                 })
             
-            # Save checkpoint if this is the best model
-            if val_metrics['r2'] > self.best_val_r2:
+            # Save checkpoint
+            is_best = val_metrics['r2'] > self.best_val_r2
+            if is_best:
                 self.best_val_r2 = val_metrics['r2']
                 self.best_epoch = epoch
-                logger.info(f"New best model with validation R²: {self.best_val_r2:.4f}")
-                self.save_checkpoint(epoch, val_metrics, is_best=True)
             
-            # Regular checkpoint saving
-            if (epoch + 1) % 5 == 0:
-                self.save_checkpoint(epoch, val_metrics)
+            self.save_checkpoint(epoch, val_metrics, is_best)
         
-        # Final evaluation on test set if available
+        # Evaluate on test set if available
         if self.test_loader is not None:
-            logger.info("\nEvaluating on test set...")
             test_metrics = self.evaluate(self.test_loader)
+            MetricsCalculator.update_history(self.history, 'test', test_metrics)
             logger.info(f"Test metrics: {test_metrics}")
             
             if self.use_wandb:
-                wandb.log({f'test_{k}': v for k, v in test_metrics.items()})
-            
-            return test_metrics
+                wandb.log({f"test/{k}": v for k, v in test_metrics.items()})
         
-        return val_metrics
+        return self.history
