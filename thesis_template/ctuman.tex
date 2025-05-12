@@ -397,9 +397,11 @@ At the user level, the embeddings of all the comments from a single user are agg
 	V &= \sum_i \alpha_i E_i && \text{(Weighted Sum)}
 \end{align}
 
+A dropout layer is also applied to comment embeddings before the attention weights are computed to prevent overfitting.
+
 \subsection{Regression Head}
 
-Finally, a regression head is applied on top of the aggregated user-level embedding vector. The regression head consists of a feed-forward neural network composed of two fully connected layers with a ReLU acitvation function in between. The first layer maps the user embedding vector to a hidden representation:
+Finally, a regression head is applied on top of the aggregated user-level embedding vector. The regression head consists of a feed-forward neural network composed of two fully connected layers with a ReLU acitvation function in between. A dropout layer is also applied after each fully connected layer to reduce the risk of overfitting. The first layer maps the user embedding vector to a hidden representation:
 
 \begin{equation}
 	h = \mathrm{ReLU}(W_{reg,1} V + b_{reg,1}) \\
@@ -411,7 +413,9 @@ where $W_{reg,1}$ and $b_{reg,1}$ are the weights and biases of the first layer.
 	\hat{y} = W_{reg,2} h + b_{reg,2}
 \end{equation}
 
-The output $\hat{y}$ represents the predicted trolliness score for the user, which is a continuous value between 0 and 1. Regularization is applied to prevent overfitting, using dropout layers after each fully connected layer.\par
+The output $\hat{y}$ represents the predicted trolliness score for the user, which is a continuous value between 0 and 1.\par
+
+\subsection{Loss Function}
 
 The model is trained using Binary Cross-Entropy Loss (BCE Loss), which is defined as follows:
 
