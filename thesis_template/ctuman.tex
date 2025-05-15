@@ -142,6 +142,7 @@ tzv. trollů.\end{abstract-czech}
 \usepackage{booktabs}  
 
 \usepackage{mathtools,amssymb}
+\usepackage{tcolorbox} % For colored boxes
 
 % A savebox for typesetting listings in the titles
 \newsavebox{\myboxa}
@@ -273,7 +274,11 @@ These mechanisms allow the Transfoermer to capture relationships and dependencie
 
 \subsection{BERT}
 
-One of the most influential Transformer-based models for natural language understanding is BERT (Bidirectional Encoder Representations from Transformers). Introduced by Devlin et al. in 2018~\cite{Devlin2018}, BERT builds on the Transformer encoder architecture and is pre-trained on large text corpora using masked language modeling and next sentence prediction tasks. Unlike traditional language models that read text from left to right, BERT is deeply bidirectional, meaning it learns information from both the left and right context at the same time. This bidirectional training allows BERT to capture richer information about language, making it highly effective for downstream tasks like text classification, question answering, and sentiment analysis.
+One of the most influential Transformer-based models for natural language understanding is BERT (Bidirectional Encoder Representations from Transformers). Introduced by Devlin et al. in 2018~\cite{Devlin2018}, BERT builds on the Transformer encoder architecture and is pre-trained on large text corpora using masked language modeling and next sentence prediction tasks. Unlike traditional language models that read text from left to right, BERT is deeply bidirectional, meaning it learns information from both the left and right context of a token simultaneously during pre-training.\par
+
+An important aspect of the BERT architecture, particularly for tasks requiring a summary representation of an entire input sequence, is the use of a special token called [CLS] (classification token). This token is added at the beginning of the input sequence and is used to aggregate information from all tokens in the sequence. The final hidden state corresponding to the [CLS] token can then be used for example as the input for classification tasks.\par
+
+This bidirectional nature and the [CLS] token convention, among other features, allow BERT to capture richer contextual information about language, making it highly effective for a wide range of downstream tasks such as text classification, question answering, and sentiment analysis and a promising fit for our troll detection task.\par
 
 \subsection{Transformer Models in Troll Detection}
 The paper MetaTroll proposed MetaTroll, a few-shot troll detection framework designed to adapt quickly to new state-sponsored influence campaigns using minimal labeled data. Their approach is based on a meta-learning framework and incorporates campaign-specific transformer adapters to tackle catastrophic forgetting, a common problem where models lose the ability to detect trolls from older campaigns after continual updates. MetaTroll outperformed traditional n-gram SVM baselines, achieving a 92.3\% F1-score in 5-shot scenarios and demonstrating strong cross-lingual capabilities\cite{Tian2023}.\par
@@ -356,7 +361,9 @@ The first step of the method is the collection and preprocessing of the data. To
 An intentional choice was made to retain all stop words during preprocessing, as BERT models use context from all words including stop words. The removal of stop words is common in classical NLP tasks, but in the case of BERT it is not necessary and can even diminish the performance.\par
 
 A key design decision in this thesis was to rate the trolliness at the user level, rather than at an individual comment level. This decision was based on the analysis and observations from the labeled troll datasets. A reccuring pattern was that many troll accounts did not only engage in disruptive and manipulative behavior all the time. Instead, in many cases trolls posted mostly ''normal'' content, perhaps to blend in with regular users, pushing their agenda more subdly in some posts and then only occasionally posting more overtly troll-like comments.\par
-For this thesis we will exclude all users with fewer than 5 comments, as our aim is to try to find broader patterns of troll-like behavior not only one-off examples of offensive or provocative comments. We do this both for the initial training as well as when working with the target Czech dataset. While this discards about half of the users in the dataset, it is only a small fraction of the comments, about ten precent.\par
+For this thesis we will exclude all users with fewer than 5 comments, as our aim is to try to find broader patterns of troll-like behavior not only one-off examples of offensive or provocative comments. We do this both for the initial training as well as when working with the target Czech dataset. While this discards about half of the users in the dataset, it is only a small fraction of the comments, about ten precent. The distribution of authors by number of comments can be seen in Figure \ref{fig:pair}.\par
+
+
 \begin{figure}[htbp]
 	\centering
 	% left image
@@ -383,46 +390,50 @@ The model architecture is designed in two levels: the comment level and the user
 
 \subsection{Comment Processing and Aggregation}
 
-At the comment level, each individual comment is first encoded using a pretrained multilingual BERT model. Specifically, the model uses the [CLS] token embedding, which carries the summary of the entire comment, to generate a fixed-length representation for the text.\par
-
-\begin{equation}
-    E_{\text{cls}} = \text{BERT}_{\text{embeddings}}(\text{comment})_{[\text{CLS}]}
-\end{equation}
-
-At the user level, the embeddings of all the comments from a single user are aggregated by using a simple attention mechanism. The attention mechanism consists of a single linear layer forllowed by a softmax function. It assigns each comment a weight reflecting its importance for determining the the user's trolliness score. The final output for a user is a weighted sum of the comment embeddings, where the weights are determined by the attention mechanism.
+At the comment level, each individual comment is first encoded using a pretrained multilingual BERT model. As introduced in our discussion of BERT (Section 2.3.3), we utilize the final hidden state corresponding to the [CLS] token. This provides a fixed-length vector representing an entire comment, suitable for further processing. We will denote this embedding vector as \( \mathbf{E}_{\mathrm{CLS}} \).
 
 \begin{align}
-	s_i &= W_{att} \cdot E_i + b_{att} && \text{(Linear Layer)} \\
-	\alpha_i &= \frac{\exp(s_i)}{\sum_{j} \exp(s_j)} && \text{(Softmax)} \\
-	V &= \sum_i \alpha_i E_i && \text{(Weighted Sum)}
+    \mathbf{E}_{\mathrm{CLS}} &= \texttt{BERT}_{\mathrm{embeddings}}(\texttt{comment})_{[\mathrm{CLS}]}
 \end{align}
 
-A dropout layer is also applied to comment embeddings before the attention weights are computed to prevent overfitting.
+At the user level, the embeddings of all the comments from a single user, denoted as \( \mathbf{E}_{\mathrm{CLS}, i} \) for the \( i \)-th comment, are aggregated using a simple attention mechanism implemented in PyTorch\footnote{https://docs.pytorch.org/docs/stable/index.html}. 
+
+The attention mechanism consists of a dropout layer (\texttt{nn.Dropout}) followed by a single linear layer (\texttt{nn.Linear}) to compute attention scores, and a softmax function (\texttt{F.Softmax}) to normalize the scores into attention weights. Finally, a weighted sum of embeddings is calculated using these weights.
+
+\begin{align}
+    s_i &= \mathbf{W}_{\mathrm{att}} \cdot \mathbf{E}_{\mathrm{CLS}, i} + \mathbf{b}_{\mathrm{att}} && \text{(Linear Layer)} \\
+    \alpha_i &= \frac{\exp(s_i)}{\sum_{j} \exp(s_j)} && \text{(Softmax)} \\
+    \mathbf{V} &= \sum_i \alpha_i \mathbf{E}_{\mathrm{CLS}, i} && \text{(Weighted Sum)}
+\end{align}
+
+Here, \( \mathbf{W}_{\mathrm{att}} \) and \( \mathbf{b}_{\mathrm{att}} \) are the weight matrix and bias vector of the linear layer (applied after a dropout layer). The \( s_i \) represents the attention score for the \( i \)-th comment, and \( \alpha_i \) is the normalized attention weight for the \( i \)-th comment. The final user-level embedding \( \mathbf{V} \) is the weighted sum of the individual comment embeddings.
 
 \subsection{Regression Head}
 
-Finally, a regression head is applied on top of the aggregated user-level embedding vector. The regression head consists of a feed-forward neural network composed of two fully connected layers with a ReLU acitvation function in between. A dropout layer is also applied after each fully connected layer to reduce the risk of overfitting. The first layer maps the user embedding vector to a hidden representation:
+Finally, a regression head is applied on top of the aggregated user-level embedding vector. The regression head is implemented using PyTorch and consists of a feed-forward neural network (\texttt{nn.Sequential}) composed of two fully connected linear layers (\texttt{nn.Linear}) with a ReLU activation function in between (\texttt{nn.ReLU}). A dropout layer (\texttt{nn.Dropout}) is also applied after each fully connected layer to reduce the risk of overfitting.
 
-\begin{equation}
-	h = \mathrm{ReLU}(W_{reg,1} V + b_{reg,1}) \\
-\end{equation}
+\begin{align}
+    \mathbf{h} &= \mathrm{ReLU}(\mathbf{W}_{\mathrm{reg,1}} \mathbf{V} + \mathbf{b}_{\mathrm{reg,1}})
+\end{align}
 
-where $W_{reg,1}$ and $b_{reg,1}$ are the weights and biases of the first layer. The hidden representation \textit{h} is passed through a second linear layer to produce a single scalar output:
+where \( \mathbf{W}_{\mathrm{reg,1}} \) and \( \mathbf{b}_{\mathrm{reg,1}} \) are the weights and biases of the first layer. The hidden representation \( \mathbf{h} \) is passed through a second linear layer to produce the final scalar output:
 
-\begin{equation}
-	\hat{y} = W_{reg,2} h + b_{reg,2}
-\end{equation}
+\begin{align}
+    \hat{y} &= \mathbf{W}_{\mathrm{reg,2}} \mathbf{h} + \mathbf{b}_{\mathrm{reg,2}}
+\end{align}
 
-The output $\hat{y}$ represents the predicted trolliness score for the user, which is a continuous value between 0 and 1.\par
-
+The output \( \hat{y} \) represents the predicted trolliness score for the user, which is a continuous value between 0 and 1.
 \subsection{Loss Function}
 
-The model is trained using Binary Cross-Entropy Loss (BCE Loss), which is defined as follows:
+The model is trained using Binary Cross-Entropy with Logits Loss (BCE Loss) also provided by PyTorch (\texttt{nn.BCEWithLogitsLoss}). This loss function combines a Sigmoid layer and the Binary Cross-Entropy Loss in a single class, which is numericall more stable than using them separately. The formula of the underlying Binary Cross-Entropy Loss is defined as follows:
 
 % Binary Cross-Entropy Loss (BCE)
 \begin{equation}
-	L_{BCE}(y, \hat{y}) = - \left[ y \log(\hat{y}) + (1 - y) \log(1 - \hat{y}) \right]
+    L_{\mathrm{BCE}}(y, \hat{y}) = - \left[ y \log(\hat{y}) + (1 - y) \log(1 - \hat{y}) \right]
 \end{equation}
+
+Here, \( y \) is the ground-truth label, and \( \hat{y} \) is the predicted score for the user, which when working with BCE Loss is interpreted as the probablity of the user having the troll label.\par
+
 
 The decision to use BCE Loss, despite framing the problem as a regression task, was motivated by the fact that in the training data we work with binary labels and not continous target values. Unlike standard regression losses (like Mean Squared Error or Huber Loss), BCE Loss is specifically designed to handle cases where the target values are binary, but the model's predictions are continuous probabilities. This setup helps the model avoid becoming overly biased towards low values, which was a problem with a test run with HuberLoss.\par 
 
@@ -485,9 +496,9 @@ The models and feature choices were inspired by the work of Machová et al. \cit
 
 Finally, for comaprison, the BERT-based model was also trained on the same train/test/validation splits. This model uses a regression head with a Sigmoid activation function and Binary Cross-Entropy Loss (BCE Loss) as the loss function.\par
 
-\subsection{Baseline Evaluation Results}
+\subsection{Baseline Evaluation Metrics}
 
-To cmpare the the performance of the models, we choose compare two metrics: the Mean Squared Error (MSE) and the Coefficient of Determination ($R^2$ score). The MSE is a measure of the average squared difference between the predicted and actual values. It is defined as follows:\par
+To compare the the performance of the models, we choose compare two metrics: the Mean Squared Error (MSE) and the Coefficient of Determination ($R^2$ score). The MSE is a measure of the average squared difference between the predicted and actual values. It is defined as follows:\par
 
 % Mean-Squared Error
 \begin{equation}
@@ -519,8 +530,12 @@ The $R^2$ score is then:
 
 The equation essetnialy measures the proportion of total variance (TSS) that is left unexplained by the model's residuals (RSS).  A value of 1 indicates a perfect fit and 0 indicates that the model does not explain any of the variance in the data. A negative $R^2$ score indicates that the model performs worse than simply guessing the mean of the target variable.\par
 
-\subsection{Evaluation of the Baseline}
-With coarse stylometric features the SVR and GB regressors did not beat guessing the mean with a negative $R^2$ score and a MSE of about 0.26. This result is not too surprising as 5 features is much for the regression models to work with, but it shows notheless that few handpicked stylometric features are not enough. Extending to 50000 features (uni- and bi-gram counts) through TF-IDF improves $R^2$ score a lot, to 0.57 and has a mean square error of 0.09 but it still gets outperformed by the BERT model with a regression head which achieved a $R^2$ score of 0.65 and a MSE of 0.07. The results of the two best models TF-IDF and BERT are similiar, but the trained TF-IDF model cannot be used on other other language domains, whie the BERT model should be able to carry over some of its learned knowledge. The results of the model training and evaluation are shown in the table below.\par
+\subsection{Baseline Results}
+
+With the simple stylometric features the Support Vector Regressor (SVR) and the Gradient Boosting Regressors performed poorly. They did not beat guessing the mean and achieved a negative $R^2$ score and a MSE of about 0.26. This result was not entirely surprising, given that the models relied only on 5 features, but it shows notheless that few handpicked stylometric features are not enough for a complex task like finding troll behavior patterns.\par
+When we extend the feature set 50000 (uni- and bi-gram counts) through TF-IDF, performance improves significantly. The model achieves a $R^2$ score of 0.57 and has a mean square error of 0.09. Despite this the TF-IDF model remains fundamentally constrained to the English language and the specific domain it was trained on.\par
+In contrast, the BERT model, which was trained on the same dataset, achieved a $R^2$ score of 0.59 and a MSE of 0.08. The model outperforms the two base models by significant margin. And while the TF-IDF model's preformance was comparable to BERT, it is limited to vocabulary of the training data, while a multilingual BERT transformer has the potential to carry its learned knowledge over to a new language.\par
+The complete results of the model training and evaluation are shown in the table below.\par
 
 \begin{table}[ht]
 	\centering
@@ -540,169 +555,310 @@ With coarse stylometric features the SVR and GB regressors did not beat guessing
 	\end{tabular}
 \end{table}
 
-We thus show that BERT achieves similar or better results than a stylometric model and we validate why we chose to use it.
+These resuts show that BERT achieves similar or better results than a traditional stylometric model and we validate our decision to use it our main approach.
 
-\section{Further Experiments with BERT Model}
+\section{Further Training of BERT Model}
 
-For further experiments we trained the BERT model on a mix of all of the availalbe troll comments not only the english language ones like in the baseline evaluation step. Two limitations were made to reduce the size of the training dataset. First, wile loading the data each author was limited to a maximum of 50 comments. Secondly, after loading all the datasets  as the full dataset was heavily biased towards the non troll class with 40000 accounts and only 4000 troll accounts, and a ratio of 90\% to 10\% troll and non troll comments the dataset was balanced to a 50\% 50\% comment ratio and about a 66\% 33\% user ratio. The final training data split was as follows:
+For further experiments we trained the BERT model on a mix of all of the availalbe troll comments, rather than being limited to English-language comments as in the baseline evaluation. This aims to leverage strong cross-lingual capabilities of the multilingual BERT referenced earlier\cite{Pires2019}. Building on the findings of Piers et al. (2019), who noted that cross-lingual transfer capabilites are often enhanced between typologically similar languages, we also decided to investigate a more targeted approach. Specifically, given the typological similarities between Russian and Czech, we will present an additional training run utilizing only Russian-language data. The hypothesis here is that pre-training on a more closely related slavic language might facilitate a more effective transfer of knowledge by the model.\par
+The distribution of languages in the annotated datasets can be seen in Figure \ref{fig:language_distribution}.\par 
 
-% Tweet Distribution Table
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/language_distribution.png}
+    \caption{Language Distribution}
+    \label{fig:language_distribution}
+\end{figure}
+
+To manage the size of the multiligual training dataset two limitations were made. First, each author was limited to a maximum of 50 comments. Second, because as the full dataset was heavily inbalanced towards the non troll class with 40000 accounts as opposed to only 4000 troll accounts, and a ratio of 90\% to 10\% troll to non-troll comments, the dataset was balanced to achieve a 50\% to 50\% comment ratio and about a 65\% to 35\% user ratio. These limitations were not used for the Russian dataset. The statistics for the training datasets can be seen in Table \ref{tab:mult_statistics} and \ref{tab:russian_statistics}\par
+
+% Combined Tweet Distribution and Author Statistics Table
 \begin{table}[ht]
     \centering
-    \caption{Tweet distribution in the dataset.}
-    \label{tab:tweet_distribution}
-    \begin{tabular}{lcc}
+    \caption{Tweet distribution and author statistics in the dataset.}
+    \label{tab:mult_statistics}
+    \begin{tabular}{lcc|lcc}
         \toprule
-        \textbf{Category} & \textbf{Count} & \textbf{Percentage} \\
+        \multicolumn{3}{c|}{\textbf{Multilingual Tweet Distribution}} & \multicolumn{3}{c}{\textbf{Multilingual Author Statistics}} \\
         \midrule
-        Troll tweets     & 144,563 & 51.1\% \\
-        Non-troll tweets & 138,340 & 48.9\% \\
+        \textbf{Category} & \textbf{Count} & \textbf{Percentage} & \textbf{Category} & \textbf{Count} & \textbf{Percentage} \\
         \midrule
-        Total tweets     & 282,903 & 100\% \\
+        Troll tweets     & 144,563 & 51.1\% & Troll authors     & 4,555 & 35.6\% \\
+        Non-troll tweets & 138,340 & 48.9\% & Non-troll authors & 8,236 & 64.4\% \\
+        \midrule
+        Total tweets     & 282,903 & 100\% & Total authors & 12,791 & 100\% \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-% Author Statistics Table
+
+% Combined Russian Tweet Distribution and Author Statistics Table
 \begin{table}[ht]
     \centering
-    \caption{Author statistics in the dataset.}
-    \label{tab:author_statistics}
-    \begin{tabular}{lcc}
+    \caption{Russian Tweet Distribution and Author Statistics in the Dataset.}
+    \label{tab:russian_statistics}
+    \begin{tabular}{lcc|lcc}
         \toprule
-        \textbf{Category} & \textbf{Count} & \textbf{Percentage} \\
+        \multicolumn{3}{c|}{\textbf{Russian Tweet Distribution}} & \multicolumn{3}{c}{\textbf{Russian Author Statistics}} \\
         \midrule
-        Troll authors     & 4,555 & 35.6\% \\
-        Non-troll authors & 8,236 & 64.4\% \\
+        \textbf{Category} & \textbf{Count} & \textbf{Percentage} & \textbf{Category} & \textbf{Count} & \textbf{Statistics} \\
+        \midrule
+        Troll tweets     & 63,318 & 49.0\% & Troll authors     & 2,096 & 30.1\% \\
+        Non-troll tweets & 65,987 & 51.0\% & Non-troll authors & 4,875 & 69.9\% \\
+        \midrule
+        Total tweets     & 129,305 & 100\% & Total authors & 6,971 & 100\% \\
         \bottomrule
     \end{tabular}
 \end{table}
 
+\subsection{Training Results}
 
-% Dataset Size Table
+The model was trained for 5 epochs on a single NVIDIA RTX 3060ti GPU (8GB memory) using a batch size of 16 and the AdamW optimizer with a learning rate of 1e-5 and weight decay of 0.01. A linear learning rate schedule was employed. The training, utilizing PyTorch and the HuggingFace Transformers library for the BERT model, took approximately 4 hours for the multilingual run and about 2 hours for the Russian only run. The table \ref{tab:combined_best_epoch_results} and figure \ref{fig:training_stats} bellow show the training results, including training/validation loss and $R^2$ scores over epochs.\par
+
+% Combined Best Epoch Results Table with Train and Validation Metrics
 \begin{table}[ht]
     \centering
-    \caption{Dataset sizes and author distribution.}
-    \label{tab:dataset_sizes}
-    \begin{tabular}{lcc}
+    \caption{Training and validation metrics at the best epochs.}
+    \label{tab:combined_best_epoch_results}
+    \begin{tabular}{lcc|lcc}
         \toprule
-        \textbf{Dataset} & \textbf{Samples} & \textbf{Authors} \\
+        \multicolumn{3}{c|}{\textbf{Best Epoch Multilingual: 2}} & \multicolumn{3}{c}{\textbf{Best Epoch Russian: 3}} \\
         \midrule
-        Train       & 198,385 & 8,953 \\
-        Validation  & 42,099  & 1,919 \\
-        Test        & 42,419  & 1,919 \\
+        \textbf{Metric} & \textbf{Training} & \textbf{Validation} & \textbf{Metric} & \textbf{Training} & \textbf{Validation} \\
+        \midrule
+        Loss            & 0.5437 & 0.5557 & Loss            & 0.2740 & 0.3405 \\
+        MSE              & 0.0734 & 0.0746 & MSE             & 0.0653 & 0.0913 \\
+        $R^2$ Score      & 0.6814 & 0.6641 & $R^2$ Score     & 0.7328 & 0.6288 \\
+        Binary Accuracy  & 0.9134 & 0.9165 & Binary Accuracy & 0.9091 & 0.8742 \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-The model was trained for 5 epochs on a single NVIDIA RTX 3060ti GPU (8GB memory) using a batch size of 16 and the AdamW optimizer with a learning rate of 1e-5 and weight decay of 0.01. A linear learning rate schedule was employed. The training, utilizing PyTorch and the HuggingFace Transformers library for the BERT model, took approximately 4 hours. The table and figure below show the training results, including training/validation loss and $R^2$ scores over epochs.\par
-
-% Best Epoch Results Table
-\begin{table}[ht]
-    \centering
-    \caption{Training and validation metrics at the best epoch (Epoch 2).}
-    \label{tab:best_epoch_results}
-    \begin{tabular}{lcc}
-        \toprule
-        \textbf{Metric} & \textbf{Training} & \textbf{Validation} \\
-        \midrule
-        Loss            & 0.5437 & 0.5557 \\
-        Mean Squared Error (MSE) & 0.0734 & 0.0746 \\
-        $R^2$ Score     & 0.6814 & 0.6641 \\
-        Binary Accuracy & 0.9134 & 0.9165 \\
-        \bottomrule
-    \end{tabular}
-\end{table}
 
 % Training and Validation Loss Figure
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.35]{figures/training_full.png}
-	\caption{Training and validation loss over epochs}
+	\includegraphics[scale=0.33]{figures/training_full.png}
+	\caption{Training and validation loss over epochs - Multilingual}
 	\label{fig:training_stats}
 \end{figure}
 
-\subsection{Predictions on Czech Dataset}
-After training fine-tuning the BERT model with our prepared data the next step is to explore the model behaviour on the Czech comments domain. The goal of the experiemnts is to compare different training strategies and see how they do with trolliness scoring of the Czech dataset.\par
-I compare two different versions of the model. 
-\begin{itemize} 
-	\item \textbf{BERT + Troll Training} - DistillBERT fine tuned with foreign troll datasets as described above. 
-	\item \textbf{BERT + Troll Training + Few Shot Czech Fine-Tune} - model further fine-tuned on a small manually annotated set of Czech users. 
-	%\item \textbf{Base + Adapter + Few-shot} - the base model with a Czech domain adapter trained first, followed by fine-tuning on the manually annotated Czech users. 
+% Training and Validation Loss Figure
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.33]{figures/russian_training.png}
+	\caption{Training and validation loss over epochs - Russian only}
+	\label{fig:training_stats_russian}
+\end{figure}
+
+\section{Predictions on Czech Dataset}
+In this section, we evaluate the performance of the two multiligual/Russian models on the Czech dataset. Both models were trained using the methods described in the previous section.\par
+We will assess the models in two scenarios:
+\begin{itemize}
+	\item \textbf{Zero-Shot Predictions} - The multilingual model is applied directly to the Czech dataset without any further training or fine-tuning.
+	\item \textbf{Fine-Tuned} - The multilingual model is further fine-tuned on a small set of manually annotated Czech users.
 \end{itemize}
+
 Each model is evaluated based on the distribution of predicted trolliness scores across users, manual review of selected user cases and performace on a small hand annotated test set.
 
-\section{Results}
+\subsection{Zero-Shot Experiment}
+We first applied both the Multiligualy and Russian-only trained models directly on the Czech dataset without any further fine-tuning for the Czech news comments domain. The goal was to test their zero-shot ability to generalize to a new language and domain.\par
 
-\subsection{First Experiment}
-The first set of experiments involved trying to directly plug in the Czech comments into the \textbf{BERT + Troll Training} model, which was fine-tuned on the international troll datasets.\par
-The results of this initial approach were concerning. The model exihibited a strong tendency to predict very low trolliness scores across all users, with the majority of scores falling bellow 0.1. The summary statitstics of these predictions are shown in the table below.
+\subsection{Results}
+The distribution of predicted troliness scores for both models is shown below. We observe that the Multilingual model struggles to classify trolls, as seen in Figure \ref{fig:distribution_multi}, where the vast majority of predictions are close to zero. The russian model, while also having most predictions at low values, shows a sligthly higher mean and a higher median and maximum score.
 
-% Best Epoch Results Table
-\begin{table}[ht]
-    \centering
-    \caption{Trolliness score distribution.}
-    \begin{tabular}{lcc}
-        \toprule
-        \textbf{Statistic} & \textbf{Value} \\
-        \midrule
-        Mean            & 0.00019  \\
-        Standard Deviation & 0.00572 \\
-        Median     & 0.00003  \\
-        Maximum & 0.41994  \\
-        \bottomrule
-    \end{tabular}
+% Zero-Shot Predictions Table
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|l|c|c|c|c|}
+	\hline
+	Model            & Mean Trolliness & Std. Deviation & Median & Max    \\
+	\hline
+	Multilingual      & 0.0561          & 0.0644          & 0.0270 & 0.3316 \\
+	Russian-only      & 0.1056          & 0.0411          & 0.0979 & 0.5534 \\
+	\hline
+	\end{tabular}
+	\caption{Zero-Shot Trolliness Score Distribution}
+	\label{tab:zero_shot_scores}
 \end{table}
 
-These results show that the model struggles to meaningfully capture variation of trolliness in the Czech comments and wasn't able to generalize well to the Czech domain. There could be several factors contributing to this issue. It could be language differences, as although the model is based on a multilingual BERT model, the nuances of the Czech language may not be well represented and may be important for the troll detection task. Additionally, the domain might be too widely missaligned, as the training data was collected from various platforms, various contexts and various time-frames. The missalignment of the training data could make it quite difficult for the model to use its learned knowledge on the specific Czech comments domain.\par 
-Recognizing the severe leimitations, we explored a strategy to overcome this problem by further fine-tuning the model on a small manually annotated dataset, which was menitoned previously when describing the annotation app.\par
+Figures \ref{fig:distribution_comparison} shows the difference in the distribution of trolliness scores between the two models. The multiligual model's distribution is sharply concentratet at near 0 values, effectively classifying most users as non-trolls. The Russian model, in contrast, has a higher median and maximum score, suggesting it is slightly better at identifying a range of troll-like behavior and classifying some users as trolls. However, the overall distributions are both heavily skewed towards low trolliness scores, indicating that both models struggle to idenitfy troll behavior.\par
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{0.49\textwidth}
+        \includegraphics[width=\linewidth]{figures/distribution_multi.png}
+        \caption{Distribution of Trolliness Scores - Multilingual Model}
+        \label{fig:distribution_multi}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+        \includegraphics[width=\linewidth]{figures/russian_distribution.png}
+        \caption{Distribution of Trolliness Scores - Russian-Only Model}
+        \label{fig:russian_distribution}
+    \end{subfigure}
+    \caption{Comparison of Trolliness Score Distributions between Multilingual and Russian-Only Models (Zero-Shot)}
+    \label{fig:distribution_comparison}
+\end{figure}
+
+These results show that the model struggles to meaningfully capture variation of trolliness in the Czech comments and wasn't able to generalize well to the Czech domain. There could be several factors contributing to this issue. It could be language differences, as although the model is based on a multilingual BERT model, the nuances of the Czech language may not be well represented and may be important for the troll detection task. Additionally, the domain might be too widely missaligned, as the training data was collected from various platforms, various contexts and various time-frames. The missalignment of the training data could make it quite difficult for the model to use its learned knowledge on the specific Czech comments domain.
+\par 
+Recognizing the limitations, we explored a strategy to overcome this problem by further fine-tuning the model on a small manually annotated dataset, which was menitoned previously when describing the annotation app.\par
 The next step, described bellow, demonstrated more promising results.\par
 
 \subsection{Fine-Tuned Experiment}
-After seeing the poor performace of the "plug and play" approach, we decided to try to explore the fine tuning of the model through a few shot training approach. The goal was to see if the model could learn to adapt to the Czech language and domain by training on a small set of manually annotated users.\par
-The model was trained for 5 epochs with a manually annotated dataset of 50 users. The performace of the the fine-tuned model on the Czech dataset improved significantly after fine-tuning, as can be seen in the new distribution of troliness scores in table below.
+After seeing the relatively poor performace of the zero-shot approach, we decided to try to explore the fine tuning of the model through a few shot training approach. The goal was to see if the model could learn to better adapt to the Czech language and domain by training on a small set of manually annotated users.\par
+The model was trained for 5 epochs with a manually annotated dataset of 50 users. The distribution of trolliness scores shifted noticably for both models, as shown in in Figures \ref{fig:distribution_multi_finetuned} and \ref{fig:russian_distribution_finetuned}.\par
 
-% Best Epoch Results Table
-\begin{table}[ht]
+\begin{figure}[h]
     \centering
-    \caption{Trolliness score distribution, fine-tuned model.}
-    \begin{tabular}{lcc}
-        \toprule
-        \textbf{Statistic} & \textbf{Value} \\
-        \midrule
-        Mean & 0.154568  \\
-        Standard Deviation & 0.253612 \\
-        Median     & 0.001407  \\
-        Maximum & 0.999692  \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-The results indicate improvement in the models ability to identify various levels of troll behavior. The mean trolliness score increased to 0.15, with a maximum score of 0.99. To better understand the model's behaviour, we visualized the distribution of trolliness predictions and scores across users in Figure 5.2.:\par
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.35]{figures/distribution_fine_tuned.png}
-	\caption{Trolliness score distribution, fine-tuned model.}
-	\label{fig:fine_tune}
+    \begin{subfigure}{0.49\textwidth}
+        \includegraphics[width=\linewidth]{figures/distribution_fine_tuned.png}
+        \caption{Distribution of Trolliness Scores - Multilingual Model Fine-Tuned}
+        \label{fig:distribution_multi_finetuned}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+        \includegraphics[width=\linewidth]{figures/distribution_ru_finetuned0.png}
+        \caption{Distribution of Trolliness Scores - Russian-Only Model Fine-Tuned}
+        \label{fig:russian_distribution_finetuned}
+    \end{subfigure}
+    \caption{Comparison of Trolliness Score Distributions between Multilingual and Russian-Only Models (Zero-Shot)}
+    \label{fig:distribution_comparison_finetuned}
 \end{figure}
 
-The pie chart indicates that the model classifes only 9\% of users as "Troll". This imbalance suggests that the model is conservative with assigning the a high trolliness score, which might not be a bad thing as it reduces the risk of false positives. And it also reflects what someone might expect, that only a small portion of users are trolls.\par
-The histogram further illustrates the spread of trolliness scores. Most predictions cluster around zero and low troliness scores, however the model does still produce a range of scores reaching up to 1, showing that it does differentiate various degress of troll behaviour.
+The results indicate improvement in the multilingualy trained models' abilities to identify various levels of troll behavior and shifts the distributions of scores significantly. The multilingual model now has a mean trolliness score of 0.33 with a standard deviation of 0.3, while the Russian-only model has a mean of 0.21 and a standard deviation of 0.25. Both models use the full score range from 0 to 1, unlike the zero-shot models, which had maximum scores of 0.33 and 0.55, respectively.\par
+
+Both models have a large concentration of users with a trolliness score of near zero, as can be seen in the histograms of Figure \ref{fig:distribution_multi_finetuned} and \ref{fig:russian_distribution_finetuned}. Both models also tend to predict assign values more frequently than higher ones, which can be seen in the cummulative distribution of the scores, particularly with the Russian-trained model in Figure \ref{fig:cumulative_ru}, where we can see that the 80th percentile of scores is less than 0.4. This conservativness might not necessarily be a negative trait, as it reduces the risk of false positives and might also align with a realistic expectation that only a minority of users are genuinely trolls. Despite the clustering around zero, both models can still assign a wide range of scores, indicating their ability differentiate between varying levels of troll behaviour.\par
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{0.49\textwidth}
+        \includegraphics[width=\linewidth]{figures/cumulative_mult.png}
+        \caption{Cumulative Distribution of Trolliness Scores - Multilingual Model Fine-Tuned}
+        \label{fig:cumulative_mult}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+        \includegraphics[width=\linewidth]{figures/cumulative_ru.png}
+        \caption{Cumulative Distribution of Trolliness Scores - Russian-Only Model Fine-Tuned}
+        \label{fig:cumulative_ru}
+    \end{subfigure}
+    \caption{Comparison of Trolliness Score Distributions between Multilingual and Russian-Only Models (Zero-Shot)}
+    \label{fig:cumulative_comparison_finetuned}
+\end{figure}
+
+The choice of the 0.5 classification threshold is somewhat arbitrary and was set for training purposes. It directly influences the referenced percentages of users classified as trolls, but it does not inherently define troll behavior.\par
+It is important to note that the similiarity of the distributions of the two models after fine-tuning may be a result of overfitting. Given the small size of the fine-tuning dataset the model may have learnned to reflect the specific examples it was exposed to closely, leading to very similar behavior.\par
+
 
 \subsection{Manual Review of Predictions}
-To further understand the model's predictions, we manually reviewed a selection of users with high, low and uncertain trolliness scores. The goal was to see if the model's predictions aligned with our expectations and to identify any potential issues or biases in the model.\par
+To further understand the model's predictions, we will manually review a selection of users with high, low and uncertain trolliness scores. The goal was to see if the model's predictions aligned with our expectations and to identify any potential issues or biases in the model.\par
+We will present a specific user example, including a selection of the user's comments, the model's assigned trolliness score and the attention weights for each comment. \par
+To preserve anonynimty and privacy of users we will not disclose the actual names as they are not relevant to the analysis. Instead, we will refer to the users as User A, User B, etc.\par
 
-\section{Adaptery Jsem Nakonec vynechal}
-Jazykovy adapter se neukazal ze by bohuzel pomahal a nasel jsem take i v literature zminene ze prave jen jazykovy adapter nestaci a mohl by vykon dokonce zhorsit. Tak asi nebudu psat nebo mam zminit experiment?
+\begin{tcolorbox}[colback=white, colframe=black, title=User A - Trolliness Score: 0.268 (Multilingual Model) / 0.960 (Russian Model)]
+\begin{itemize}
+    \item \textbf{Comment 1:} \\
+    \textit{Ukrajince v Čechách nechceme!} \\
+    \textbf{Attention Weight:} 0.091 / 0.681
 
-% Mazu adapter jelikoz literatura rika ze natrenovani pouze jazykoveho adaptera bez prepracovani regresni hlavy nepujde, jen zhorsi vysledek
-%\section{Adapter Training}
-%The Czech adapter is intended to help the model adjust to the Czech language and the specific Czech news website comments domain. The adapter should capture lexical and stylistic patterns of our target domain while leaving the 134M parameters of the base model which we fine tuned earliner frozen.\par
-%We instert a bottlenech adapter block after every tansformer layer of DistillBERT and train only these new weights, about 2,5M parameters together with the regression head. The implementation relies on HuggingFace AdapterHub's AutoAdapterModel API.\par
-%The adapter is trained purely thorugh masked-language modeling (MLM) on the Czech comments dataset. In the MLM task a randomly selected 15\% of tokens in the input are masked with a special \texttt{[MASK]} token. The model is then trained to predict the original token based on the context provided by other tokens in the sequence. This task aims to make the adapter internalise Czech lexical and syntactic patterns as well as domain specifics of the news comments.\par
+    \vspace{0.2cm}
+
+    \item \textbf{Comment 2:} \\
+    \textit{Proč se u cizinců v zahraničí uvádí původ u takových článků a u nás v ČR jsou to pouze ,,cizinci''? (Všichni víme jakého pUAvodu)} \\
+    \textbf{Attention Weight:} 0.438 / 0.233
+
+    \vspace{0.2cm}
+
+    \item \textbf{Comment 3:} \\
+    \textit{Paráda, ospalý Joe už bude jen špatná vzpomínka. MAKE AMERICA GREAT AGAIN!} \\
+    \textbf{Attention Weight:} 0.006 / 0.035
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=User B - Trolliness Score: 0.014 (Multilingual Model) / 0.013 (Russian Model)]
+\begin{itemize}
+    \item \textbf{Comment 4:} \\
+    \textit{ANO, které v Evropském parlamentu hlasuje proti Ukrajině kdykoliv mohlo? ANO jsou fakt jen klauni populističtí} \\
+    \textbf{Attention Weight:} 0.076 / 0.010
+
+    \vspace{0.2cm}
+
+    \item \textbf{Comment 5:} \\
+    \textit{Rusko 2008 - napadá Gruzii i když s nimi měli mírovou dohodu - Ukrajina žádá NATO o teoretickou možnost obrany - NATO to odmítá. Rusko 2014 - útočí na Ukrajinu - Ukrajina se snaží bránit (o kterých dnes víme, že byli ruští vojáci) a nemá sílu bránit ještě Krym. - tak aspoň žádá NATO o tréning - to je jim povoleno. Rusko 2022 - útočí na Ukrajinu, neb si dovolila požádat NATO o trénink, když je Rusko napadlo. TRUMP: uKrAjInA To zAčAlA. blebt blebt} \\
+    \textbf{Attention Weight:} 0.146 / 0.227
+
+    \vspace{0.2cm}
+
+    \item \textbf{Comment 6:} \\
+    \textit{Dan Svatek. I kdyby byl plyn z Ruska - tak Azerbajdžán nakupuje Ruský silně pod cenou... (takže Rusko na tom nevydělává a to je důležité) a kdyby ho přestali odkupovat - tak Rusko nebude mít komu ho prodávat - a to technologicky je složitější a peněžně náročnější než nakupování pod cenou...} \\
+    \textbf{Attention Weight:} 0.162 / 0.164
+\end{itemize}
+\end{tcolorbox}
+
+
+\begin{tcolorbox}[colback=white, colframe=black, title=User C - Trolliness Score: 0.478 (Multilingual Model) / 0.434 (Russian Model)]
+\begin{itemize}
+    \item \textbf{Comment 7:} \\
+    \textit{To bylo kecu jak jsme konečně nezávislí na tom ruském plynu, při zavření tranzitu přes UK Ukrajinskou stranou. Teď jsou ukačka bez peněz z tranzitu a celá Evropa krásně za větší cenu zasponzoruje Putinovy cestu k vítězství. Hlavně nesmí EU zapomenout udělat sankční baliček číslo 34 komici. Peníze si cestu vždycky najdou.} \\
+    \textbf{Attention Weight:} 0.320 / 0.538
+
+    \vspace{0.2cm}
+
+    \item \textbf{Comment 8:} \\
+    \textit{Harrisová, nepochopila že jediná věc na kterou se muže spoléhat a je jistota a to i v americe je daně a smrt jak se říkává.} \\
+    \textbf{Attention Weight:} 0.040 / 0.026
+
+    \vspace{0.2cm}
+
+    \item \textbf{Comment 9:} \\
+    \textit{To je blázen} \\
+    \textbf{Attention Weight:} 0.004 / 0.009
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=User D - Trolliness Score: 0.159 (Multilingual Model) / 0.024 (Russian Model)]
+\begin{itemize}
+    \item \textbf{Comment 10:} \\
+    \textit{No, bylo by dobré sledovat to celorepublikově. Pokud ANO nebude cosi lidem dávat (a nevím, kde na to vezme, protože republiku ožebračili už tak, že víc nelze), znamená to tedy, že Fialova vláda lidem nic nevzala. Jasně nevzala. Jen přestala rozdávat. Neměla z čeho. Měl by se přihlásit každý, kdo od ANO něco dostane. Tedy pozitivního. Šikany rozdali dost.} \\
+    \textbf{Attention Weight:} 0.196 / 0.430
+
+    \vspace{0.2cm}
+
+    \item \textbf{Comment 11:} \\
+    \textit{Báťuška Hitler také nechtěl válku. Tedy alespoň na tyhle řeči nachytal spousty příznivců. Oni jsou si tak podobní, Hitler a Putin. Oba v podstatě lidumilové. Jediné, co tenhle typ (včetně Trumpa) potřebuje je situace, kdy se celý svět bude válet na zádech, hrabat v podřízené póze nožičkama do větru...} \\
+    \textbf{Attention Weight:} 0.234 / 0.175
+
+    \vspace{0.2cm}
+
+    \item \textbf{Comment 12:} \\
+    \textit{Ta poruchovost ruských oken začíná být opravdu fatální. Nevím, proč už tahle vypadávací dávno někdo nenamontoval do Kremlu. Byl by klid.} \\
+    \textbf{Attention Weight:} 0.089 / 0.033
+\end{itemize}
+\end{tcolorbox}
+
+For the manual review we selected from a randomly sampled set of users. We selected one user with a high trolliness score, one with an uncertain score and two with a low trolliness scores. We then manually selected 3 comments for each of them, ensuring that each set included at least one with comment a high attention and one with a low attention weight. This was done to showcase the comment-level attention mechanism. Comments were chosen to try to provide explanatory value for the model's decision. Notably, each user references Ukraine in different contexts, which provides a useful basis for comparison.\par
+
+\subsection{Example User Analysis}
+
+The first user, User A, is classified as a troll by the Russian model, and his first comment receives a high attention weight. This comment is an aggressive and troll-like statement with a strong anti-Ukrainian sentiment.  Interestingly, the Multilingual model assigned this comment a low attention weight, which is quite surprising given its hostile content. In the second comment, the user again expresses negative sentiment towards foreigners, and this time the comment receives a high attention weight from both models. The third comment, which is less inflammatory, is given a relatively low attention weight by both models. However, it is still an interesting example because it features the "MAGA" slogan in all caps. The difference in attention weights here suggests that the Russian model may be more sensitive not only to topics related to Russia and Ukraine but also to American political rhetoric.\par
+
+In contrast to User A, we have User B, who is consistently classified as a non-troll by both models. User C's comments are critical, focusing primarily on Czech politics, but they also mention Russia, Ukraine, and even Trump in various contexts. Despite the presence of politically charged language, including the use of all caps in some instances, the models do not classify this user as a troll. Instead, they assign him a low trolliness score.\par
+
+This user provides an interesting case study because, despite the use of words like \textit{Ukraine, Trump, Russia} and even direct criticism of the ANO political party (calling them ``clowns''), the models recognize that these comments are not inherently troll-like. Instead, they reflect the perspective of a politically engaged citizen who may be emotionally expressive but is not exhibiting troll-like behavior. The model seems to demonstrate an ability to understand the context in which charged words are used and distinguishing between genuine political criticism and hostile trolling.\par
+
+\subsection{Reflection on User Analysis}
+
+While the manual review provides some insights into how the model assigns troliness scores, it is a very limited analysis. The review is based on a very small, randomly selected sample of users and comments, of only 4 users out of a total of 16500. Given this limited scope and limited ability to generalize, it would be inappropriate to draw conclusisons about the model's overall performace or its capabilities. For the sake of clarity and to not drawn many conclussions, we have limited the user analysis to the comaprison of the first two users A and B. However, we have also included addition user examples, allowing readers to examine the comments, attnetnion weights and trolliness scores for themselves and form their own opinions. \par
+Moreover, determining whether a user is genuinely a troll or not is a complex and subjective task that goes beyond the scope of this work. This section should therefore be understood as an illustriation of the model's behavior rather than a definitive assessment of its performance.\par
+
+\section{Language Adapter Experiment}
+As a failed experiment we also attempted, to further adapt the BERT model to the Czech language by training a language adapter. Adapters are lightweight modules that can be inserted into transformer models, allowing them to efficiently adapt to new domains with minimal changes to the main model \cite{Houlsby2019}. The approach has been shown to be effective in many contexts, including multilingual tasks. Moreover the MetaTrolls model, previously cited in Related Methods \cite{Tian2023}, successfully used adapters to specialize its model for different trolling campaigns, which inspired us to explore this method.\par
+
+We trained an adapter using Masked Language Modeling (MLM) on the Czech comments dataset. The adapter was trained to predict masked tokens in the input text, with the aim to have it learn Czech-specific lingiustic patterns, while retaining the multilingual knowledge and training of the BERT model.\par
+
+Unfortunlately, this approach did not work as expected. Instead of improving the model's performance it disrupted it. This problem occurred because the adapter altered the the outputs of the model in a way that the final regression head was not trained to handle, effectively breaking the model. \par
  
-
 \chapter{Conclusion}
 
 
