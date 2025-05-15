@@ -31,22 +31,22 @@
 \ctusetup{
 %	preprint = {\ctuverlog \\ ctuman \mytoday},
 	mainlanguage = english,
-%	titlelanguage = english,
+	titlelanguage = english,
 %	otherlanguages = {czech},
-	% title-czech = {Manuál ke třídě ctuthesis pro {\myLaTeX}},
-	title-english = {NLP Trolls},
+	title-czech = {Hodnocení diskusních příspěvků mediálních zpráv},
+	title-english = {Evaluation of Media News Discussion Posts},
 	doctype-english = {Bachelor thesis},
 %	xfaculty = F4,
-%	department-czech = {Katedra matematiky},
-%	department-english = {Department of Mathematics},
+	department-czech = {Katedra kybernetiky},
+	department-english = {Department of Cybernetics},
 	author = {Luka Peraica },
 	supervisor = {Ing. Radek Mařík, CSc.},
 %	supervisor-address = {Ústav X, \\ Uliční 5, \\ Praha 99},
-	keywords-czech = {manuál, závěrečnná práce, \LaTeX},
-	keywords-english = {manual, degree project, \LaTeX},
-	day = 16,
-	month = 4,
-	year = 2024,
+	keywords-czech = {online trolling, Zpracování přirozeného jazyka (NLP), Transformer modely, vícejazyčný BERT, Strojové učení},
+	keywords-english = {Online trolling, Natural Language Processing (NLP), Transformer models, Multiligual BERT, Machine Learning},
+	day = 15,
+	month = 5,
+	year = 2025,
 %	list-of-figures = false,
 %	list-of-tables = false,
 %	monochrome = true,
@@ -101,25 +101,33 @@
 
 % Abstract in Czech
 \begin{abstract-czech}
-V záplavě mnoha zdrojů a množství mediálních zpráv není jednoduché se zorientovat i pro profesionální mediální analytiky. 
-Výrazem demokracie je i možnost se ke zprávám vyjadřovat a tříbit si názory v diskusních příspěvcích dílčích zpráv. 
-Diskuse však vytváří prostor i pro osoby, jejichž cílem je z rozmanitých důvodu diskuse narušovat a překrucovat. 
-Cílem práce je vytvořit komponenty systému, který umožní sledovat linie vývoje tématu a identifikovat příspěvky narušitelů, 
-tzv. trollů.\end{abstract-czech}
+Internetové diskuse často přitahují rušivé chování, jako je trolling, jehož cílem je provokovat nebo klamat uživatele. Tato bakalářská práce se zabývá detekcí trollů pomocí metod zpracování přirozeného jazyka (NLP), se zaměřením na komentáře uživatelů českého zpravodajského portálu Novinky.cz. Využívá transformer modely, konkrétně vícejazyčný model BERT, k přiřazení uživatelům kontinuálního skóre „trollovitosti“, což lépe vystihuje komplexitu online chování oproti tradičnímu binárnímu rozdělení.\par
+
+Model původně trénovaný na vícejazyčných datových sadách překonal tradiční metody, ale narazil na problémy při přenosu znalostí přímo na české komentáře. Další doladění pomocí malé anotované sady českých komentářů významně zvýšilo jeho efektivitu.\par
+
+Práci uzavírá shrnutí silných stránek metody a uznání jejích omezení.\par
+
+\end{abstract-czech}
 
 % Abstract in English
 \begin{abstract-english}
-	
+
+Online discussions frequently attract disruptive behaviors such as trolling, intended to provoke or mislead users. This bachelor's thesis explores troll detection using Natural Language Processing (NLP), focusing on user comments from the Czech news site Novinky.cz. It employs transformer-based models, specifically multilingual BERT, to assign users a continuous "trolliness" score, rather than only a traditional binary classifications.\par
+
+Initially trained on multilingual datasets, the model outperformed traditional methods but faced challenges transferring knowledge directly to Czech comments. Further fine-tuning with a small annotated dataset of Czech comments significantly improved its effectiveness.\par
+
+The thesis concludes by highlighting the method's strengths and acknowledging limitations.\par
+
 \end{abstract-english}
 
 % Acknowledgements / Podekovani
 \begin{thanks}
-	We thank the CTU in Prague for being a~very good \emph{alma mater}.
+	I would like to wholeheartedly thank my supervisor, Ing. Radek Mařík, CSc., for assigning me this thesis topic and for the opportunity to work under his supervision. I deeply appreciate his guidance, encouragement, and unwavering positivity throughout the entire process. Without his support, this thesis would not have been possible.
 \end{thanks}
 
 % Declaration / Prohlaseni
 \begin{declaration}
-	I declare that this work is all my own work and I have cited all sources I have
+	I declare that this work is all my own work, and I have cited all sources I have
 	used in the bibliography.
 
 \medskip
@@ -174,80 +182,76 @@ tzv. trollů.\end{abstract-czech}
 
 \section{Problem Statement}
 \par
-The way humans communicate and interact has changed dramatically in the age of the internet. Social media sites, forums and comment sections have become primary spaces for people to share ideas, debate issues and engage in public discourse. These online discussion platforms allow individual from different backgrounds to express their opinions and be part of conversations easily than ever before. However, while online discussions create opportunities for connecting people and sharing information, they also come with major challenges like the spread of misinformation, the polarization of society and the spread of large scale disruptive behavior.\par
+The way humans communicate and interact has changed dramatically in the age of the internet. Social media sites, forums, and comment sections have become primary spaces for people to share ideas, debate issues, and engage in public discourse. These online discussion platforms allow individuals from different backgrounds to express their opinions and be part of conversations easily than ever before. However, while online discussions create opportunities for connecting people and sharing information, they also come with major challenges like the spread of misinformation, the polarization of society, and the spread of large-scale disruptive behavior.\par
 
-Understanding how these platforms shape opinion is essential in the modern day. As in today's flood of diverse media sources and information, even professional media analysts find it challenging to navigate and filter reliable information. A key aspect of democracy is the ability to express opinions and refine perspectives through discussions. Today most of such discussion happens online on social media platforms like Twitter, Facebook and Reddit which have gained a powerful influence on public opinion the shaping political outcomes~\cite{Bennett2012DigitalMedia}. This importance and ubiquity of online discussions can also make them targets for individuals whose goal is to disrupt and manipulate conversations for various reasons.\par
+Understanding how these platforms shape opinion is essential in the modern day. In today's flood of diverse media sources and information, even professional media analysts find it challenging to navigate and filter reliable information. A key aspect of democracy is the ability to express opinions and refine perspectives through discussions. Today, most of such discussion happens online on social media platforms like Twitter, Facebook, and Reddit, which have gained a powerful influence on public opinion, shaping political outcomes~\cite{Bennett2012DigitalMedia}. The importance and ubiquity of online discussions can also make them targets for individuals whose goal is to disrupt and manipulate conversations for various reasons.\par
 
 \section{Defining Online Trolling}
-To address the negative consequences of disruptive online behavior, it is important to define one its most prevalent forms: online trolling. Online trolling is a deliberate act intended to provoke, deceive, or disrupt online conversations. According to Coles and West~\cite{Coles2016}, trolling involves actions meant to annoy, frustrate, or engage others in pointless disputes. Similarly, Golf-Papez and Veer~\cite{GolfPapez2017DontFeedTheTroll} define trolling as ''deliberate, deceptive, and mischievous attempts to provoke reactions from other users''.\par
+To address the negative consequences of disruptive online behavior, it is important to define one of its most prevalent forms: online trolling. Online trolling is a deliberate act intended to provoke, deceive, or disrupt online conversations. According to Coles and West~\cite{Coles2016}, trolling involves actions meant to annoy, frustrate, or engage others in pointless disputes. Similarly, Golf-Papez and Veer~\cite{GolfPapez2017DontFeedTheTroll} define trolling as ''deliberate, deceptive, and mischievous attempts to provoke reactions from other users''.\par
 
-The term ''trolling'' itself was originally borrowed from fishing slang, where it referred to dragging a baited line through the water to catch fish. In the online context, the term seems to have first been used  in the 1990s on the USET discussion system where some users would deliberately create posts designed to trigger angry corrections from newbie users who weren't aware of such pracitces.\par
+The term ''trolling'' itself was originally borrowed from fishing slang, where it referred to dragging a baited line through the water to catch fish. In the online context, the term seems to have first been used in the 1990s on the USET discussion system, where some users would deliberately create posts designed to trigger angry corrections from newbie users who weren't aware of such practices.\par
 
-Then there is a second dictionary definition for the word ''troll'', which is also quite relevant to the perception of online trolls and perhaps for most people the first connotation that comes to mind. This definition refers to a troll as a large, ugly creature from folklore, often depicted as a brutish ogre. The word ''troll'' is derived from the Old Norse word ''troll'', which means ''giant'' or ''ogre''. In this context, the term evokes an image of a monstrous being that lurks in the shadows, waiting to pounce on unsuspecting victims. And while the term trolling originated from the early bait posts, related to the fishing term, over time the the character and label of the ''troll'' developed, which is more closely related to the folklore definition. This shift in meaning reflects the evolution of online trolling from more light-hearted baiting and joking to a label for a malicious character lurking on the internet\cite{Demsar2021}.\par
+Then there is a second dictionary definition for the word ''troll'', which is also quite relevant to the perception of online trolls and perhaps for most people the first connotation that comes to mind. This definition refers to a troll as a large, ugly creature from folklore, often depicted as a brutish ogre. The word ''troll'' is derived from the Old Norse word ''troll'', which means ''giant'' or ''ogre''. In this context, the term evokes an image of a monstrous being that lurks in the shadows, waiting to pounce on unsuspecting victims. And while the term trolling originated from the early bait posts, related to the fishing term, over time the character and label of the ''troll'' developed, which is more closely related to the folklore definition. This shift in meaning reflects the evolution of online trolling from more light-hearted baiting and joking to a label for a malicious character lurking on the internet\cite{Demsar2021}.\par
 
 While some forms of trolling may seem harmless or playful, others can escalate into targeted harassment, misinformation campaigns, and efforts to manipulate public opinion.\par
-People engage in trolling for various reasons, from simply seeking amusement from the activity to pushing political or ideological agendas. Studies indicate that personality traits like psychopathy, narcissism, and Machiavellianism are often linked to trolling behavior~\cite{Buckels2014TrollsWantToHaveFun}. Additionally research has shown that certain psychological factors also contribute to the online trolling phenomena, such as the ''online disinhibition effect''. This theory suggests that people act more aggressively online because they feel anonymous and free from real-world consequences~\cite{Suler2004}. The combination of these factors makes online discussions particularly fertile ground for trolling behavior. \par
+People engage in trolling for various reasons, from simply seeking amusement from the activity to pushing political or ideological agendas. Studies indicate that personality traits like psychopathy, narcissism, and Machiavellianism are often linked to trolling behavior~\cite{Buckels2014TrollsWantToHaveFun}. Additionally, research has shown that certain psychological factors also contribute to the online trolling phenomenon, such as the ''online disinhibition effect''. This theory suggests that people act more aggressively online because they feel anonymous and free from real-world consequences~\cite{Suler2004}. The combination of these factors makes online discussions particularly fertile ground for trolling behavior. \par
 
-Beyond individual psychology trolls also exploit the techonological factor of the discussions, particularly social media algorithms that focus on engagement above all else. Effectively playing into the algorithm allows them to more easily and effectively spread divisive content and manipulate conversations~\cite{GolfPapez2017DontFeedTheTroll}.\par
+Beyond individual psychology, trolls also exploit the technological factor of the discussions, particularly social media algorithms that focus on engagement above all else. Effectively playing into the algorithm allows them to more easily and effectively spread divisive content and manipulate conversations~\cite{GolfPapez2017DontFeedTheTroll}.\par
 
 \section{Impacts of Trolling}
-Trolling negatively affects both honest users and the discussion as a whole. Those targeted by trolls often experience stress, anxiety, and frustration, which can discourage them from engaging in future conversations. Trolling not only harms individual well-being but also degrades the quality of discussions. As user trust is eroded and people become more skeptical of digital interactions a toxic environment is created where constructive engagement becomes difficult~\cite{GolfPapez2017DontFeedTheTroll}.\par
+Trolling negatively affects both honest users and the discussion as a whole. Those targeted by trolls often experience stress, anxiety, and frustration, which can discourage them from engaging in future conversations. Trolling not only harms individual well-being but also degrades the quality of discussions. As user trust is eroded and people become more skeptical of digital interactions, a toxic environment is created where constructive engagement becomes difficult~\cite{GolfPapez2017DontFeedTheTroll}.\par
 
-On a larger scale trolling can have significant consequences, particularly when it is used as a toll for political manipulation. State-sponsored troll campaigns have been used to spread propaganda, influence elections, and undermine public trust in media~\cite{Bradshaw2017TroopsTrolls}. One of the most well-known exaples is the Russian \textit{Internet Research Agency} (IRA), which ran large-scale trolling operations during the 2016 U.S. presidential election between Hillary Clinton and Donald Trump. These trolls used fake accounts to post divisive content and manipulate public discourse~\cite{Linvill2020IRATrolls}. Similar use of trolling in political campaigns and foreign influence operations has been documented across the world, demonstrating the severity and importance of addressing the issue.\par
+On a larger scale, trolling can have significant consequences, particularly when used as a tool for political manipulation. State-sponsored troll campaigns have been used to spread propaganda, influence elections, and undermine public trust in media~\cite{Bradshaw2017TroopsTrolls}. One of the most well-known examples is the Russian \textit{Internet Research Agency} (IRA), which ran large-scale trolling operations during the 2016 U.S. presidential election between Hillary Clinton and Donald Trump. These trolls used fake accounts to post divisive content and manipulate public discourse~\cite{Linvill2020IRATrolls}. Similar use of trolling in political campaigns and foreign influence operations has been documented worldwide, demonstrating the severity and importance of addressing the issue.\par
 
-This thesis aims to identify and analyze behavior of trolls in online discussions. Specifically, it will explore different NLP techniques for troll detection, including stylometry, topic modeling, deep learning, and transformer models. The goal is to identify harmful contributions and contributors to online discussions and to explore possibilites for further research in this area.\par
+This thesis aims to identify and analyze the behavior of trolls in online discussions. Specifically, it will explore different NLP techniques for troll detection, including stylometry, topic modeling, deep learning, and transformer models. The goal is to identify harmful contributions and contributors to online discussions and to explore possibilities for further research in this area.\par
 
 % ========================================== CHAPTER 2 NLP =====================
 \chapter{Natural Language Processing}
-Given the impact of disruptive trolls on online discourse and society at large, research efforts have focused on developing techniques to better understand, detect and mitigate their activity. This chapter explores the methods used to analyze and identify trolling behavior particularly through Natural Language Processing (NLP). It covers key approaches such as stylometry, sentiment analysis, and topic modelling.\par
+Given the impact of disruptive trolls on online discourse and society at large, research efforts have focused on developing techniques to better understand, detect, and mitigate their activity. This chapter explores the methods used to analyze and identify trolling behavior, particularly through Natural Language Processing (NLP). It covers key approaches such as stylometry, sentiment analysis, and topic modelling.\par
 
 \section{Stylometry}
 
-Stylometry is the discipline of analyzing writing style to uncover patterns, identify authors, and extract meaningful details from texts~\cite{Mosteller1964Federalist}~\cite{Pascucci2020Misogyny}. The term was introduced in 1890 by the Polish philosopher Wincenty Lutosławski, who applied it to analyze Plato's works~\cite{Lutoslawski1898}. In the context of this thesis,  stylometry involves the use of automated techniques to analyze linguistic traits that distinguish authors based on their unique writing patterns.\par
+Stylometry is the discipline of analyzing writing style to uncover patterns, identify authors, and extract meaningful details from texts~\cite{Mosteller1964Federalist}~\cite{Pascucci2020Misogyny}. The term was introduced in 1890 by the Polish philosopher Wincenty Lutosławski, who applied it to analyze Plato's works~\cite{Lutoslawski1898}. In the context of this thesis,  stylometry involves the use of automated techniques to analyze linguistic traits that distinguish authors based on their unique writing patterns.\par
 The underlying assumption in stylometry is that an author's choices are influenced by sociological factors, such as age, gender, and education level, as well as psychological factors, like personality and native language proficiency~\cite{Daelemans2013Explanation}. This assumption can be extended to groups of authors, especially those who may share common objectives or adhere to specific guidelines, such as state-sponsored trolls, or display similar behavioral patterns as seen among ordinary trolls. These individual or collective choices can manifest as identifiable stylistic features within texts, which computational models can analyze to detect trolling behavior.
 Stylometric analyses typically examine lexical choices like vocabulary richness, syntactic elements including sentence structure and grammatical complexity~\cite{Sari2018Features}, and semantic dimensions, such as sentiment and thematic consistency~\cite{PerezRosas2018Stylometry}. Extracting and evaluating these features allows machine learning classifiers to differentiate between regular users and trolls based on their distinctive linguistic signatures.\par
 
 \subsection{Stylometry in Literature}
 
-An example of stylometry applied to troll detection is presented in the work of Machová \textit{et al.}~\cite{Machova2021Algorithms}. The paper examines troll detection in Slovak Facebook discussions on COVID-19 by combining shallow stylometric cues with engagement and affective information.  From roughly 2,500 manually labelled comments they extract length-based metrics (character and word counts, average word length), orthographic signals (capital-letter and digit frequency), and eight sentiment/provocativeness categories, and enrich these with interaction metadata such as the number of “likes”. These features were used by classical classifiers-including SVM, Multinomial Naïve Bayes (MNB) and logistic regression trained on bag-of-words and TF-IDF representations. The MNB model that integrates stylometric, affective and metadata features achieves the best balance, reaching 0.92 recall for the troll class, while an SVM attains perfect precision (1.00) at the cost of markedly lower recall.  Their results confirm that stylistic signals are informative but deliver the highest performance when fused with complementary sentiment and platform-level features, rather than being relied upon in isolation.
+An example of stylometry applied to troll detection is presented in the work of Machová \textit{et al.}~\cite{Machova2021Algorithms}. The paper examines troll detection in Slovak Facebook discussions on COVID-19 by combining shallow stylometric cues with engagement and affective information.  From roughly 2,500 manually labelled comments, they extract length-based metrics (character and word counts, average word length), orthographic signals (capital-letter and digit frequency), and eight sentiment/provocativeness categories, and enrich these with interaction metadata such as the number of “likes”. These features were used by classical classifiers-including SVM, Multinomial Naïve Bayes (MNB), and logistic regression trained on bag-of-words and TF-IDF representations. The MNB model that integrates stylometric, affective, and metadata features achieves the best balance, reaching 0.92 recall for the troll class, while an SVM attains perfect precision (1.00) at the cost of markedly lower recall.  Their results confirm that stylistic signals are informative but deliver the highest performance when fused with complementary sentiment and platform-level features, rather than being relied upon in isolation.
 
-In another paper an example of stylometry applied to fake news detection is presented in the work of Pérez-Rosas et al.~\cite{PerezRosas2018Stylometry}. They used a variety of stylometric features, including n-grams, punctuation frequency, readability metrics and syntactic features. They also incorporated psycholingustic features extracted from the LIWC lexicon which categorize words into various psychological categories. LIWC features capture psychological aspets of a text such as emotional tone or cognitive processes, potentially revealing underlying psychological differences between fake and legitimate news writers. A linear SVM classifier was trained on these features to differentiate between fake and legitimate news articles. Their results showed that stylometric features can be effective for the task, achieving accuracies of up to 76\% which outperformed two human annotators. The analysis uncovered distinct linguistic patterns in fake news, such as increased use of social and positive words, a focus on present and future actions, and a higher prevalence of adverbs, verbs, and punctuation marks. 
+In another paper, an example of stylometry applied to fake news detection is presented in the work of Pérez-Rosas et al.~\cite{PerezRosas2018Stylometry}. They used a variety of stylometric features, including n-grams, punctuation frequency, readability metrics, and syntactic features. They also incorporated psycholinguistic features extracted from the LIWC lexicon, which categorize words into various psychological categories. LIWC features capture psychological aspects of a text, such as emotional tone or cognitive processes, potentially revealing underlying psychological differences between fake and legitimate news writers. A linear SVM classifier was trained on these features to differentiate between fake and legitimate news articles. Their results showed that stylometric features can be effective for the task, achieving accuracies of up to 76\% which outperformed two human annotators. The analysis uncovered distinct linguistic patterns in fake news, such as increased use of social and positive words, a focus on present and future actions, and a higher prevalence of adverbs, verbs, and punctuation marks.\par
 
-% In another paper, Kandasamy et at.~\cite{Kandasamy2021COVID} proposed a deep learning framework for sentiment analysis of COVID-19-related tweets. Their approach used an N-gram stacked autoencoder to capture text features. These features were then processed by a set of classifiers-decision trees, support vector machines, random forests, and k-nearest neighbors. The highest accuracy was achieved using an ensemble model that combined all of these classifiers, this method achieved an accuracy of 87.75\%. The study demonstrated that using n-grams greatly improved the classification of negative sentiment, an emotion that was prevalent during the pandemic.\par
+Though stylometry has proven useful for text classification, recent advancements in large language models and their potential for misuse might pose a substantial challenge to its efficacy. As demonstrated by Schuster et al.~\cite{Schuster2020}, stylmoetry may struggle to differentiate between human-written and machine-generated text. In their study, they find that while a state-of-the-art stylometry-based classifier could effectively detect the presence of machine-generated text within human-written content, it struggled to discern the truthfulness of the generated text. For instance, even a single auto-generated sentence within a longer human-written text was easily detectable, but the veracity of that sentence remained largely undecidable. Additionally, even a relatively weak LM could produce statement inversions that evaded detection by the stylometry-based model.\par
 
-Though stylometry has proven useful for text classification, recent advancements in large language models and their potential for misuse might pose a substantial challenge to its efficacy. As demonstrated by Schuster et al.~\cite{Schuster2020}, stylmoetry may struggle to differentiate between human-written and machine-generated text. In their study they find that while a state-of-the-art stylometry-based classifier could effectively detect the presence of machine-generated text within human-written content, it struggled to discern the truthfulness of the generated text.  For instance, even a single auto-generated sentence within a longer human-written text was easily detectable, but the veracity of that sentence remained largely undecidable.  Additionally, even a relatively weak LM could produce statement inversions that evaded detection by the stylometry-based model.\par
-
-These findings collectively highlight stylometry's potential for detecting hidden manipulation in online text, although recent advancements in language generation models present new challenges. It is also imporatnt to note that to achieve good results stylometric features weren't used on their own but along with others like metadata (like counts, followers) or sentiemnt analysis. \par
+These findings collectively highlight stylometry's potential for detecting hidden manipulation in online text, although recent advancements in language generation models present new challenges. It is also important to note that to achieve good results, stylometric features weren't used on their own but along with others like metadata (like counts, followers) or sentiment analysis. \par
 
 \section{Sentiment Analysis}
 Sentiment analysis is a method of determining the emotional tone of text, which can be achieved using lexicon-based methods, machine learning, or deep learning approaches. It identifies positive, negative, neutral, or ambivalent tones in text.\par
 
 \subsection{Sentiment Analysis in Troll Detection}
-The use of sentiment analysis has been explored as one of the methods used of troll detection. Jiang et al.~\cite{Jiang2021Sentiment} for example explored the use of sentiment analysis for troll detection on the Chinese social media platform Weibo.  They employed a Word2Vec model trained on a dataset of Weibo comments to generate word embeddings. These embeddings were then used to calculate sentiment scores, incorporating features such as happiness, anger, disgust, and fear. The sentiment was used along with meta features such as the location of a comment in a thread or its like count to train XGBoost and SVM models for the troll detection task. The approach proved effective with the XGBoost model achieving an accuracy of up to 89\% and SVM up to 87\%.\par
-In a related study, Machová et al.~\cite{Machova2022Comparison} investigated the detection of suspicious reviewers in online discussions, focusing on trolls. . Their lexicon-based approach analyzed the polarity of comments to identify trolls. It was based on the tendency of trolls to express extreme opinions that oppose the general sentiment of the discussion. They compared this approach with a Convolutional Neural Network (CNN) model, finding that both performed similarly on text data, achieving accuracies of 0.95 and 0.959, respectively.  The study also employed machine learning methods, such as Support Vector Machines (SVM), using non-textual features like comment karma, likes, and dislikes. With the SVM model they achieved an accuracy of 0.986.
+The use of sentiment analysis has been explored as one of the methods used for troll detection. Jiang et al.~\cite{Jiang2021Sentiment}, for example, explored the use of sentiment analysis for troll detection on the Chinese social media platform Weibo. They employed a Word2Vec model trained on a dataset of Weibo comments to generate word embeddings. These embeddings were then used to calculate sentiment scores, incorporating features such as happiness, anger, disgust, and fear. The sentiment was used along with meta features such as the location of a comment in a thread or its like count to train XGBoost and SVM models for the troll detection task. The approach proved effective with the XGBoost model achieving an accuracy of up to 89\% and SVM up to 87\%.\par
+In a related study, Machová et al.~\cite{Machova2022Comparison} investigated the detection of suspicious reviewers in online discussions, focusing on trolls. Their lexicon-based approach analyzed the polarity of comments to identify trolls. It was based on the tendency of trolls to express extreme opinions that oppose the general sentiment of the discussion. They compared this approach with a Convolutional Neural Network (CNN) model, finding that both performed similarly on text data, achieving accuracies of 0.95 and 0.959, respectively. The study also employed machine learning methods, such as Support Vector Machines (SVM), using non-textual features like comment karma, likes, and dislikes. With the SVM model, they achieved an accuracy of 0.986.\par 
 
 %\section{Topic Detection}
 %Topic detection is another essential NLP technique used to analyze and interpret corpora of text. It identifies main topics in large amounts of text and groups conversations based on these topics. This can help us understand conversation patterns and recognize signs of disruptive behavior. Trolls often move discussions off-topic, introduce controversial subjects, or focus repeatedly on divisive issues. We can analyze the kinds of topics a user engages with and how they behave within those topics to find clues about their intentions and their role in discussions.\par
 
-\section{Transformer Models}
-
-In recent years, Transformer models have emerged as the state-of-the-art approach for a wide range of NLP tasks. First introduced by Vaswani et al. in 2017~\cite{Vaswani2017} in the pionnering paper \textit{Attention Is All You Need} Transformers offer a new way for machines to understand and generate language. Unlike earlier methods, they are designed to efficiently capture relationships and patterns within text, even over long passages. Their ability to handle large amounts of data and to adapt to complex language structures has made them a key tool in modern NLP applications.
+In recent years, Transformer models have emerged as the state-of-the-art approach for a wide range of NLP tasks. First introduced by Vaswani et al. in 2017~\cite{Vaswani2017} in the pioneering paper \textit{Attention Is All You Need}, Transformers offer a new way for machines to understand and generate language. Unlike earlier methods, they are designed to efficiently capture relationships and patterns within text, even over long passages. Their ability to handle large amounts of data and to adapt to complex language structures has made them a key tool in modern NLP applications.
 Another important reason for the success of Transformer models is that they are typically very large models pre-trained on massive datasets. Many of these datasets are multilingual, meaning that the models learn from several languages at once. As a result, we can often use the same embedding space for different languages, and the knowledge gained in one language can transfer to some extent to others. This makes pre-trained Transformers especially valuable when dealing with multilingual or cross-lingual data.\par
 In this section, we will introduce the basic ideas behind Transformer models.\par
 
 \subsection{Self-Attention}
 
-The key innovation of Transformer models is the use of self-attention mechanisms, which allows the model to dynamically focus on different parts of the text sequence, regardless of position. Instead of processing text word by word like earlier models, Transformers can consider all words in a sentence at once, deciding how much attention each word should pay to others. This allows the model to capture complex patterns and dependencies across long texts, making it very powerful for understanding the both the context and meaning of language.\par
+The key innovation of Transformer models is the use of self-attention mechanisms, which allows the model to dynamically focus on different parts of the text sequence, regardless of position. Instead of processing text word by word like earlier models, Transformers can consider all words in a sentence at once, deciding how much attention each word should pay to others. This allows the model to capture complex patterns and dependencies across long texts, making it very powerful for understanding both the context and meaning of language.\par
 
-Each word (token) creates three vectors which are used by the self-attention mechanism:
+Each word (token) creates three vectors, which are used by the self-attention mechanism:
 \begin{list}{}{}
-	\itemsep=0pt
-	\item \textbf{Query (Q)} - a vector that represents the active word in the input sequence ("What am I looking for?").
-	\item \textbf{Key (K)} - a vector that represents other words form the input sequence which are compared to the query ("What do I have?").
-	\item \textbf{Value (V)} - a vector that represents the information we want to extract from the compared words ("What do I want to know?")
+  \itemsep=0pt
+  \item \textbf{Query (Q)} - a vector that represents the active word in the input sequence ("What am I looking for?").
+  \item \textbf{Key (K)} - a vector that represents other words from the input sequence, which are compared to the query ("What do I have?").
+  \item \textbf{Value (V)} - a vector that represents the information we want to extract from the compared words ("What do I want to know?")
 \end{list}
 
-The model uses a dot product to calculate the similairy between the query and the key vectors. The result is then scaled and passed through a softmax function to create a probability distribution. This distribution is then used to weight the value vectors, allowing the model to focus on the most relevant information in the input sequence. The model does all of the above steps in paralel for sets of queries, keys and values - it works with matrices instead of separate vectors. The equation for the self-attention mechanism as described is then: \par
+The model uses a dot product to calculate the similarity between the query and the key vectors. The result is then scaled and passed through a softmax function to create a probability distribution. This distribution is then used to weight the value vectors, allowing the model to focus on the most relevant information in the input sequence. The model does all of the above steps in parallel for sets of queries, keys, and values - it works with matrices instead of separate vectors. The equation for the self-attention mechanism as described is then: \par.
 
 \begin{equation}
 	\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
@@ -256,85 +260,84 @@ The model uses a dot product to calculate the similairy between the query and th
 
 \subsection{Multi-Head Attention}
 
-Additionally to the self-attention mechanism, Transformer models also use multi-head attention. This means that instead of having a single set of query, key and value vectors, the model has multiple sets (or heads) that can learn different aspects of the input data. Each head performs its own self-attention calculation, and the results are then concatenated and linearly transformed to create the final output. This allows the model to capture a wider range of relationships and patterns in the data.\par
+In addition to the self-attention mechanism, Transformer models also use multi-head attention. This means that instead of having a single set of query, key, and value vectors, the model has multiple sets (or heads) that can learn different aspects of the input data. Each head performs its own self-attention calculation, and the results are then concatenated and linearly transformed to create the final output. This allows the model to capture a wider range of relationships and patterns in the data.\par
 The multi-head attention mechanism is defined as follows:
 
 \begin{align}
-	\text{MultiHead}(Q, K, V) &= \text{Concat}(\text{head}_1, \text{head}_2, \ldots, \text{head}_h)W^O \\
-	\text{head}_i &= \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)
+ \text{MultiHead}(Q, K, V) &= \text{Concat}(\text{head}_1, \text{head}_2, \ldots, \text{head}_h)W^O \\
+ \text{head}_i &= \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)
 \end{align}
 
-The output is finally passed through a feed-forward neural network (FFN) which consists of two linear transformations with a ReLU activation function in between. The FFN is applied to each position separately and identically.\par
+The output is finally passed through a feed-forward neural network (FFN), which consists of two linear transformations with a ReLU activation function in between. The FFN is applied to each position separately and identically.\par
 
 \begin{equation}
-	\text{FFN}(x) = \text{ReLU}(xW_1 + b_1)W_2 + b_2 
+ \text{FFN}(x) = \text{ReLU}(xW_1 + b_1)W_2 + b_2 
 \end{equation}
 
-These mechanisms allow the Transfoermer to capture relationships and dependencies between words in a text regardless of their position. The use of multi-head attention further enhances these abilites by allowing the model to learn different aspects of the text simultaneously. As a result Transfoermer models can efficiently process long sequences, recognize contexcual nuance and achieve state-of-the-art preformance in various NLP tasks.\par
+These mechanisms allow the Transformer to capture relationships and dependencies between words in a text, regardless of their position. The use of multi-head attention further enhances these abilities by allowing the model to learn different aspects of the text simultaneously. As a result, Transformer models can efficiently process long sequences, recognize contextual nuance, and achieve state-of-the-art performance in various NLP tasks.\par
 
 \subsection{BERT}
 
 One of the most influential Transformer-based models for natural language understanding is BERT (Bidirectional Encoder Representations from Transformers). Introduced by Devlin et al. in 2018~\cite{Devlin2018}, BERT builds on the Transformer encoder architecture and is pre-trained on large text corpora using masked language modeling and next sentence prediction tasks. Unlike traditional language models that read text from left to right, BERT is deeply bidirectional, meaning it learns information from both the left and right context of a token simultaneously during pre-training.\par
 
-An important aspect of the BERT architecture, particularly for tasks requiring a summary representation of an entire input sequence, is the use of a special token called [CLS] (classification token). This token is added at the beginning of the input sequence and is used to aggregate information from all tokens in the sequence. The final hidden state corresponding to the [CLS] token can then be used for example as the input for classification tasks.\par
+An important aspect of the BERT architecture, particularly for tasks requiring a summary representation of an entire input sequence, is the use of a special token called [CLS] (classification token). This token is added at the beginning of the input sequence and is used to aggregate information from all tokens in the sequence. The final hidden state corresponding to the [CLS] token can then be used, for example, as the input for classification tasks.\par
 
-This bidirectional nature and the [CLS] token convention, among other features, allow BERT to capture richer contextual information about language, making it highly effective for a wide range of downstream tasks such as text classification, question answering, and sentiment analysis and a promising fit for our troll detection task.\par
+This bidirectional nature and the [CLS] token convention, among other features, allow BERT to capture richer contextual information about language, making it highly effective for a wide range of downstream tasks such as text classification, question answering, and sentiment analysis, and a promising fit for our troll detection task.\par
 
 \subsection{Transformer Models in Troll Detection}
 The paper MetaTroll proposed MetaTroll, a few-shot troll detection framework designed to adapt quickly to new state-sponsored influence campaigns using minimal labeled data. Their approach is based on a meta-learning framework and incorporates campaign-specific transformer adapters to tackle catastrophic forgetting, a common problem where models lose the ability to detect trolls from older campaigns after continual updates. MetaTroll outperformed traditional n-gram SVM baselines, achieving a 92.3\% F1-score in 5-shot scenarios and demonstrating strong cross-lingual capabilities\cite{Tian2023}.\par
-Embeddings generated by transformer models have been shown to outperform static methods due to their ability to capture the contextual meanings of words. BERT based word embeddings outperformed static GloVe vectors are reached AUC scores of 0.924. The authors of the paper \cite{yilmaz2023} highlight how transformers can better cepture contextual nuances in language, which can be important for the task of troll classification, where language can be manipulative and deliberately deceptive.
+Embeddings generated by transformer models have been shown to outperform static methods due to their ability to capture the contextual meanings of words. BERT-based word embeddings outperformed static GloVe vectors are reaching AUC scores of 0.924. The authors of the paper \cite{yilmaz2023} highlight how transformers can better capture contextual nuances in language, which can be important for the task of troll classification, where language can be manipulative and deliberately deceptive.
 
-In this thesis, we will attempt to leverage pre-trained Transformer models such as BERT and try to fine tune them for the troll detection task. The reasons for the choice of using Transformers will be outlined in the next chapters.\par
+In this thesis, we will attempt to leverage pre-trained Transformer models such as BERT and try to fine-tune them for the troll detection task. The reasons for the choice of using Transformers will be outlined in the next chapters.\par
 
 % ========================================== CHAPTER 4 PROPOSED METHOD ======================
 \chapter{Dataset}
 
-Before outlining the proposed method, I will first describe the dataset that forms the basis of our work. The properties of the dataset are important as it directly shape the choice of methods and defines the limitiations and the goals of the work. \par
+Before outlining the proposed method, I will first describe the dataset that forms the basis of our work. The properties of the dataset are important as they directly shape the choice of methods and define the limitations and the goals of the work. \par
 
 \section{Main Dataset}
 The dataset used in this thesis consists of user-generated comments collected from the discussion sections under news articles published on Novinky.cz, one of the largest Czech news portals. Each article on Novinky.cz includes a public comment section where users participate in discussions about the content presented. These discussions are often extensive, with some articles attracting hundreds of user comments.\par
 
-In the Czech online media environment, it is generally recognized that the comment sections on major news sites, particularly on Novinky.cz for example, frequently serve as hotbeds for controversy and emotionally charged discourse. They are often perceived by the public as spaces where individuals express grievances, frustrations, and polarizing viewpoints, sometimes in ways that border on or cross into what could be described as abusive, manipulative or troll like behavior. This cultural context makes Novinky.cz a relevant and interesting setting for exploring how online discussions develop, especially where conversations become heated or emotionally charged.\par
+In the Czech online media environment, it is generally recognized that the comment sections on major news sites, particularly on Novinky.cz, for example, frequently serve as hotbeds for controversy and emotionally charged discourse. They are often perceived by the public as spaces where individuals express grievances, frustrations, and polarizing viewpoints, sometimes in ways that border on or cross into what could be described as abusive, manipulative, or troll-like behavior. This cultural context makes Novinky.cz a relevant and interesting setting for exploring how online discussions develop, especially where conversations become heated or emotionally charged.\par
 
 For the purposes of this thesis, a large-scale dataset comprising approximately 350,000 comments posted by around 48,000 users was provided by Newton Media, a prominent media intelligence organization.\par 
-% TODO: add time frame of collected data
 
 Each data entry includes the following attributes:
 \begin{itemize}
-    \item \textbf{Comment content} - the full textual body of the comment.
-    
-    \item \textbf{Article metadata} - including the title and link to the article under which the comment was posted
-    
-    \item \textbf{Timestamp} - the date and time when the comment was published.
-    
-    \item \textbf{Author name} - full author name as collected from the discussion.
-    
-    \item \textbf{Sentiment label} - a sentiment category assigned by Newton Media, labeled as one of the following: \textit{Neutral}, \textit{Positive}, \textit{Negative}, or \textit{Ambivalent}.
+  \item \textbf{Comment content} - the full textual body of the comment.
+  
+  \item \textbf{Article metadata} - including the title and link to the article under which the comment was posted
+  
+  \item \textbf{Timestamp} - the date and time when the comment was published.
+  
+  \item \textbf{Author name} - full author name as collected from the discussion.
+  
+  \item \textbf{Sentiment label} - a sentiment category assigned by Newton Media, labeled as one of the following: \textit{Neutral}, \textit{Positive}, \textit{Negative}, or \textit{Ambivalent}.
 \end{itemize}
 
-A consideration for the work with this dataset is the nature of the comments. The comments in general seem to be mostly negative in tone and often emotionally charged, as can be seen by the distribution of setiment.
+A consideration for the work with this dataset is the nature of the comments. The comments in general seem to be mostly negative in tone and often emotionally charged, as can be seen by the distribution of sentiment.
 
-\begin{figure}[htbp]          
-	\centering                 
-	\includegraphics[scale=0.7]{figures/sentiment.png}
-	\caption{Sentiment distribution of collected novinky.cz comments}    
-	\label{fig:myplot}          
+\begin{figure}[htbp]     
+  \centering         
+  \includegraphics[scale=0.7]{figures/sentiment.png}
+  \caption{Sentiment distribution of collected novinky.cz comments}  
+  \label{fig:myplot}     
 \end{figure}
 
-A key challenge posed by this dataset is the absence of explicit troll/non-troll labels. Since there is no ground-truth annotation for trolling behavior, we cannot directly apply supervised classification methods. Because of this, we have to rely on unsupervised or semi-supervised techniques, such as clustering, topic modeling, or anomaly detection, to try to find patterns that may point to trolling based on how the comments are written and their sentiment. The lack of labeled data also makes it difficult to verify the accuracy or effectiveness of any classifications or patterns identified during experimentation. Without labeled data, we cannot easily measure how accurate our models are, and have to instead rely on manual checks and interpretation of the results.\par
+A key challenge posed by this dataset is the absence of explicit troll/non-troll labels. Since there is no ground-truth annotation for trolling behavior, we cannot directly apply supervised classification methods. Because of this, we have to rely on unsupervised or semi-supervised techniques, such as clustering, topic modeling, or anomaly detection, to try to find patterns that may point to trolling based on how the comments are written and their sentiment. The lack of labeled data also makes it difficult to verify the accuracy or effectiveness of any classifications or patterns identified during experimentation. Without labeled data, we cannot easily measure how accurate our models are and have to instead rely on manual checks and interpretation of the results.\par
 
 \section{Additionall Datasets}
 
-In addition to the primary dataset collected from Novinky.cz, several publicly available labeled datasets were also used in this thesis. They were collected from different platforms such as Twitter or Reddit and the majority are in English, although some include other languages as well. While they differ in context and language, they offer labeled examples that we will attempt to use for pre-training of models for the later analysis of Czech online discussions.\par
+In addition to the primary dataset collected from Novinky.cz, several publicly available labeled datasets were also used in this thesis. They were collected from different platforms such as Twitter or Reddit, and the majority are in English, although some include other languages as well. While they differ in context and language, they offer labeled examples that we will attempt to use for pre-training of models for the later analysis of Czech online discussions.\par
 
 \subsection{IRA Troll Tweets}
-One of the external datasets used in this thesis is a collection of tweets linked to the Russian \textit{Internet Research Agency} (IRA), which was menitioned in the introductory chapter of the thesis. The dataset was published by FiveThirtyEight in connection with their article \textit{Why We're Sharing 3 Million Russian Troll Tweets}, and was originally collected by researchers from Clemson University. It contains nearly 3 million tweets posted between February 2012 and May 2018 by accounts identified by Twitter as being linked to the IRA, which were provided to the US Congress for investigation into 2016 presidential election interference. In total, the dataset includes 2,973,371 tweets from 2,848 Twitter handles. Most of the tweets are in English, but some are in other languages, including Russian or German. The dataset is publicly available and can be accessed through the FiveThirtyEight GitHub repository.\footnote{\url{https://github.com/fivethirtyeight/russian-troll-tweets/}}
+One of the external datasets used in this thesis is a collection of tweets linked to the Russian \textit{Internet Research Agency} (IRA), which was mentioned in the introductory chapter of the thesis. The dataset was published by FiveThirtyEight in connection with their article \textit{Why We're Sharing 3 Million Russian Troll Tweets}, and was originally collected by researchers from Clemson University. It contains nearly 3 million tweets posted between February 2012 and May 2018 by accounts identified by Twitter as being linked to the IRA, which were provided to the US Congress for investigation into 2016 presidential election interference. In total, the dataset includes 2,973,371 tweets from 2,848 Twitter handles. Most of the tweets are in English, but some are in other languages, including Russian or German. The dataset is publicly available and can be accessed through the FiveThirtyEight GitHub repository.\footnote{\url{https://github.com/fivethirtyeight/russian-troll-tweets/}}
 
 \subsection{Information Operations Dataset}
-Another external resource used in this thesis is a collection of labeled datasets for research on information operations (IOs), introduced by Seckin et al.~\cite{Seckin2024}. The full collection contains over 13 million posts from approximately 303,000 accounts. The dataset includes both verified IO posts and control data from legitimate accounts, covering 26 distinct manipulation campaigns originating from different countries. The data is organized first by one of 16 identified state actors, such as Russia, China, or even Catalonia, and then further subdivided into distinct operations. The IO posts were identified and released by major social media platforms including Twitter, Facebook, and Reddit, while the control data captures organic user discussions on similar topics within the same time frames.
+Another external resource used in this thesis is a collection of labeled datasets for research on information operations (IOs), introduced by Seckin et al.~\cite{Seckin2024}. The full collection contains over 13 million posts from approximately 303,000 accounts. The dataset includes both verified IO posts and control data from legitimate accounts, covering 26 distinct manipulation campaigns originating from different countries. The data is organized first by one of 16 identified state actors, such as Russia, China, or even Catalonia, and then further subdivided into distinct operations. The IO posts were identified and released by major social media platforms, including Twitter, Facebook, and Reddit, while the control data captures organic user discussions on similar topics within the same time frames.\par
 
 \subsection{Non-troll Datasets}
-In addition to the troll datasets several non-troll datasets were also collected to ensure availability of apolitical and organic user discussion.\par
+In addition to the troll datasets, several non-troll datasets were also collected to ensure the availability of apolitical and organic user discussions.\par
 The first non-troll dataset is the Civil Comments dataset, obtained from Hugging Face. It consists of public comments posted between 2015 and 2017 on approximately 50 English-language news sites. Each comment is labeled with values for toxicity, obscenity, and other attributes. For the purposes of this thesis, only comments labeled as non-toxic (toxicity score between 0 and 0.1) were used, which represent the majority of the dataset.\footnote{\url{https://huggingface.co/datasets/google/civil_comments}}\par
 
 Additionally, a small dataset of celebrity tweets was obtained from Kaggle. This dataset consists of posts by well-known public figures providing examples of casual and generally non-political online communication.\footnote{\url{https://www.kaggle.com/datasets/abaghyangor/celebrity-tweets}}.\par
@@ -343,47 +346,46 @@ Finally, a custom dataset was manually created by scraping tweets from Czech pub
 
 % ========================================== CHAPTER 4 PROPOSED METHOD =====================
 \chapter{Proposed Method}
-In this chapter we will outline the proposed method for detecting troll-like behavior in online discussions. The core idea behind the method is the use of transformer-based models, specifically multilingual BERT-based models, in a regression task designed to quantify the a users troll-like behavior. Instead of a binary classification task, the approach is to assign a user with a continous ''trolliness'' score, measured from 0 to 1.\par
+In this chapter, we will outline the proposed method for detecting troll-like behavior in online discussions. The core idea behind the method is the use of transformer-based models, specifically multilingual BERT-based models, in a regression task designed to quantify a user's troll-like behavior. Instead of a binary classification task, the approach is to assign a user with a continuous ''trolliness'' score, measured from 0 to 1.\par
 
 \section{Motivation}
-As the backbone of the method, I decided to use multilingual BERT based models, as they are trained across dozens of languages at once, which makes them a natural choice when trying to transfer knowledge from English or Russian troll datasets to Czech. Beyond their multilingual capabilities, BERT models are also able to capture and represent both syntactic and semantic relationships and dependencies within a text sequence. Instead of manually designing and extracting individual features like syntax counts, stylometric traits, sentiment scores, in theory BERT should be able to learn and encode much of this information into its embeddings and attention mechanism\cite{Rogers2020}.\par
-A classical machine learning approach using manually selected stylometric and other features is not suitable for this task, due to the limitations of the datasets we are working with, which were mentioned above. However BERT should be able to capture similar semantic and syntactic knowledge while also being able to be used in our specific task with limited labeled data and a multilingual datasets.\par
-The motivation to use a regression task instead of a binary classification task is twofold. First, the main dataset of Czech comments lacks troll/non-troll labels, so standart supervised classification methods cannot be applied. Second, troll behavior isn't a straight forward binary state, but rather a spectrum of behavior, with users displaying varying degrees and different types of distruptive behavior. For those reasons we focus on getting a \textit{trolliness score} rather than a troll classification.\par
+As the backbone of the method, I decided to use multilingual BERT-based models, as they are trained across dozens of languages at once, which makes them a natural choice when trying to transfer knowledge from English or Russian troll datasets to Czech. Beyond their multilingual capabilities, BERT models are also able to capture and represent both syntactic and semantic relationships and dependencies within a text sequence. Instead of manually designing and extracting individual features like syntax counts, stylometric traits, sentiment scores, in theory, BERT should be able to learn and encode much of this information into its embeddings and attention mechanism\cite{Rogers2020}.\par
+A classical machine learning approach using manually selected stylometric and other features is not suitable for this task, due to the limitations of the datasets we are working with, which were mentioned above. However, BERT should be able to capture similar semantic and syntactic knowledge while also being able to be used in our specific task with limited labeled data and a multilingual dataset.\par
+The motivation to use a regression task instead of a binary classification task is twofold. First, the main dataset of Czech comments lacks troll/non-troll labels, so standard supervised classification methods cannot be applied. Second, troll behavior isn't a straightforward binary state, but rather a spectrum of behavior, with users displaying varying degrees and different types of disruptive behavior. For those reasons, we focus on getting a \textit{trolliness score} rather than a troll classification.\par
 
 \section{Data Collection and Preprocessing}
-The first step of the method is the collection and preprocessing of the data. To ensure consistency of the embeddings generated by BERT, I implemented a preprocessing pipeline for handling text. The pipepile includes the following steps:
+The first step of the method is the collection and preprocessing of the data. To ensure consistency of the embeddings generated by BERT, I implemented a preprocessing pipeline for handling text. The pipeline includes the following steps:
 \begin{itemize}
-	\item \textbf{URL and Media Removal} - URLs and images hosted on Twitter are removed.
-	\item \textbf{Twitter-specific Artifacts Removal} - Twitter specific elements such as hashtags, mentions are removed in training as they do not appear in the target Czech dataset.
-	\item \textbf{Emoji and Special Character Handling} - Emoji and non-standard unicode characters are removed from the text. (Mam mozna nechat emoji? Muze byt ukazatel trolovosti ale nechi aby se opiral model prilis moc o smajliky:))
-	\item \textbf{Whitespace Normalization} - Consecutive whitespace characters are replaced with a single space.
+  \item \textbf{URL and Media Removal} - URLs and images hosted on Twitter are removed.
+  \item \textbf{Twitter-specific Artifacts Removal} - Twitter-specific elements, such as hashtags, mentions, are removed in training as they do not appear in the target Czech dataset.
+  \item \textbf{Emoji and Special Character Handling} - Emoji and non-standard Unicode characters are removed from the text.
+  \item \textbf{Whitespace Normalization} - Consecutive whitespace characters are replaced with a single space.
 \end{itemize}
-An intentional choice was made to retain all stop words during preprocessing, as BERT models use context from all words including stop words. The removal of stop words is common in classical NLP tasks, but in the case of BERT it is not necessary and can even diminish the performance.\par
+An intentional choice was made to retain all stop words during preprocessing, as BERT models use context from all words, including stop words. The removal of stop words is common in classical NLP tasks, but in the case of BERT, it is not necessary and can even diminish the performance.\par
 
-A key design decision in this thesis was to rate the trolliness at the user level, rather than at an individual comment level. This decision was based on the analysis and observations from the labeled troll datasets. A reccuring pattern was that many troll accounts did not only engage in disruptive and manipulative behavior all the time. Instead, in many cases trolls posted mostly ''normal'' content, perhaps to blend in with regular users, pushing their agenda more subdly in some posts and then only occasionally posting more overtly troll-like comments.\par
-For this thesis we will exclude all users with fewer than 5 comments, as our aim is to try to find broader patterns of troll-like behavior not only one-off examples of offensive or provocative comments. We do this both for the initial training as well as when working with the target Czech dataset. While this discards about half of the users in the dataset, it is only a small fraction of the comments, about ten precent. The distribution of authors by number of comments can be seen in Figure \ref{fig:pair}.\par
-
+A key design decision in this thesis was to rate the trolliness at the user level, rather than at an individual comment level. This decision was based on the analysis and observations from the labeled troll datasets. A recurring pattern was that many troll accounts not only engaged in disruptive and manipulative behavior all the time. Instead, in many cases, trolls posted mostly ''normal'' content, perhaps to blend in with regular users, pushing their agenda more subtly in some posts and then only occasionally posting more overtly troll-like comments.\par
+For this thesis, we will exclude all users with fewer than 5 comments, as our aim is to try to find broader patterns of troll-like behavior not only one-off examples of offensive or provocative comments. We do this both for the initial training as well as when working with the target Czech dataset. While this discards about half of the users in the dataset, it is only a small fraction of the comments, about ten percent. The distribution of authors by number of comments can be seen in Figure \ref{fig:pair}.\par
 
 \begin{figure}[htbp]
-	\centering
-	% left image
-	\begin{minipage}[b]{0.48\linewidth}
-	  \centering
-	  \includegraphics[width=\linewidth]{figures/comments_per_author.png}
-	  \caption{First image}
-	  \label{fig:left}
-	\end{minipage}
-	\hfill                  
-	% right image
-	\begin{minipage}[b]{0.48\linewidth}
-	  \centering
-	  \includegraphics[width=\linewidth]{figures/comments_5_plus.png}
-	  \caption{Second image}
-	  \label{fig:right}
-	\end{minipage}
-	\caption{Distribution of comments per autor before and after filtering for 5+ comments}
-	\label{fig:pair}
-  \end{figure}
+  \centering
+  % left image
+  \begin{minipage}[b]{0.48\linewidth}
+   \centering
+   \includegraphics[width=\linewidth]{figures/comments_per_author.png}
+   \caption{First image}
+   \label{fig:left}
+  \end{minipage}
+  \hfill         
+  % right image
+  \begin{minipage}[b]{0.48\linewidth}
+   \centering
+   \includegraphics[width=\linewidth]{figures/comments_5_plus.png}
+   \caption{Second image}
+   \label{fig:right}
+  \end{minipage}
+  \caption{Distribution of comments per author before and after filtering for 5+ comments}
+  \label{fig:pair}
+ \end{figure}
 
 \section{Model Architecture}
 The model architecture is designed in two levels: the comment level and the user level. 
@@ -393,7 +395,7 @@ The model architecture is designed in two levels: the comment level and the user
 At the comment level, each individual comment is first encoded using a pretrained multilingual BERT model. As introduced in our discussion of BERT (Section 2.3.3), we utilize the final hidden state corresponding to the [CLS] token. This provides a fixed-length vector representing an entire comment, suitable for further processing. We will denote this embedding vector as \( \mathbf{E}_{\mathrm{CLS}} \).
 
 \begin{align}
-    \mathbf{E}_{\mathrm{CLS}} &= \texttt{BERT}_{\mathrm{embeddings}}(\texttt{comment})_{[\mathrm{CLS}]}
+ \mathbf{E}_{\mathrm{CLS}} &= \texttt{BERT}_{\mathrm{embeddings}}(\texttt{comment})_{[\mathrm{CLS}]}
 \end{align}
 
 At the user level, the embeddings of all the comments from a single user, denoted as \( \mathbf{E}_{\mathrm{CLS}, i} \) for the \( i \)-th comment, are aggregated using a simple attention mechanism implemented in PyTorch\footnote{https://docs.pytorch.org/docs/stable/index.html}. 
@@ -425,31 +427,31 @@ where \( \mathbf{W}_{\mathrm{reg,1}} \) and \( \mathbf{b}_{\mathrm{reg,1}} \) ar
 The output \( \hat{y} \) represents the predicted trolliness score for the user, which is a continuous value between 0 and 1.
 \subsection{Loss Function}
 
-The model is trained using Binary Cross-Entropy with Logits Loss (BCE Loss) also provided by PyTorch (\texttt{nn.BCEWithLogitsLoss}). This loss function combines a Sigmoid layer and the Binary Cross-Entropy Loss in a single class, which is numericall more stable than using them separately. The formula of the underlying Binary Cross-Entropy Loss is defined as follows:
+The model is trained using Binary Cross-Entropy with Logits Loss (BCE Loss) also provided by PyTorch (\texttt{nn.BCEWithLogitsLoss}). This loss function combines a Sigmoid layer and the Binary Cross-Entropy Loss in a single class, which is numerically more stable than using them separately. The formula of the underlying Binary Cross-Entropy Loss is defined as follows:
 
 % Binary Cross-Entropy Loss (BCE)
 \begin{equation}
-    L_{\mathrm{BCE}}(y, \hat{y}) = - \left[ y \log(\hat{y}) + (1 - y) \log(1 - \hat{y}) \right]
+ L_{\mathrm{BCE}}(y, \hat{y}) = - \left[ y \log(\hat{y}) + (1 - y) \log(1 - \hat{y}) \right]
 \end{equation}
 
-Here, \( y \) is the ground-truth label, and \( \hat{y} \) is the predicted score for the user, which when working with BCE Loss is interpreted as the probablity of the user having the troll label.\par
+Here, \( y \) is the ground-truth label, and \( \hat{y} \) is the predicted score for the user, which, when working with BCE Loss, is interpreted as the probability of the user having the troll label.\par
 
 
-The decision to use BCE Loss, despite framing the problem as a regression task, was motivated by the fact that in the training data we work with binary labels and not continous target values. Unlike standard regression losses (like Mean Squared Error or Huber Loss), BCE Loss is specifically designed to handle cases where the target values are binary, but the model's predictions are continuous probabilities. This setup helps the model avoid becoming overly biased towards low values, which was a problem with a test run with HuberLoss.\par 
+The decision to use BCE Loss, despite framing the problem as a regression task, was motivated by the fact that in the training data we work with binary labels and not continuous target values. Unlike standard regression losses (like Mean Squared Error or Huber Loss), BCE Loss is specifically designed to handle cases where the target values are binary, but the model's predictions are continuous probabilities. This setup helps the model avoid becoming overly biased towards low values, which was a problem with a test run with HuberLoss.\par 
 
 \section{Training}
 The training of the model is done in two steps. Larger training on the large labeled troll datasets from foreign domains, and a smaller fine-tune on manually annotated Czech comments from the target dataset.\par
-The first training step includes the Russian IRA troll tweets, information operations datasets, and the non-troll datasets like Civil Comments. The training is done using a regression objective, where the model is trained to predict the trolliness of the users instead of their binary class.\par
+The first training step includes the Russian IRA troll tweets, information operations datasets, and non-troll datasets like Civil Comments. The training is done using a regression objective, where the model is trained to predict the trolliness of the users instead of their binary class.\par
 Since the labeled training data comes from different domains and languages than our target Czech dataset, a second small fine-tuning step is performed.\par
-%But first before starting this step, a lightweight adapter module was trained on the Czech comment corpus using a Masked Language Modeling (MLM) objective. This should help the model adapt for the Czech language domain better, but allows for the learned knowledge from the large foreign troll datasets to be kept.\par
-After the initial training, the model is fine-tuned on a small set of manually annoated Czech user comments from our target dataset. This data was created by me, by exploring the users in the who were classified with high or low trolliness scores and high confidence during preliminary runs. This few-shot tuning step helps the model better adapt to our specific domain.\par
+
+After the initial training, the model is fine-tuned on a small set of manually annotated Czech user comments from our target dataset. I created this data by exploring the users classified with high or low trolliness scores and high confidence during preliminary runs. This few-shot tuning step helps the model better adapt to our specific domain.\par
 
 \section{Lightweight Annotation and Evaluation App}
 
-Additionally, to help with working with the model and dataset, we created a simple annotation application. The main goal of the tool is to allows labeling of users from the Czech dataset and search for their comments. The app also shows the model's predicted trolliness scores and attention weights. The annotations can then be used both for few-shot fine-tuning and for manual exploration of the model's predictions.\par
-The app loads a saved model checkpoint and available Czech comments from the dataset. It then allows a user to search for an author by name and displays the predicted trolliness score of the author and all of their comments along with their attention weights. Finally, the app allows the user to label the author as troll, non-troll or uncertain and saves the labels to a file. The app is implemented in Python using the Streamlit library, which allows for easy creation of interactive web applications.\par
-We used the app to manually label a small set of users from the Czech dataset. We focused on users with high or low trolliness scores, as well as those with uncertain scores. The task proved to be quite challanging. Most users tended to be quite negative and angry in general as mentioned in the previous section, but it was still difficult to rate them as troll. \par
-The manual labelling highlighted the inherent difficulty of the task of distinguishing between toxic behaviour and geinuine disagreement in online discussion. The challange of recognizing trolls from other disruptive or even geniune but negative users could be challangeing even for experts in political science or psychology and goes beyond the scope of this thesis. Depsite the complexity and the time-consuming nature of the annotation we created a small labeled dataset for further use. \par
+We also created a simple annotation application to help with working with the model and dataset. The main goal of the tool is to allow labeling of users from the Czech dataset and searching for their comments. The app also shows the model's predicted trolliness scores and attention weights. The annotations can then be used both for few-shot fine-tuning and for manual exploration of the model's predictions.\par
+The app loads a saved model checkpoint and available Czech comments from the dataset. It then allows a user to search for an author by name and displays the predicted trolliness score of the author and all of their comments, along with their attention weights. Finally, the app allows the user to label the author as a troll, a non-troll, or uncertain and saves the labels to a file. The app is implemented in Python using the Streamlit library, which allows for easy creation of interactive web applications.\par
+We used the app to manually label a small set of users from the Czech dataset. We focused on users with high or low trolliness scores, as well as those with uncertain scores. The task proved to be quite challenging. Most users tended to be quite negative and angry in general, as mentioned in the previous section, but it was still difficult to rate them as trolls. \par
+The manual labelling highlighted the inherent difficulty of the task of distinguishing between toxic behaviour and genuine disagreement in online discussions. The challenge of recognizing trolls from other disruptive or even genuine but negative users could be challenging even for political science or psychology experts, and goes beyond this thesis's scope. Despite the annotation's complexity and time-consuming nature, we created a small labeled dataset for further use. \par
 
 
 \begin{figure}[htbp]          
@@ -462,115 +464,114 @@ The manual labelling highlighted the inherent difficulty of the task of distingu
 % ========================================== CHAPTER EXPERIMENTS  =====================
 \chapter{Experiments}
 
-This chapter will present the experiments conducted to evaluate the proposed method. The main objective of these experiments is to validate the performance of the proposed BERT-based model and to explore its abilit to transfer knowledge to a new language.\par
+This chapter will present the experiments conducted to evaluate the proposed method. The main objective of these experiments is to validate the performance of the proposed BERT-based model and to explore its ability to transfer knowledge to a new language.\par
 
-The experiements will be divided into two main stages. The first stage will focus on comparing the proposed method with a baseline model. The goal is to evaluate the performance of the BERT-based model against a traditional machine learning approach using stylometric features.\par
-Given the multilingual nature of the BERT model used (DistillBERT-Multilingual-Cased), the second stage will investigate the model's ability to transfer knowledge across languages. Specifically the model trained on the international troll dataset will be directly applied to the Czech dataset. This approac aims to leverage the inherent multiligual capabilties of multilingual BERT models, as demonstrated by Pires et al.~\cite{Pires2019}, who showed that M-BERT can achieve surprising levels of cross-lingual generalization, even across languages with different scripts. This characterstic is essential for our task, as we try to have the model learn from English and other confirmed troll data and to carry this knowledge into our target Czech domain.\par
-Additionally, we will further experiment with fine tuning approaches to have the model adapt to the Czech language and domain. As we will reconginze, that direct application of the multilingual model may not achieve optimal results.\par
+The experiments will be divided into two main stages. The first stage will compare the proposed method with a baseline model. The goal is to evaluate the performance of the BERT-based model against a traditional machine learning approach using stylometric features.\par
+Given the multilingual nature of the BERT model used (DistillBERT-Multilingual-Cased), the second stage will investigate the model's ability to transfer knowledge across languages. Specifically, the model trained on the international troll dataset will be directly applied to the Czech dataset. This approach aims to leverage the inherent multilingual capabilities of multilingual BERT models, as demonstrated by Pires et al.~\cite{Pires2019}, who showed that M-BERT can achieve surprising levels of cross-lingual generalization, even across languages with different scripts. This characteristic is essential for our task, as we try to have the model learn from English and other confirmed troll data and to carry this knowledge into our target Czech domain.\par
+Additionally, we will experiment further with fine-tuning approaches to adapt the model to the Czech language and domain. As we will recognize, the direct application of the multilingual model may not achieve optimal results.\par
 
 
 \section{Baseline Comparison}
 
-To evaluate the reasonability and effectiveness of the proposed method, we first esatblished a set of baseline models using traditional machine learning techniques. The primary goal of this comaprison is to validate the feasability of a BERT-based approach for a troll detection task.\par
-The baseline model consist of two main types:
+To evaluate the reasonability and effectiveness of the proposed method, we first established a set of baseline models using traditional machine learning techniques. The primary goal of this comparison is to validate the feasibility of a BERT-based approach for a troll detection task.\par
+The baseline model consists of two main types:
 \begin{itemize}
-	\item \textbf{Stylometric-Only Models} - These models rely on a set of manually selected stylistic features, specifically chosen based on their simplicity and by their use in related work. The features are:
-	\begin{itemize}
-		\item Character count
-		\item Word count
-		\item Average word length
-		\item Capital-letter ratio
-		\item Digit ratio
-	\end{itemize}
-		These features we used to train two machine learning models:
-	\begin{itemize}
-		\item Linear Support Vector Regressor (SVR)
-		\item Gradient Boosting Regressor (GBR)
-	\end{itemize}
+  \item \textbf{Stylometric-Only Models} - These models rely on a set of manually selected stylistic features, specifically chosen based on their simplicity and use in related work. The features are:
+  \begin{itemize}
+    \item Character count
+    \item Word count
+    \item Average word length
+    \item Capital-letter ratio
+    \item Digit ratio
+  \end{itemize}
+ These features we used to train two machine learning models:
+  \begin{itemize}
+    \item Linear Support Vector Regressor (SVR)
+    \item Gradient Boosting Regressor (GBR)
+  \end{itemize}
 
-	\item \textbf{TF-IDF + Ridge Regression Model} - Furthermore, a more more advanced baseline model was created using Term Frequency - Inverse Document Frequency (TF-IDF) to represent the comments. This model transfors the text into a high-dimensional vector space, where each dimension corresponds to a unique word or n-gram in the corpus. The TF-IDF vectors were then used to train a Ridge Regression model. Overall this model was trained on 50,000 unigrams and bigrams extracted from the comments.\par
-	\par
+	\item \textbf{TF-IDF + Ridge Regression Model} - Furthermore, a more advanced baseline model was created using Term Frequency - Inverse Document Frequency (TF-IDF) to represent the comments. This model transforms the text into a high-dimensional vector space, where each dimension corresponds to a unique word or n-gram in the corpus. The TF-IDF vectors were then used to train a Ridge Regression model. Overall, this model was trained on 50,000 unigrams and bigrams extracted from the comments.\par
+  \par
 
 \end{itemize}
 The models and feature choices were inspired by the work of Machová et al. \cite{Machova2021Algorithms}.\par
 
-Finally, for comaprison, the BERT-based model was also trained on the same train/test/validation splits. This model uses a regression head with a Sigmoid activation function and Binary Cross-Entropy Loss (BCE Loss) as the loss function.\par
+Finally, for comparison, the BERT-based model was also trained on the same train/test/validation splits. This model uses a regression head with a Sigmoid activation function and Binary Cross-Entropy Loss (BCE Loss) as the loss function.\par
 
 \subsection{Baseline Evaluation Metrics}
 
-To compare the the performance of the models, we choose compare two metrics: the Mean Squared Error (MSE) and the Coefficient of Determination ($R^2$ score). The MSE is a measure of the average squared difference between the predicted and actual values. It is defined as follows:\par
+To compare the performance of the models, we choose to compare two metrics: the Mean Squared Error (MSE) and the Coefficient of Determination ($R^2$ score). The MSE is a measure of the average squared difference between the predicted and actual values. It is defined as follows:\par
 
 % Mean-Squared Error
 \begin{equation}
-	\mathrm{MSE} = \frac{1}{n}\sum_{i=1}^{n}\bigl(y_i - \hat{y}_i\bigr)^2
+ \mathrm{MSE} = \frac{1}{n}\sum_{i=1}^{n}\bigl(y_i - \hat{y}_i\bigr)^2
 \end{equation}
 
-where $y_i$ is the true value, $\hat{y}_i$ is the predicted value, and $n$ is the number of samples. The MSE is a common loss function used in regression tasks and provides a measure of how well the model's predictions align with the actual values. A lower MSE indicates better performance.\par
+where $y_i$ is the true value, $\hat{y}_i$ is the predicted value, and $n$ is the number of samples. The MSE is a common loss function used in regression tasks and measures how well the model's predictions align with the actual values. A lower MSE indicates better performance.\par
 
 The $R^2$ score is a statistical measure of what share of the original variance of the data the model explains. To break down how it works, we first define two equations.\par
 The Total Sum of Squares (TSS):\par
 \begin{equation}
-	\mathrm{TSS} \;=\; \sum_{i=1}^{n} \bigl(y_i - \bar{y}\bigr)^2,
-	\qquad
-	\bar{y} \;=\; \frac{1}{n}\sum_{i=1}^{n} y_i
+ \mathrm{TSS} \;=\; \sum_{i=1}^{n} \bigl(y_i - \bar{y}\bigr)^2,
+ \qquad
+ \bar{y} \;=\; \frac{1}{n}\sum_{i=1}^{n} y_i
 \end{equation}
 
 
 And the Residual Sum of Squares (RSS):\par
 \begin{equation}
-	\mathrm{RSS} \;=\; \sum_{i=1}^{n} \bigl(y_i - \hat{y}_i\bigr)^2
+ \mathrm{RSS} \;=\; \sum_{i=1}^{n} \bigl(y_i - \hat{y}_i\bigr)^2
 \end{equation}
 
 The $R^2$ score is then:
 % R^2
 % --- Coefficient of Determination (R^2)
 \begin{equation}
-	R^{2} \;=\; 1 \;-\; \frac{\mathrm{RSS}}{\mathrm{TSS}}
+ R^{2} \;=\; 1 \;-\; \frac{\mathrm{RSS}}{\mathrm{TSS}}
 \end{equation}
 
-The equation essetnialy measures the proportion of total variance (TSS) that is left unexplained by the model's residuals (RSS).  A value of 1 indicates a perfect fit and 0 indicates that the model does not explain any of the variance in the data. A negative $R^2$ score indicates that the model performs worse than simply guessing the mean of the target variable.\par
+The equation measures the proportion of total variance (TSS) left unexplained by the model's residuals (RSS). A value of 1 indicates a perfect fit, and zero indicates that the model does not explain any of the variance in the data. A negative $R^2$ score indicates that the model performs worse than simply guessing the mean of the target variable.\par
 
 \subsection{Baseline Results}
 
-With the simple stylometric features the Support Vector Regressor (SVR) and the Gradient Boosting Regressors performed poorly. They did not beat guessing the mean and achieved a negative $R^2$ score and a MSE of about 0.26. This result was not entirely surprising, given that the models relied only on 5 features, but it shows notheless that few handpicked stylometric features are not enough for a complex task like finding troll behavior patterns.\par
-When we extend the feature set 50000 (uni- and bi-gram counts) through TF-IDF, performance improves significantly. The model achieves a $R^2$ score of 0.57 and has a mean square error of 0.09. Despite this the TF-IDF model remains fundamentally constrained to the English language and the specific domain it was trained on.\par
-In contrast, the BERT model, which was trained on the same dataset, achieved a $R^2$ score of 0.59 and a MSE of 0.08. The model outperforms the two base models by significant margin. And while the TF-IDF model's preformance was comparable to BERT, it is limited to vocabulary of the training data, while a multilingual BERT transformer has the potential to carry its learned knowledge over to a new language.\par
-The complete results of the model training and evaluation are shown in the table below.\par
+The Support Vector Regressor (SVR) and the Gradient Boosting Regressor performed poorly with the simple stylometric features. They did not beat guessing the mean and achieved a negative $R^2$ score and an MSE of about 0.26. This result was not entirely surprising, given that the models relied only on five features. Still, it shows that a few handpicked stylometric features are insufficient for a complex task like finding troll behavior patterns.\par
+When we extend the feature set to 50000 (uni- and bi-gram counts) through TF-IDF, performance improves significantly. The model achieves an $R^2$ score of 0.57 with a mean square error of 0.09. Despite this, the TF-IDF model remains fundamentally constrained to the English language and the specific domain it was trained on.\par
+In contrast, the BERT model, which was trained on the same dataset, achieved an $R^2$ score of 0.59 and an MSE of 0.08. The model outperforms the two base models by significant margin. And while the TF-IDF model's performance was comparable to BERT, it is limited to the vocabulary of the training data, while a multilingual BERT transformer has the potential to carry its learned knowledge over to a new language.\par
+The complete model training and evaluation results are shown in the table below.\par
 
 \begin{table}[ht]
-	\centering
-	\caption{Author-level results on English train/test/val data.}
-	\label{tab:en_author_results}
-	\begin{tabular}{lccccc}
-	  \hline
-	  \textbf{Model} & \textbf{Features} &
-	  \textbf{Val MSE} & \textbf{Val $R^{2}$} &
-	  \textbf{Test MSE} & \textbf{Test $R^{2}$} \\
-	  \hline
-	  Linear SVR & 5 stylometric          & 0.260 & $-0.211$ & 0.260 & $-0.211$ \\
-	  Ridge TF--IDF & 50\,000 1-2-grams   & 0.090 & 0.579   & 0.097 & 0.547    \\
-	  DistilBERT & contextual   & \textbf{0.087} & \textbf{0.592} &
-										   \textbf{0.082} & \textbf{0.618} \\
-	  \hline
-	\end{tabular}
+  \centering
+  \caption{Author-level results on English train/test/val data.}
+  \label{tab:en_author_results}
+  \begin{tabular}{lccccc}
+   \hline
+   \textbf{Model} & \textbf{Features} &
+   \textbf{Val MSE} & \textbf{Val $R^{2}$} &
+   \textbf{Test MSE} & \textbf{Test $R^{2}$} \\
+   \hline
+ Linear SVR & 5 stylometric     & 0.260 & $-0.211$ & 0.260 & $-0.211$ \\
+ Ridge TF--IDF & 50\,000 1-2-grams  & 0.090 & 0.579  & 0.097 & 0.547  \\
+ DistilBERT & contextual  & \textbf{0.087} & \textbf{0.592} &
+                     \textbf{0.082} & \textbf{0.618} \\
+   \hline
+  \end{tabular}
 \end{table}
 
-These resuts show that BERT achieves similar or better results than a traditional stylometric model and we validate our decision to use it our main approach.
+These results show that BERT achieves similar or better results than a traditional stylometric model, and we validate our decision to use it as our main approach.\par
 
 \section{Further Training of BERT Model}
 
-For further experiments we trained the BERT model on a mix of all of the availalbe troll comments, rather than being limited to English-language comments as in the baseline evaluation. This aims to leverage strong cross-lingual capabilities of the multilingual BERT referenced earlier\cite{Pires2019}. Building on the findings of Piers et al. (2019), who noted that cross-lingual transfer capabilites are often enhanced between typologically similar languages, we also decided to investigate a more targeted approach. Specifically, given the typological similarities between Russian and Czech, we will present an additional training run utilizing only Russian-language data. The hypothesis here is that pre-training on a more closely related slavic language might facilitate a more effective transfer of knowledge by the model.\par
+For further experiments, we trained the BERT model on a mix of all available troll comments, rather than being limited to English-language comments as in the baseline evaluation. This aims to leverage the strong cross-lingual capabilities of the multilingual BERT referenced earlier \ cite {Pires2019}. Building on the findings of Piers et al. (2019), who noted that cross-lingual transfer capabilities are often enhanced between typologically similar languages, we also decided to investigate a more targeted approach. Specifically, given the typological similarities between Russian and Czech, we will present an additional training run utilizing only Russian-language data. The hypothesis here is that pre-training on a more closely related Slavic language might facilitate a more effective transfer of knowledge by the model.\par
 The distribution of languages in the annotated datasets can be seen in Figure \ref{fig:language_distribution}.\par 
 
 \begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/language_distribution.png}
-    \caption{Language Distribution}
-    \label{fig:language_distribution}
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/language_distribution.png}
+  \caption{Language Distribution}
+  \label{fig:language_distribution}
 \end{figure}
 
-To manage the size of the multiligual training dataset two limitations were made. First, each author was limited to a maximum of 50 comments. Second, because as the full dataset was heavily inbalanced towards the non troll class with 40000 accounts as opposed to only 4000 troll accounts, and a ratio of 90\% to 10\% troll to non-troll comments, the dataset was balanced to achieve a 50\% to 50\% comment ratio and about a 65\% to 35\% user ratio. These limitations were not used for the Russian dataset. The statistics for the training datasets can be seen in Table \ref{tab:mult_statistics} and \ref{tab:russian_statistics}\par
-
+To manage the size of the multilingual training dataset, two limitations were made. First, each author was limited to a maximum of 50 comments. Second, because the full dataset was heavily imbalanced towards the nontroll class with 40000 accounts as opposed to only 4000 troll accounts, and a ratio of 90\% to 10\% troll to non-troll comments, the dataset was balanced to achieve a 50\% to 50\% comment ratio and about a 65\% to 35\% user ratio. These limitations were not used for the Russian dataset. The statistics for the training datasets can be seen in Table \ref{tab:mult_statistics} and \ref{tab:russian_statistics}\par
 % Combined Tweet Distribution and Author Statistics Table
 \begin{table}[ht]
     \centering
@@ -612,76 +613,76 @@ To manage the size of the multiligual training dataset two limitations were made
 
 \subsection{Training Results}
 
-The model was trained for 5 epochs on a single NVIDIA RTX 3060ti GPU (8GB memory) using a batch size of 16 and the AdamW optimizer with a learning rate of 1e-5 and weight decay of 0.01. A linear learning rate schedule was employed. The training, utilizing PyTorch and the HuggingFace Transformers library for the BERT model, took approximately 4 hours for the multilingual run and about 2 hours for the Russian only run. The table \ref{tab:combined_best_epoch_results} and figure \ref{fig:training_stats} bellow show the training results, including training/validation loss and $R^2$ scores over epochs.\par
+The model was trained for five epochs on a single NVIDIA RTX 3060 Ti GPU (8GB memory) using a batch size of 16 and the AdamW optimizer with a learning rate of 1e-5 and weight decay of 0.01. A linear learning rate schedule was employed. The training, utilizing PyTorch and the HuggingFace Transformers library for the BERT model, took approximately 4 hours for the multilingual run and about 2 hours for the Russian-only run. The table \ref{tab:combined_best_epoch_results} and figure \ref{fig:training_stats} below show the training results, including training/validation loss and $R^2$ scores over epochs.\par
 
 % Combined Best Epoch Results Table with Train and Validation Metrics
 \begin{table}[ht]
-    \centering
-    \caption{Training and validation metrics at the best epochs.}
-    \label{tab:combined_best_epoch_results}
-    \begin{tabular}{lcc|lcc}
-        \toprule
-        \multicolumn{3}{c|}{\textbf{Best Epoch Multilingual: 2}} & \multicolumn{3}{c}{\textbf{Best Epoch Russian: 3}} \\
-        \midrule
-        \textbf{Metric} & \textbf{Training} & \textbf{Validation} & \textbf{Metric} & \textbf{Training} & \textbf{Validation} \\
-        \midrule
-        Loss            & 0.5437 & 0.5557 & Loss            & 0.2740 & 0.3405 \\
-        MSE              & 0.0734 & 0.0746 & MSE             & 0.0653 & 0.0913 \\
-        $R^2$ Score      & 0.6814 & 0.6641 & $R^2$ Score     & 0.7328 & 0.6288 \\
-        Binary Accuracy  & 0.9134 & 0.9165 & Binary Accuracy & 0.9091 & 0.8742 \\
-        \bottomrule
-    \end{tabular}
+  \centering
+  \caption{Training and validation metrics at the best epochs.}
+  \label{tab:combined_best_epoch_results}
+  \begin{tabular}{lcc|lcc}
+    \toprule
+    \multicolumn{3}{c|}{\textbf{Best Epoch Multilingual: 2}} & \multicolumn{3}{c}{\textbf{Best Epoch Russian: 3}} \\
+    \midrule
+    \textbf{Metric} & \textbf{Training} & \textbf{Validation} & \textbf{Metric} & \textbf{Training} & \textbf{Validation} \\
+    \midrule
+ Loss      & 0.5437 & 0.5557 & Loss      & 0.2740 & 0.3405 \\
+ MSE       & 0.0734 & 0.0746 & MSE       & 0.0653 & 0.0913 \\
+    $R^2$ Score   & 0.6814 & 0.6641 & $R^2$ Score   & 0.7328 & 0.6288 \\
+ Binary Accuracy & 0.9134 & 0.9165 & Binary Accuracy & 0.9091 & 0.8742 \\
+    \bottomrule
+  \end{tabular}
 \end{table}
 
 
 % Training and Validation Loss Figure
 \begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.33]{figures/training_full.png}
-	\caption{Training and validation loss over epochs - Multilingual}
-	\label{fig:training_stats}
+  \centering
+  \includegraphics[scale=0.33]{figures/training_full.png}
+  \caption{Training and validation loss over epochs - Multilingual}
+  \label{fig:training_stats}
 \end{figure}
 
 % Training and Validation Loss Figure
 \begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.33]{figures/russian_training.png}
-	\caption{Training and validation loss over epochs - Russian only}
-	\label{fig:training_stats_russian}
+  \centering
+  \includegraphics[scale=0.33]{figures/russian_training.png}
+  \caption{Training and validation loss over epochs - Russian only}
+  \label{fig:training_stats_russian}
 \end{figure}
 
 \section{Predictions on Czech Dataset}
-In this section, we evaluate the performance of the two multiligual/Russian models on the Czech dataset. Both models were trained using the methods described in the previous section.\par
+In this section, we evaluate the performance of the two multilingual/Russian models on the Czech dataset. Both models were trained using the methods described in the previous section.\par
 We will assess the models in two scenarios:
 \begin{itemize}
-	\item \textbf{Zero-Shot Predictions} - The multilingual model is applied directly to the Czech dataset without any further training or fine-tuning.
-	\item \textbf{Fine-Tuned} - The multilingual model is further fine-tuned on a small set of manually annotated Czech users.
+  \item \textbf{Zero-Shot Predictions} - The multilingual model is applied directly to the Czech dataset without any further training or fine-tuning.
+  \item \textbf{Fine-Tuned} - The multilingual model is further fine-tuned on a small set of manually annotated Czech users.
 \end{itemize}
 
 Each model is evaluated based on the distribution of predicted trolliness scores across users, manual review of selected user cases and performace on a small hand annotated test set.
 
 \subsection{Zero-Shot Experiment}
-We first applied both the Multiligualy and Russian-only trained models directly on the Czech dataset without any further fine-tuning for the Czech news comments domain. The goal was to test their zero-shot ability to generalize to a new language and domain.\par
+We first applied both the Multilingual and Russian-only trained models directly on the Czech dataset without any further fine-tuning for the Czech news comments domain. The goal was to test their zero-shot ability to generalize to a new language and domain.\par
 
 \subsection{Results}
-The distribution of predicted troliness scores for both models is shown below. We observe that the Multilingual model struggles to classify trolls, as seen in Figure \ref{fig:distribution_multi}, where the vast majority of predictions are close to zero. The russian model, while also having most predictions at low values, shows a sligthly higher mean and a higher median and maximum score.
+The distribution of predicted troliness scores for both models is shown below. We observe that the Multilingual model struggles to classify trolls, as seen in Figure \ref{fig:distribution_multi}, where the vast majority of predictions are close to zero. The russian model, while also having most predictions at low values, shows a slightly higher mean and a higher median and maximum score.
 
 % Zero-Shot Predictions Table
 \begin{table}[h]
-	\centering
-	\begin{tabular}{|l|c|c|c|c|}
-	\hline
-	Model            & Mean Trolliness & Std. Deviation & Median & Max    \\
-	\hline
-	Multilingual      & 0.0561          & 0.0644          & 0.0270 & 0.3316 \\
-	Russian-only      & 0.1056          & 0.0411          & 0.0979 & 0.5534 \\
-	\hline
-	\end{tabular}
-	\caption{Zero-Shot Trolliness Score Distribution}
-	\label{tab:zero_shot_scores}
+  \centering
+  \begin{tabular}{|l|c|c|c|c|}
+  \hline
+ Model      & Mean Trolliness & Std. Deviation & Median & Max  \\
+  \hline
+ Multilingual   & 0.0561     & 0.0644     & 0.0270 & 0.3316 \\
+ Russian-only   & 0.1056     & 0.0411     & 0.0979 & 0.5534 \\
+  \hline
+  \end{tabular}
+  \caption{Zero-Shot Trolliness Score Distribution}
+  \label{tab:zero_shot_scores}
 \end{table}
 
-Figures \ref{fig:distribution_comparison} shows the difference in the distribution of trolliness scores between the two models. The multiligual model's distribution is sharply concentratet at near 0 values, effectively classifying most users as non-trolls. The Russian model, in contrast, has a higher median and maximum score, suggesting it is slightly better at identifying a range of troll-like behavior and classifying some users as trolls. However, the overall distributions are both heavily skewed towards low trolliness scores, indicating that both models struggle to idenitfy troll behavior.\par
+Figure \ref{fig:distribution_comparison} shows the difference in the distribution of trolliness scores between the two models. The multilingual model's distribution is sharply concentrated at near-zero values, effectively classifying most users as non-trolls. The Russian model, in contrast, has a higher median and maximum score, suggesting it is slightly better at identifying a range of troll-like behavior and classifying some users as trolls. However, the overall distributions are both heavily skewed towards low trolliness scores, indicating that both models struggle to identify troll behavior.\par
 
 \begin{figure}[h]
     \centering
@@ -700,61 +701,60 @@ Figures \ref{fig:distribution_comparison} shows the difference in the distributi
     \label{fig:distribution_comparison}
 \end{figure}
 
-These results show that the model struggles to meaningfully capture variation of trolliness in the Czech comments and wasn't able to generalize well to the Czech domain. There could be several factors contributing to this issue. It could be language differences, as although the model is based on a multilingual BERT model, the nuances of the Czech language may not be well represented and may be important for the troll detection task. Additionally, the domain might be too widely missaligned, as the training data was collected from various platforms, various contexts and various time-frames. The missalignment of the training data could make it quite difficult for the model to use its learned knowledge on the specific Czech comments domain.
+These results show that the model struggles to meaningfully capture variation of trolliness in the Czech comments and cannot generalize well to the Czech domain. There could be several factors contributing to this issue. It could be language differences, as although the model is based on a multilingual BERT model, the nuances of the Czech language may not be well represented. They may be important for the troll detection task. Additionally, the domain might be too widely misaligned, as the training data was collected from various platforms, contexts, and time frames. The missalignment of the training data could make it quite difficult for the model to use its learned knowledge on the specific Czech comments domain.
 \par 
-Recognizing the limitations, we explored a strategy to overcome this problem by further fine-tuning the model on a small manually annotated dataset, which was menitoned previously when describing the annotation app.\par
-The next step, described bellow, demonstrated more promising results.\par
+Recognizing the limitations, we explored a strategy to overcome this problem by further fine-tuning the model on a small manually annotated dataset, which was mentioned previously when describing the annotation app.\par
+The next step, described below, demonstrated more promising results.\par
 
 \subsection{Fine-Tuned Experiment}
-After seeing the relatively poor performace of the zero-shot approach, we decided to try to explore the fine tuning of the model through a few shot training approach. The goal was to see if the model could learn to better adapt to the Czech language and domain by training on a small set of manually annotated users.\par
-The model was trained for 5 epochs with a manually annotated dataset of 50 users. The distribution of trolliness scores shifted noticably for both models, as shown in in Figures \ref{fig:distribution_multi_finetuned} and \ref{fig:russian_distribution_finetuned}.\par
+After seeing the relatively poor performance of the zero-shot approach, we decided to try to explore the fine-tuning of the model through a few-shot training approach. The goal was to see if the model could learn to better adapt to the Czech language and domain by training on a small set of manually annotated users.\par
+The model was trained for five epochs with a manually annotated dataset of 50 users. The distribution of trolliness scores shifted noticeably for both models, as shown in Figures \ref{fig:distribution_multi_finetuned} and \ref{fig:russian_distribution_finetuned}.\par
 
 \begin{figure}[h]
-    \centering
-    \begin{subfigure}{0.49\textwidth}
-        \includegraphics[width=\linewidth]{figures/distribution_fine_tuned.png}
-        \caption{Distribution of Trolliness Scores - Multilingual Model Fine-Tuned}
-        \label{fig:distribution_multi_finetuned}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.49\textwidth}
-        \includegraphics[width=\linewidth]{figures/distribution_ru_finetuned0.png}
-        \caption{Distribution of Trolliness Scores - Russian-Only Model Fine-Tuned}
-        \label{fig:russian_distribution_finetuned}
-    \end{subfigure}
-    \caption{Comparison of Trolliness Score Distributions between Multilingual and Russian-Only Models (Zero-Shot)}
-    \label{fig:distribution_comparison_finetuned}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \includegraphics[width=\linewidth]{figures/distribution_fine_tuned.png}
+    \caption{Distribution of Trolliness Scores - Multilingual Model Fine-Tuned}
+    \label{fig:distribution_multi_finetuned}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.49\textwidth}
+    \includegraphics[width=\linewidth]{figures/distribution_ru_finetuned0.png}
+    \caption{Distribution of Trolliness Scores - Russian-Only Model Fine-Tuned}
+    \label{fig:russian_distribution_finetuned}
+  \end{subfigure}
+  \caption{Comparison of Trolliness Score Distributions between Multilingual and Russian-Only Models (Zero-Shot)}
+  \label{fig:distribution_comparison_finetuned}
 \end{figure}
 
-The results indicate improvement in the multilingualy trained models' abilities to identify various levels of troll behavior and shifts the distributions of scores significantly. The multilingual model now has a mean trolliness score of 0.33 with a standard deviation of 0.3, while the Russian-only model has a mean of 0.21 and a standard deviation of 0.25. Both models use the full score range from 0 to 1, unlike the zero-shot models, which had maximum scores of 0.33 and 0.55, respectively.\par
+The results indicate improvement in the multilingually trained models' abilities to identify various levels of troll behavior and shift the distributions of scores significantly. The multilingual model now has a mean trolliness score of 0.33 with a standard deviation of 0.3, while the Russian-only model has a mean of 0.21 and a standard deviation of 0.25. Both models use the full score range from 0 to 1, unlike the zero-shot models, which had maximum scores of 0.33 and 0.55, respectively.\par
 
-Both models have a large concentration of users with a trolliness score of near zero, as can be seen in the histograms of Figure \ref{fig:distribution_multi_finetuned} and \ref{fig:russian_distribution_finetuned}. Both models also tend to predict assign values more frequently than higher ones, which can be seen in the cummulative distribution of the scores, particularly with the Russian-trained model in Figure \ref{fig:cumulative_ru}, where we can see that the 80th percentile of scores is less than 0.4. This conservativness might not necessarily be a negative trait, as it reduces the risk of false positives and might also align with a realistic expectation that only a minority of users are genuinely trolls. Despite the clustering around zero, both models can still assign a wide range of scores, indicating their ability differentiate between varying levels of troll behaviour.\par
+Both models have a large concentration of users with a trolliness score of near zero, as can be seen in the histograms of Figure \ref{fig:distribution_multi_finetuned} and \ref{fig:russian_distribution_finetuned}. Both models also tend to predict assigned values more frequently than higher ones, which can be seen in the cumulative distribution of the scores, particularly with the Russian-trained model in Figure \ref{fig:cumulative_ru}, where we can see that the 80th percentile of scores is less than 0.4. This conservativness might not necessarily be a negative trait, as it reduces the risk of false positives and might also align with a realistic expectation that only a minority of users are genuinely trolls. Despite the clustering around zero, both models can still assign a wide range of scores, indicating their ability to differentiate between varying levels of troll behavior.\par
 
 \begin{figure}[h]
-    \centering
-    \begin{subfigure}{0.49\textwidth}
-        \includegraphics[width=\linewidth]{figures/cumulative_mult.png}
-        \caption{Cumulative Distribution of Trolliness Scores - Multilingual Model Fine-Tuned}
-        \label{fig:cumulative_mult}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.49\textwidth}
-        \includegraphics[width=\linewidth]{figures/cumulative_ru.png}
-        \caption{Cumulative Distribution of Trolliness Scores - Russian-Only Model Fine-Tuned}
-        \label{fig:cumulative_ru}
-    \end{subfigure}
-    \caption{Comparison of Trolliness Score Distributions between Multilingual and Russian-Only Models (Zero-Shot)}
-    \label{fig:cumulative_comparison_finetuned}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \includegraphics[width=\linewidth]{figures/cumulative_mult.png}
+    \caption{Cumulative Distribution of Trolliness Scores - Multilingual Model Fine-Tuned}
+    \label{fig:cumulative_mult}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.49\textwidth}
+    \includegraphics[width=\linewidth]{figures/cumulative_ru.png}
+    \caption{Cumulative Distribution of Trolliness Scores - Russian-Only Model Fine-Tuned}
+    \label{fig:cumulative_ru}
+  \end{subfigure}
+  \caption{Comparison of Trolliness Score Distributions between Multilingual and Russian-Only Models (Zero-Shot)}
+  \label{fig:cumulative_comparison_finetuned}
 \end{figure}
 
 The choice of the 0.5 classification threshold is somewhat arbitrary and was set for training purposes. It directly influences the referenced percentages of users classified as trolls, but it does not inherently define troll behavior.\par
-It is important to note that the similiarity of the distributions of the two models after fine-tuning may be a result of overfitting. Given the small size of the fine-tuning dataset the model may have learnned to reflect the specific examples it was exposed to closely, leading to very similar behavior.\par
-
+It is important to note that the similarity of the distributions of the two models after fine-tuning may be a result of overfitting. Given the small size of the fine-tuning dataset, the model may have learned to reflect the specific examples it was exposed to closely, leading to very similar behavior.\par
 
 \subsection{Manual Review of Predictions}
-To further understand the model's predictions, we will manually review a selection of users with high, low and uncertain trolliness scores. The goal was to see if the model's predictions aligned with our expectations and to identify any potential issues or biases in the model.\par
+To further understand the model's predictions, we will manually review a selection of users with high, low, and uncertain trolliness scores. The goal was to see if the model's predictions aligned with our expectations and to identify any potential issues or biases in the model.\par
 We will present a specific user example, including a selection of the user's comments, the model's assigned trolliness score and the attention weights for each comment. \par
-To preserve anonynimty and privacy of users we will not disclose the actual names as they are not relevant to the analysis. Instead, we will refer to the users as User A, User B, etc.\par
+To preserve the anonymity and privacy of users, we will not disclose the actual names as they are not relevant to the analysis. Instead, we will refer to the users as User A, User B, etc.\par
 
 \begin{tcolorbox}[colback=white, colframe=black, title=User A - Trolliness Score: 0.268 (Multilingual Model) / 0.960 (Russian Model)]
 \begin{itemize}
@@ -837,34 +837,33 @@ To preserve anonynimty and privacy of users we will not disclose the actual name
 \end{itemize}
 \end{tcolorbox}
 
-For the manual review we selected from a randomly sampled set of users. We selected one user with a high trolliness score, one with an uncertain score and two with a low trolliness scores. We then manually selected 3 comments for each of them, ensuring that each set included at least one with comment a high attention and one with a low attention weight. This was done to showcase the comment-level attention mechanism. Comments were chosen to try to provide explanatory value for the model's decision. Notably, each user references Ukraine in different contexts, which provides a useful basis for comparison.\par
+For the manual review, we selected from a randomly sampled set of users. We selected one user with a high trolliness score, one with an uncertain score, and two with a low trolliness score. We then manually selected three comments for each of them, ensuring that each set included at least one with a high attention and one with a low attention weight. This was done to showcase the comment-level attention mechanism. Comments were chosen to try to provide explanatory value for the model's decision. Notably, each user references Ukraine in different contexts, which provides a useful basis for comparison.\par
 
 \subsection{Example User Analysis}
 
-The first user, User A, is classified as a troll by the Russian model, and his first comment receives a high attention weight. This comment is an aggressive and troll-like statement with a strong anti-Ukrainian sentiment.  Interestingly, the Multilingual model assigned this comment a low attention weight, which is quite surprising given its hostile content. In the second comment, the user again expresses negative sentiment towards foreigners, and this time the comment receives a high attention weight from both models. The third comment, which is less inflammatory, is given a relatively low attention weight by both models. However, it is still an interesting example because it features the "MAGA" slogan in all caps. The difference in attention weights here suggests that the Russian model may be more sensitive not only to topics related to Russia and Ukraine but also to American political rhetoric.\par
+The first user, User A, is classified as a troll by the Russian model, and his first comment receives a high attention weight. This comment is an aggressive and troll-like statement with a strong anti-Ukrainian sentiment. Interestingly, the Multilingual model assigned this comment a low attention weight, which is quite surprising given its hostile content. In the second comment, the user again expresses negative sentiment towards foreigners, and this time, the comment receives a high attention weight from both models. The third comment, which is less inflammatory, is given a relatively low attention weight by both models. However, it is still an interesting example because it features the "MAGA" slogan in all caps. The difference in attention weights here suggests that the Russian model may be more sensitive not only to topics related to Russia and Ukraine but also to American political rhetoric.\par
 
 In contrast to User A, we have User B, who is consistently classified as a non-troll by both models. User C's comments are critical, focusing primarily on Czech politics, but they also mention Russia, Ukraine, and even Trump in various contexts. Despite the presence of politically charged language, including the use of all caps in some instances, the models do not classify this user as a troll. Instead, they assign him a low trolliness score.\par
 
-This user provides an interesting case study because, despite the use of words like \textit{Ukraine, Trump, Russia} and even direct criticism of the ANO political party (calling them ``clowns''), the models recognize that these comments are not inherently troll-like. Instead, they reflect the perspective of a politically engaged citizen who may be emotionally expressive but is not exhibiting troll-like behavior. The model seems to demonstrate an ability to understand the context in which charged words are used and distinguishing between genuine political criticism and hostile trolling.\par
+This user provides an interesting case study because, despite the use of words like \textit{Ukraine, Trump, Russia} and even direct criticism of the ANO political party (calling them ''clowns''), the models recognize that these comments are not inherently troll-like. Instead, they reflect the perspective of a politically engaged citizen who may be emotionally expressive but is not exhibiting troll-like behavior. The model seems to demonstrate an ability to understand the context in which charged words are used and to distinguish between genuine political criticism and hostile trolling.\par
 
 \subsection{Reflection on User Analysis}
 
-While the manual review provides some insights into how the model assigns troliness scores, it is a very limited analysis. The review is based on a very small, randomly selected sample of users and comments, of only 4 users out of a total of 16500. Given this limited scope and limited ability to generalize, it would be inappropriate to draw conclusisons about the model's overall performace or its capabilities. For the sake of clarity and to not drawn many conclussions, we have limited the user analysis to the comaprison of the first two users A and B. However, we have also included addition user examples, allowing readers to examine the comments, attnetnion weights and trolliness scores for themselves and form their own opinions. \par
-Moreover, determining whether a user is genuinely a troll or not is a complex and subjective task that goes beyond the scope of this work. This section should therefore be understood as an illustriation of the model's behavior rather than a definitive assessment of its performance.\par
+While the manual review provides some insights into how the model assigns troliness scores, it is a very limited analysis. The review is based on a very small, randomly selected sample of users and comments, of only four users out of a total of 16500. Given this limited scope and limited ability to generalize, it would be inappropriate to draw conclusions about the model's overall performance or its capabilities. For the sake of clarity and not to draw many conclusions, we have limited the user analysis to the comparison of the first two users, A and B. However, we have also included additional user examples, allowing readers to examine the comments, attention weights, and trolliness scores for themselves and form their own opinions. \par
+Moreover, determining whether a user is genuinely a troll or not is a complex and subjective task that goes beyond the scope of this work. This section should therefore be understood as an illustration of the model's behavior rather than a definitive assessment of its performance.\par
 
 \section{Language Adapter Experiment}
-As a failed experiment we also attempted, to further adapt the BERT model to the Czech language by training a language adapter. Adapters are lightweight modules that can be inserted into transformer models, allowing them to efficiently adapt to new domains with minimal changes to the main model \cite{Houlsby2019}. The approach has been shown to be effective in many contexts, including multilingual tasks. Moreover the MetaTrolls model, previously cited in Related Methods \cite{Tian2023}, successfully used adapters to specialize its model for different trolling campaigns, which inspired us to explore this method.\par
+As a failed experiment, we also attempted to further adapt the BERT model to the Czech language by training a language adapter. Adapters are lightweight modules that can be inserted into transformer models, allowing them to efficiently adapt to new domains with minimal changes to the main model \cite{Houlsby2019}. The approach has been shown to be effective in many contexts, including multilingual tasks. Moreover, the MetaTrolls model, previously cited in Related Methods \cite{Tian2023}, successfully used adapters to specialize its model for different trolling campaigns, which inspired us to explore this method.\par
 
-We trained an adapter using Masked Language Modeling (MLM) on the Czech comments dataset. The adapter was trained to predict masked tokens in the input text, with the aim to have it learn Czech-specific lingiustic patterns, while retaining the multilingual knowledge and training of the BERT model.\par
+We trained an adapter using Masked Language Modeling (MLM) on the Czech comments dataset. The adapter was trained to predict masked tokens in the input text, with the aim to have it learn Czech-specific linguistic patterns, while retaining the multilingual knowledge and training of the BERT model.\par
 
-Unfortunlately, this approach did not work as expected. Instead of improving the model's performance it disrupted it. This problem occurred because the adapter altered the the outputs of the model in a way that the final regression head was not trained to handle, effectively breaking the model. \par
+Unfortunately, this approach did not work as expected. Instead of improving the model's performance, it disrupted it. This problem occurred because the adapter altered the outputs of the model in a way that the final regression head was not trained to handle, effectively breaking the model. \par
  
 \chapter{Conclusion}
 
+This thesis investigated the challenge of identifying online trolling using Natural Language Processing (NLP) techniques,, focusing on discussions on the Czech news website comments. The core of the proposed methodology was using a multilingual BERT model to assign a \textit{trolliness} score to each user, based on their comments. Initial training utilized diverse multilingual datasets of known troll and non-troll activity. This training was followed by a crucial fine-tuning stage using a small, manually annotated set of Czech news discussion comments.
 
-
-
-\chapter{Conclusion}
+The experiments showed promise for the potential of transformer-based models for this complex task. While baseline comparison demonstrated that the BERT model's performance was competitive against traditional stylometric and TF-IDF approaches, the multilingual BERT model's cross-lingual capabilities were insufficient for effective troll detection in the Czech domain without further fine-tuning. Zero-shot predictions proved insufficient, but fine-tuning, even with limited annotated data, led to noticeable improvements in the model's ability to discern varying degrees of troll-like behavior. The model's performance was further enhanced by training on a typologically similar language, in this case, Russian, which provided a more effective knowledge transfer. However, the limited size of the Czech annotated data remains a constraint, suggesting that future work would benefit from more extensive annotation, and alternatives could also be explored by utilizing different and larger transformer models like M-BERT or XLM-R.\par
 
 \appendix
 
