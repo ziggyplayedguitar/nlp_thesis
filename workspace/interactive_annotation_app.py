@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import json
 from pathlib import Path
+import torch
 
 from src.models.predictor import TrollPredictor 
 
@@ -11,25 +12,44 @@ ANOMALY_CSV = "./user_anomaly_scores.csv"
 ANNOTATIONS_OUTPUT = "./annotations/user_labels.csv"
 Path("./annotations").mkdir(exist_ok=True)
 
-# Predictor from Checkpoint
-predictor = TrollPredictor(
-    # model_path= "./checkpoints/best_model_distilbert.pt",
-    model_path= "./checkpoints/best_model_english_medium",
-    model_name="distilbert-base-multilingual-cased",  # Add base model name
-    comments_per_user=10,
-    max_length=96,
-    # adapter_path="./output/czech_comments_adapter",  # Add adapter path
-    # adapter_name="czech_comments_mlm"
-)
+# Initialize predictor with caching
+@st.cache_resource
+def get_predictor():
+    try:
+        return TrollPredictor(
+            # model_path="./checkpoints/best_model_english_medium",
+            model_path="./checkpoints/finetuned_model_BCE_no_emoji.pt",
+            # model_name="distilbert-base-multilingual-cased",
+            comments_per_user=10,
+            max_length=96,
+            use_adapter=False,
+            threshold=0.4,
+        )
+    except Exception as e:
+        st.error(f"Error initializing model: {str(e)}")
+        return None
+
+# Initialize predictor
+predictor = get_predictor()
+if predictor is None:
+    st.error("Failed to initialize the model. Please check the model path and configuration.")
+    st.stop()
 
 # --- Load Data ---
 @st.cache_data
 def load_data():
-    df_comments = pd.read_parquet(COMMENTS_PARQUET)
-    df_anomaly = pd.read_csv(ANOMALY_CSV)
-    return df_comments, df_anomaly
+    try:
+        df_comments = pd.read_parquet(COMMENTS_PARQUET)
+        df_anomaly = pd.read_csv(ANOMALY_CSV)
+        return df_comments, df_anomaly
+    except Exception as e:
+        st.error(f"Error loading data: {str(e)}")
+        return None, None
 
 df_comments, df_anomaly = load_data()
+if df_comments is None or df_anomaly is None:
+    st.error("Failed to load data. Please check the data paths.")
+    st.stop()
 
 # --- Author Selector ---
 # Load existing annotations

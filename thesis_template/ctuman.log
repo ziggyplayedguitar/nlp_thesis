@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.8)  28 APR 2025 00:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.8)  16 MAY 2025 00:29
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -204,8 +204,6 @@ Package babel Info: Hyphen rules for 'australian' set to \l@ukenglish
 (babel)             (\language15). Reported on input line 105.
 Package babel Info: Hyphen rules for 'newzealand' set to \l@ukenglish
 (babel)             (\language15). Reported on input line 108.
-) (/usr/share/texlive/texmf-dist/tex/generic/babel-english/english.ldf
-Language: english 2017/06/06 v3.3r English support from the babel system
 ) (/usr/share/texlive/texmf-dist/tex/generic/babel-czech/czech.ldf
 Language: czech 2008/07/06 v3.1a Czech support from the babel system
 Package babel Info: Making " an active character on input line 172.
@@ -649,6 +647,10 @@ File: ctuth-templates.tex 2016/06/15 v0.1t1606152353 "Templates" part of the cla
 \c@theorem=\count324
  (/usr/share/texlive/texmf-dist/tex/latex/mparhack/mparhack.sty
 Package: mparhack 2021-05-02 v1.5 (T. Sgouros and S. Ulrich)
+) (/usr/share/texlive/texmf-dist/tex/latex/caption/subcaption.sty
+Package: subcaption 2020/10/07 v1.3j Sub-captions (AR)
+\c@subfigure=\count325
+\c@subtable=\count326
 ) (/usr/share/texlive/texmf-dist/tex/latex/tools/tabularx.sty
 Package: tabularx 2020/01/15 v2.11c `tabularx' package (DPC)
  (/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty
@@ -666,59 +668,223 @@ Package: array 2021/10/04 v2.5f Tabular extension package (FMi)
 \TX@old@col=\dimen272
 \TX@target=\dimen273
 \TX@delta=\dimen274
-\TX@cols=\count325
+\TX@cols=\count327
 \TX@ftn=\toks42
+) (/usr/share/texlive/texmf-dist/tex/latex/multirow/multirow.sty
+Package: multirow 2021/03/15 v2.8 Span multiple rows of a table
+\multirow@colwidth=\skip80
+\multirow@cntb=\count328
+\multirow@dima=\skip81
+\bigstrutjot=\dimen275
 ) (/usr/share/texlive/texmf-dist/tex/latex/mathtools/mathtools.sty
 Package: mathtools 2021/02/02 v1.28 mathematical typesetting tools
  (/usr/share/texlive/texmf-dist/tex/latex/mathtools/mhsetup.sty
 Package: mhsetup 2021/03/18 v1.4 programming setup (MH)
 )
-\g_MT_multlinerow_int=\count326
-\l_MT_multwidth_dim=\dimen275
-\origjot=\skip80
-\l_MT_shortvdotswithinadjustabove_dim=\dimen276
-\l_MT_shortvdotswithinadjustbelow_dim=\dimen277
-\l_MT_above_intertext_sep=\dimen278
-\l_MT_below_intertext_sep=\dimen279
-\l_MT_above_shortintertext_sep=\dimen280
-\l_MT_below_shortintertext_sep=\dimen281
+\g_MT_multlinerow_int=\count329
+\l_MT_multwidth_dim=\dimen276
+\origjot=\skip82
+\l_MT_shortvdotswithinadjustabove_dim=\dimen277
+\l_MT_shortvdotswithinadjustbelow_dim=\dimen278
+\l_MT_above_intertext_sep=\dimen279
+\l_MT_below_intertext_sep=\dimen280
+\l_MT_above_shortintertext_sep=\dimen281
+\l_MT_below_shortintertext_sep=\dimen282
 \xmathstrut@box=\box118
-\xmathstrut@dim=\dimen282
+\xmathstrut@dim=\dimen283
+) (/usr/share/texlive/texmf-dist/tex/latex/tcolorbox/tcolorbox.sty
+Package: tcolorbox 2022/01/07 version 5.0.2 text color boxes
+ (/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex
+\pgfutil@everybye=\toks43
+\pgfutil@tempdima=\dimen284
+\pgfutil@tempdimb=\dimen285
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common-lists.tex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def
+\pgfutil@abb=\box119
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex (/usr/share/texlive/texmf-dist/tex/generic/pgf/pgf.revision.tex)
+Package: pgfrcs 2021/05/15 v3.1.9a (3.1.9a)
+))
+Package: pgf 2021/05/15 v3.1.9a (3.1.9a)
+ (/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty (/usr/share/texlive/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+Package: pgfsys 2021/05/15 v3.1.9a (3.1.9a)
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+\pgfkeys@pathtoks=\toks44
+\pgfkeys@temptoks=\toks45
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.code.tex
+\pgfkeys@tmptoks=\toks46
+))
+\pgf@x=\dimen286
+\pgf@y=\dimen287
+\pgf@xa=\dimen288
+\pgf@ya=\dimen289
+\pgf@xb=\dimen290
+\pgf@yb=\dimen291
+\pgf@xc=\dimen292
+\pgf@yc=\dimen293
+\pgf@xd=\dimen294
+\pgf@yd=\dimen295
+\w@pgf@writea=\write4
+\r@pgf@reada=\read3
+\c@pgf@counta=\count330
+\c@pgf@countb=\count331
+\c@pgf@countc=\count332
+\c@pgf@countd=\count333
+\t@pgf@toka=\toks47
+\t@pgf@tokb=\toks48
+\t@pgf@tokc=\toks49
+\pgf@sys@id@count=\count334
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg
+File: pgf.cfg 2021/05/15 v3.1.9a (3.1.9a)
 )
-\myboxa=\box119
+Driver file for pgf: pgfsys-pdftex.def
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
+File: pgfsys-pdftex.def 2021/05/15 v3.1.9a (3.1.9a)
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-pdf.def
+File: pgfsys-common-pdf.def 2021/05/15 v3.1.9a (3.1.9a)
+))) (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.tex
+File: pgfsyssoftpath.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgfsyssoftpath@smallbuffer@items=\count335
+\pgfsyssoftpath@bigbuffer@items=\count336
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.tex
+File: pgfsysprotocol.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+Package: pgfcore 2021/05/15 v3.1.9a (3.1.9a)
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex
+\pgfmath@dimen=\dimen296
+\pgfmath@count=\count337
+\pgfmath@box=\box120
+\pgfmath@toks=\toks50
+\pgfmath@stack@operand=\toks51
+\pgfmath@stack@operation=\toks52
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonometric.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerarithmetics.code.tex))) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex
+\c@pgfmathroundto@lastzeros=\count338
+)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfint.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.tex
+File: pgfcorepoints.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgf@picminx=\dimen297
+\pgf@picmaxx=\dimen298
+\pgf@picminy=\dimen299
+\pgf@picmaxy=\dimen300
+\pgf@pathminx=\dimen301
+\pgf@pathmaxx=\dimen302
+\pgf@pathminy=\dimen303
+\pgf@pathmaxy=\dimen304
+\pgf@xx=\dimen305
+\pgf@xy=\dimen306
+\pgf@yx=\dimen307
+\pgf@yy=\dimen308
+\pgf@zx=\dimen309
+\pgf@zy=\dimen310
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.code.tex
+File: pgfcorepathconstruct.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgf@path@lastx=\dimen311
+\pgf@path@lasty=\dimen312
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code.tex
+File: pgfcorepathusage.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgf@shorten@end@additional=\dimen313
+\pgf@shorten@start@additional=\dimen314
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.tex
+File: pgfcorescopes.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgfpic=\box121
+\pgf@hbox=\box122
+\pgf@layerbox@main=\box123
+\pgf@picture@serial@count=\count339
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.code.tex
+File: pgfcoregraphicstate.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgflinewidth=\dimen315
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformations.code.tex
+File: pgfcoretransformations.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgf@pt@x=\dimen316
+\pgf@pt@y=\dimen317
+\pgf@pt@temp=\dimen318
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
+File: pgfcorequick.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.tex
+File: pgfcoreobjects.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing.code.tex
+File: pgfcorepathprocessing.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.tex
+File: pgfcorearrows.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgfarrowsep=\dimen319
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
+File: pgfcoreshade.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgf@max=\dimen320
+\pgf@sys@shading@range@num=\count340
+\pgf@shadingcount=\count341
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
+File: pgfcoreimage.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.tex
+File: pgfcoreexternal.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgfexternal@startupbox=\box124
+)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.tex
+File: pgfcorelayers.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.code.tex
+File: pgfcoretransparency.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.tex
+File: pgfcorepatterns.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.tex
+File: pgfcorerdf.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+))) (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
+File: pgfmoduleshapes.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+\pgfnodeparttextbox=\box125
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.tex
+File: pgfmoduleplot.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+) (/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65.sty
+Package: pgfcomp-version-0-65 2021/05/15 v3.1.9a (3.1.9a)
+\pgf@nodesepstart=\dimen321
+\pgf@nodesepend=\dimen322
+) (/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18.sty
+Package: pgfcomp-version-1-18 2021/05/15 v3.1.9a (3.1.9a)
+)) (/usr/share/texlive/texmf-dist/tex/latex/tools/verbatim.sty
+Package: verbatim 2020-07-07 v1.5u LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks53
+\verbatim@line=\toks54
+\verbatim@in@stream=\read4
+)
+\tcb@titlebox=\box126
+\tcb@upperbox=\box127
+\tcb@lowerbox=\box128
+\tcb@phantombox=\box129
+\c@tcbbreakpart=\count342
+\c@tcblayer=\count343
+\c@tcolorbox@number=\count344
+\tcb@temp=\box130
+\tcb@temp=\box131
+\tcb@temp=\box132
+\tcb@temp=\box133
+)
+\myboxa=\box134
  (./ctuman.aux)
 \openout1 = `ctuman.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 152.
-LaTeX Font Info:    ... okay on input line 152.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 152.
-LaTeX Font Info:    ... okay on input line 152.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 152.
-LaTeX Font Info:    ... okay on input line 152.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 152.
-LaTeX Font Info:    ... okay on input line 152.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 152.
-LaTeX Font Info:    ... okay on input line 152.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 152.
-LaTeX Font Info:    ... okay on input line 152.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 152.
-LaTeX Font Info:    ... okay on input line 152.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 152.
-LaTeX Font Info:    ... okay on input line 152.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 152.
-LaTeX Font Info:    ... okay on input line 152.
-LaTeX Info: Redefining \microtypecontext on input line 152.
-Package microtype Info: Applying patch `item' on input line 152.
-Package microtype Info: Applying patch `toc' on input line 152.
-Package microtype Info: Applying patch `eqnum' on input line 152.
-Package microtype Info: Applying patch `footnote' on input line 152.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 166.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 166.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 166.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 166.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 166.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 166.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 166.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 166.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 166.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Info: Redefining \microtypecontext on input line 166.
+Package microtype Info: Applying patch `item' on input line 166.
+Package microtype Info: Applying patch `toc' on input line 166.
+Package microtype Info: Applying patch `eqnum' on input line 166.
+Package microtype Info: Applying patch `footnote' on input line 166.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 152.
+LaTeX Info: Redefining \showhyphens on input line 166.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -726,17 +892,17 @@ Package microtype Info: No adjustment of character kerning.
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman (RS)
 ) (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count327
-\scratchdimen=\dimen283
-\scratchbox=\box120
-\nofMPsegments=\count328
-\nofMParguments=\count329
-\everyMPshowfont=\toks43
-\MPscratchCnt=\count330
-\MPscratchDim=\dimen284
-\MPnumerator=\count331
-\makeMPintoPDFobject=\count332
-\everyMPtoPDFconversion=\toks44
+\scratchcounter=\count345
+\scratchdimen=\dimen323
+\scratchbox=\box135
+\nofMPsegments=\count346
+\nofMParguments=\count347
+\everyMPshowfont=\toks55
+\MPscratchCnt=\count348
+\MPscratchDim=\dimen324
+\MPnumerator=\count349
+\makeMPintoPDFobject=\count350
+\everyMPtoPDFconversion=\toks56
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
@@ -788,8 +954,8 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
 Package caption Info: listings package is loaded.
 Package caption Info: End \AtBeginDocument code.
-\c@lstlisting=\count333
-Package hyperref Info: Link coloring OFF on input line 152.
+\c@lstlisting=\count351
+Package hyperref Info: Link coloring OFF on input line 166.
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
  (/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty
@@ -797,51 +963,51 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ) (/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count334
+\c@section@level=\count352
 )
-LaTeX Info: Redefining \ref on input line 152.
-LaTeX Info: Redefining \pageref on input line 152.
-LaTeX Info: Redefining \nameref on input line 152.
+LaTeX Info: Redefining \ref on input line 166.
+LaTeX Info: Redefining \pageref on input line 166.
+LaTeX Info: Redefining \nameref on input line 166.
  (./ctuman.out) (./ctuman.out)
-\@outlinefile=\write4
-\openout4 = `ctuman.out'.
+\@outlinefile=\write5
+\openout5 = `ctuman.out'.
 
-\ctuclsnamebox=\box121
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 161.
+\ctuclsnamebox=\box136
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 175.
  (/usr/share/texmf/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 161.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 175.
  (/usr/share/texmf/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 161.
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 175.
  (/usr/share/texmf/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 161.
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 175.
  (/usr/share/texmf/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 161.
+(Font)              <10.95> on input line 175.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 161.
+(Font)              <8> on input line 175.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 161.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 161.
+(Font)              <6> on input line 175.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 175.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 161.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 175.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 161.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 175.
  (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -853,19 +1019,19 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmss' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-<ctu_logo_black.pdf, id=96, 366.36874pt x 279.0425pt>
+<ctu_logo_black.pdf, id=183, 366.36874pt x 279.0425pt>
 File: ctu_logo_black.pdf Graphic file (type pdf)
 <use ctu_logo_black.pdf>
-Package pdftex.def Info: ctu_logo_black.pdf  used on input line 164.
+Package pdftex.def Info: ctu_logo_black.pdf  used on input line 178.
 (pdftex.def)             Requested size: 85.86746pt x 65.40001pt.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <14.4> on input line 164.
+(Font)              <14.4> on input line 178.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 164.
+(Font)              <10> on input line 178.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 164.
+(Font)              <7> on input line 178.
 
-Overfull \hbox (5.0pt too wide) in paragraph at lines 164--164
+Overfull \hbox (5.0pt too wide) in paragraph at lines 178--178
 []|| [][][] 
  []
 
@@ -912,22 +1078,41 @@ Overfull \hbox (5.0pt too wide) in paragraph at lines 164--164
  [3
 
 
-] [4
+]
+Underfull \hbox (badness 1360) in paragraph at lines 178--178
+\T1/lmr/m/n/10.95 (+20) bach-e-lor's the-sis ex-plores troll de-tec-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 178--178
+[]\T1/lmr/m/n/10.95 (+20) Initially trained on mul-ti-lin-gual
+ []
+
+
+Underfull \hbox (badness 1675) in paragraph at lines 178--178
+\T1/lmr/m/n/10.95 (+20) a small an-no-tated dataset of Czech
+ []
+
+
+Underfull \hbox (badness 4859) in paragraph at lines 178--178
+\T1/lmr/m/n/10.95 (+20) com-ments sig-nif-i-cantly im-proved its
+ []
+
+[4
 
 ] (./ctuman.toc)
-\tf@toc=\write5
-\openout5 = `ctuman.toc'.
+\tf@toc=\write6
+\openout6 = `ctuman.toc'.
 
  [5
 
-
 ] (./ctuman.lof)
-\tf@lof=\write6
-\openout6 = `ctuman.lof'.
+\tf@lof=\write7
+\openout7 = `ctuman.lof'.
 
  (./ctuman.lot)
-\tf@lot=\write7
-\openout7 = `ctuman.lot'.
+\tf@lot=\write8
+\openout8 = `ctuman.lot'.
 
  [6
 
@@ -975,7 +1160,7 @@ Chapter 1.
 
 ]
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10.95> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 189.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 204.
  [2] [3] [4
 
 ]
@@ -983,44 +1168,162 @@ Chapter 2.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [5] [6] [7] [8
+ [5] [6] [7] [8] [9] [10]
+Chapter 3.
+[11
 
 ]
-Chapter 3.
-[9] [10] [11] [12
+<figures/sentiment.png, id=401, 343.88475pt x 272.217pt>
+File: figures/sentiment.png Graphic file (type png)
+<use figures/sentiment.png>
+Package pdftex.def Info: figures/sentiment.png  used on input line 322.
+(pdftex.def)             Requested size: 240.71768pt x 190.55058pt.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <9> on input line 334.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 334.
+ [12 <./figures/sentiment.png>] [13] [14
 
 ]
 Chapter 4.
-[13]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 287.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 287.
- [14] [15] [16
+
+Underfull \vbox (badness 1675) has occurred while \output is active []
+
+ [15]
+<figures/comments_per_author.png, id=438, 705.837pt x 561.297pt>
+File: figures/comments_per_author.png Graphic file (type png)
+<use figures/comments_per_author.png>
+Package pdftex.def Info: figures/comments_per_author.png  used on input line 374.
+(pdftex.def)             Requested size: 174.23845pt x 138.55957pt.
+<figures/comments_5_plus.png, id=439, 705.837pt x 561.297pt>
+File: figures/comments_5_plus.png Graphic file (type png)
+<use figures/comments_5_plus.png>
+Package pdftex.def Info: figures/comments_5_plus.png  used on input line 382.
+(pdftex.def)             Requested size: 174.23845pt x 138.55957pt.
+ [16] [17 <./figures/comments_per_author.png> <./figures/comments_5_plus.png>] [18]
+<figures/streamlit_app.png, id=467, 702.37407pt x 872.50969pt>
+File: figures/streamlit_app.png Graphic file (type png)
+<use figures/streamlit_app.png>
+Package pdftex.def Info: figures/streamlit_app.png  used on input line 459.
+(pdftex.def)             Requested size: 302.01497pt x 375.17186pt.
+ [19] [20 <./figures/streamlit_app.png>]
+Chapter 5.
+[21
+
+] [22]
+Overfull \hbox (40.36343pt too wide) in paragraph at lines 546--558
+ [][] 
+ []
+
+[23]
+<figures/language_distribution.png, id=498, 573.8238pt x 480.5955pt>
+File: figures/language_distribution.png Graphic file (type png)
+<use figures/language_distribution.png>
+Package pdftex.def Info: figures/language_distribution.png  used on input line 569.
+(pdftex.def)             Requested size: 290.40111pt x 243.22314pt.
+
+Overfull \hbox (60.05824pt too wide) in paragraph at lines 580--592
+ [][] 
+ []
+
+
+Overfull \hbox (50.07616pt too wide) in paragraph at lines 600--612
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [24 <./figures/language_distribution.png>]
+Overfull \hbox (75.52518pt too wide) in paragraph at lines 623--635
+ [][] 
+ []
+
+<figures/training_full.png, id=508, 1076.1003pt x 715.473pt>
+File: figures/training_full.png Graphic file (type png)
+<use figures/training_full.png>
+Package pdftex.def Info: figures/training_full.png  used on input line 641.
+(pdftex.def)             Requested size: 355.1142pt x 236.10683pt.
+<figures/russian_training.png, id=509, 1076.1003pt x 715.473pt>
+File: figures/russian_training.png Graphic file (type png)
+<use figures/russian_training.png>
+Package pdftex.def Info: figures/russian_training.png  used on input line 649.
+(pdftex.def)             Requested size: 355.1142pt x 236.10683pt.
+[25] [26 <./figures/training_full.png> <./figures/russian_training.png>]
+<figures/distribution_multi.png, id=523, 980.7039pt x 349.7868pt>
+File: figures/distribution_multi.png Graphic file (type png)
+<use figures/distribution_multi.png>
+Package pdftex.def Info: figures/distribution_multi.png  used on input line 690.
+(pdftex.def)             Requested size: 177.872pt x 63.43925pt.
+<figures/russian_distribution.png, id=524, 982.1493pt x 349.7868pt>
+File: figures/russian_distribution.png Graphic file (type png)
+<use figures/russian_distribution.png>
+Package pdftex.def Info: figures/russian_distribution.png  used on input line 696.
+(pdftex.def)             Requested size: 177.872pt x 63.34319pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[27]
+<figures/distribution_fine_tuned.png, id=532, 952.5186pt x 349.7868pt>
+File: figures/distribution_fine_tuned.png Graphic file (type png)
+<use figures/distribution_fine_tuned.png>
+Package pdftex.def Info: figures/distribution_fine_tuned.png  used on input line 716.
+(pdftex.def)             Requested size: 177.872pt x 65.318pt.
+<figures/distribution_ru_finetuned0.png, id=533, 968.418pt x 349.7868pt>
+File: figures/distribution_ru_finetuned0.png Graphic file (type png)
+<use figures/distribution_ru_finetuned0.png>
+Package pdftex.def Info: figures/distribution_ru_finetuned0.png  used on input line 722.
+(pdftex.def)             Requested size: 177.872pt x 64.2452pt.
+ [28 <./figures/distribution_multi.png> <./figures/russian_distribution.png> <./figures/distribution_fine_tuned.png> <./figures/distribution_ru_finetuned0.png>]
+<figures/cumulative_mult.png, id=548, 711.1368pt x 349.7868pt>
+File: figures/cumulative_mult.png Graphic file (type png)
+<use figures/cumulative_mult.png>
+Package pdftex.def Info: figures/cumulative_mult.png  used on input line 737.
+(pdftex.def)             Requested size: 177.872pt x 87.48918pt.
+<figures/cumulative_ru.png, id=549, 711.1368pt x 349.7868pt>
+File: figures/cumulative_ru.png Graphic file (type png)
+<use figures/cumulative_ru.png>
+Package pdftex.def Info: figures/cumulative_ru.png  used on input line 743.
+(pdftex.def)             Requested size: 177.872pt x 87.48918pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [29 <./figures/cumulative_mult.png> <./figures/cumulative_ru.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [30]
+Underfull \vbox (badness 2591) has occurred while \output is active []
+
+ [31] [32] [33] [34
 
 ]
-Chapter 5.
-[17] (./ctuman.ind) (./ctuman.bbl [18]
-Appendix A.
-[19
+Chapter 6.
+(./ctuman.ind) (./ctuman.bbl [35] [36
 
-] [20]) [21] (./ctuman.aux)
+]
+Appendix A.
+[37] [38]) [39] (./ctuman.aux)
 Package rerunfilecheck Info: File `ctuman.out' has not changed.
-(rerunfilecheck)             Checksum: 2100023801CFCDC835D60940B546C5C2;3211.
+(rerunfilecheck)             Checksum: CD5287599DCE09D2106ABE69EC3894B4;7039.
  ) 
 Here is how much of TeX's memory you used:
- 20708 strings out of 478287
- 338252 string characters out of 5849290
- 685073 words of memory out of 5000000
- 38266 multiletter control sequences out of 15000+600000
- 561636 words of font info for 185 fonts, out of 8000000 for 9000
+ 30422 strings out of 478287
+ 552954 string characters out of 5849290
+ 873892 words of memory out of 5000000
+ 47602 multiletter control sequences out of 15000+600000
+ 595795 words of font info for 244 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 68i,17n,78p,1176b,1144s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr6.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt9.pfb>
-Output written on ctuman.pdf (27 pages, 304633 bytes).
+ 83i,17n,80p,1300b,1144s stack positions out of 5000i,500n,10000p,200000b,80000s
+pdfTeX warning (dest): name{figure.4.2} has been referenced but does not exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{figure.4.1} has been referenced but does not exist, replaced by a fixed one
+
+{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathex.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmex10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi8.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr6.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmr9.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt9.pfb>
+Output written on ctuman.pdf (45 pages, 1118761 bytes).
 PDF statistics:
- 366 PDF objects out of 1000 (max. 8388607)
- 315 compressed objects within 4 object streams
- 80 named destinations out of 1000 (max. 500000)
- 50366 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 713 PDF objects out of 1000 (max. 8388607)
+ 601 compressed objects within 7 object streams
+ 161 named destinations out of 1000 (max. 500000)
+ 72115 words of extra memory for PDF output out of 74296 (max. 10000000)
 

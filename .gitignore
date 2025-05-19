@@ -34,3 +34,7 @@ workspace/notebooks/My model.txt
 workspace/2025TrollDetection/CommentSentTopics/Working Copy of topic2comments_Full_5422.json
 workspace/2025TrollDetection/
 metatroll-code-main
+workspace/output/
+workspace/ignore/
+workspace/output/adapter_mlm_output/
+workspace/2025.04.05 ToPeraicaLiska

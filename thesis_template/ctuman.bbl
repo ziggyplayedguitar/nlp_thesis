@@ -52,19 +52,17 @@ Maja Golf-Papez and Ekant Veer.
 \newblock {\em Journal of Marketing Management}, 33(15/16):1336--1354, November
   2017.
 
+\bibitem[HGJ{\etalchar{+}}19]{Houlsby2019}
+Neil Houlsby, Andrei Giurgiu, Stanislaw Jastrzebski, Bruna Morrone, Quentin
+  de~Laroussilhe, Andrea Gesmundo, Mona Attariyan, and Sylvain Gelly.
+\newblock Parameter-efficient transfer learning for {NLP}.
+\newblock {\em CoRR}, abs/1902.00751, 2019.
+
 \bibitem[JTS21]{Jiang2021Sentiment}
 Zidong Jiang, Fabio~Di Troia, and Mark Stamp.
 \newblock Sentiment {Analysis} for {Troll} {Detection} on {Weibo}.
 \newblock {\em CoRR}, page~0, March 2021.
 \newblock arXiv:2103.09054 [cs].
-
-\bibitem[KTM{\etalchar{+}}21]{Kandasamy2021COVID}
-Venkatachalam Kandasamy, Pavel Trojovský, Fadi~Al Machot, Kyandoghere
-  Kyamakya, Nebojsa Bacanin, Sameh Askar, and Mohamed Abouhawwash.
-\newblock Sentimental analysis of covid-19 related messages in social networks
-  by involving an n-gram stacked autoencoder integrated in an ensemble learning
-  scheme.
-\newblock {\em Sensors}, 21(22), 2021.
 
 \bibitem[Lut98]{Lutoslawski1898}
 Wincenty Lutoslawski.
@@ -82,6 +80,13 @@ Kristina Machova, Marian Mach, and Matej Vasilko.
 \newblock Comparison of machine learning and sentiment analysis in detection of
   suspicious online reviewers on different type of data.
 \newblock {\em Sensors}, 22(1), 2022.
+
+\bibitem[MPH21]{Machova2021Algorithms}
+Kristína Machová, Michal Porezaný, and Miroslava Hreškova.
+\newblock Algorithms of machine learning in recognition of trolls in online
+  space.
+\newblock In {\em 2021 IEEE 19th World Symposium on Applied Machine
+  Intelligence and Informatics (SAMI)}, pages 000349--000354, 2021.
 
 \bibitem[MW64]{Mosteller1964Federalist}
 Frederick Mosteller and David L. (David~Lee) Wallace.
@@ -103,6 +108,11 @@ Ver{\'o}nica P{\'e}rez-Rosas, Bennett Kleinberg, Alexandra Lefevre, and Rada
   {\em Proceedings of the 27th International Conference on Computational
   Linguistics}, pages 3391--3401, Santa Fe, New Mexico, USA, August 2018.
   Association for Computational Linguistics.
+
+\bibitem[PSG19]{Pires2019}
+Telmo Pires, Eva Schlinger, and Dan Garrette.
+\newblock How multilingual is multilingual bert?
+\newblock {\em CoRR}, abs/1906.01502, 2019.
 
 \bibitem[RKR20]{Rogers2020}
 Anna Rogers, Olga Kovaleva, and Anna Rumshisky.
@@ -135,10 +145,22 @@ John Suler.
 \newblock The {Online} {Disinhibition} {Effect}.
 \newblock {\em CyberPsychology \& Behavior}, 7(3):321--326, June 2004.
 
+\bibitem[TZL23]{Tian2023}
+Lin Tian, Xiuzhen Zhang, and Jey~Han Lau.
+\newblock Metatroll: Few-shot detection of state-sponsored trolls with
+  transformer adapters.
+\newblock In {\em Proceedings of the ACM Web Conference 2023}, WWW ’23, page
+  1743–1753. ACM, April 2023.
+
 \bibitem[VSP{\etalchar{+}}17]{Vaswani2017}
 Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
   Aidan~N. Gomez, Lukasz Kaiser, and Illia Polosukhin.
 \newblock Attention is all you need.
 \newblock {\em CoRR}, abs/1706.03762, 2017.
+
+\bibitem[YZ23]{yilmaz2023}
+Seyhmus Yilmaz and Sultan Zavrak.
+\newblock A context-sensitive word embedding approach for the detection of
+  troll tweets, 2023.
 
 \end{thebibliography}

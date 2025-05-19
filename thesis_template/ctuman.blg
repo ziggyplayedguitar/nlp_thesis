@@ -6,45 +6,45 @@ Database file #1: ../sources/library.bib
 Warning--entry type for "Seckin2024" isn't style-file defined
 --line 949 of file ../sources/library.bib
 Warning--empty institution in Bradshaw2017TroopsTrolls
-You've used 22 entries,
+You've used 26 entries,
             2543 wiz_defined-function locations,
-            717 strings with 9289 characters,
-and the built_in function-call counts, 9644 in all, are:
-= -- 939
-> -- 584
-< -- 7
-+ -- 213
-- -- 207
-* -- 739
-:= -- 1646
-add.period$ -- 70
-call.type$ -- 22
-change.case$ -- 160
-chr.to.int$ -- 22
-cite$ -- 23
-duplicate$ -- 347
-empty$ -- 615
-format.name$ -- 229
-if$ -- 1928
+            741 strings with 9912 characters,
+and the built_in function-call counts, 11682 in all, are:
+= -- 1152
+> -- 683
+< -- 9
++ -- 249
+- -- 242
+* -- 858
+:= -- 1946
+add.period$ -- 82
+call.type$ -- 26
+change.case$ -- 188
+chr.to.int$ -- 26
+cite$ -- 27
+duplicate$ -- 442
+empty$ -- 755
+format.name$ -- 268
+if$ -- 2382
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 21
-newline$ -- 115
-num.names$ -- 72
-pop$ -- 137
+missing$ -- 24
+newline$ -- 134
+num.names$ -- 84
+pop$ -- 168
 preamble$ -- 1
-purify$ -- 182
+purify$ -- 214
 quote$ -- 0
-skip$ -- 304
+skip$ -- 409
 stack$ -- 0
-substring$ -- 419
-swap$ -- 55
-text.length$ -- 7
+substring$ -- 522
+swap$ -- 99
+text.length$ -- 9
 text.prefix$ -- 3
 top$ -- 0
-type$ -- 172
+type$ -- 204
 warning$ -- 1
-while$ -- 87
-width$ -- 24
-write$ -- 292
+while$ -- 102
+width$ -- 29
+write$ -- 343
 (There were 2 warnings)

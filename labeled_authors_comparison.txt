@@ -1,0 +1,21 @@
+Total labeled authors: 28 RUSSIAN RESULTS NON FINE TUNED
+Average trolliness score:
+           mean  count       std
+label                           
+-1     0.113763     11  0.043919
+ 0     0.122383     10  0.053356
+ 1     0.141265      7  0.055501
+
+
+
+
+Trolliness Score Statistics: FINE TUNED RUSSIAN
+----------------------------------------
+count    8275.000000
+mean        0.521615
+std         0.035158
+min         0.334642
+25%         0.496606
+50%         0.519050
+75%         0.544869
+max         0.666400

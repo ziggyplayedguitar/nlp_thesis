@@ -25,20 +25,41 @@
 \contentsline {section}{\numberline {1.3}Impacts of Trolling}{2}{section.1.3}%
 \contentsline {chapter}{\numberline {2}Natural Language Processing}{5}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Stylometry}{5}{section.2.1}%
-\contentsline {section}{\numberline {2.2}Topic Detection}{6}{section.2.2}%
-\contentsline {section}{\numberline {2.3}Transformer Models}{6}{section.2.3}%
-\contentsline {chapter}{\numberline {3}Related Methods}{9}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Stylometry}{9}{section.3.1}%
-\contentsline {section}{\numberline {3.2}Sentiment Analysis}{10}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Transformers}{10}{section.3.3}%
-\contentsline {chapter}{\numberline {4}Dataset}{13}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Main Dataset}{13}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Additionall Datasets}{14}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}IRA Troll Tweets}{14}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Information Operations Dataset}{14}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}Non-troll Datasets}{15}{subsection.4.2.3}%
-\contentsline {chapter}{\numberline {5}Proposed Method}{17}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Data Collection and Preprocessing}{17}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Model Architecture}{18}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Training}{18}{section.5.3}%
-\contentsline {chapter}{\numberline {A}Bibliography\markboth {\MakeUppercase {Bibliography}}{\MakeUppercase {Bibliography}}}{19}{appendix.A}%
+\contentsline {subsection}{\numberline {2.1.1}Stylometry in Literature}{6}{subsection.2.1.1}%
+\contentsline {section}{\numberline {2.2}Sentiment Analysis}{7}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Sentiment Analysis in Troll Detection}{7}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Self-Attention}{8}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Multi-Head Attention}{8}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}BERT}{9}{subsection.2.2.4}%
+\contentsline {subsection}{\numberline {2.2.5}Transformer Models in Troll Detection}{9}{subsection.2.2.5}%
+\contentsline {chapter}{\numberline {3}Dataset}{11}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Main Dataset}{11}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Additionall Datasets}{12}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}IRA Troll Tweets}{12}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Information Operations Dataset}{13}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Non-troll Datasets}{13}{subsection.3.2.3}%
+\contentsline {chapter}{\numberline {4}Proposed Method}{15}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Motivation}{15}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Data Collection and Preprocessing}{16}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Model Architecture}{16}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Comment Processing and Aggregation}{17}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Regression Head}{18}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Loss Function}{18}{subsection.4.3.3}%
+\contentsline {section}{\numberline {4.4}Training}{18}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Lightweight Annotation and Evaluation App}{19}{section.4.5}%
+\contentsline {chapter}{\numberline {5}Experiments}{21}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Baseline Comparison}{21}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Baseline Evaluation Metrics}{22}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Baseline Results}{23}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}Further Training of BERT Model}{24}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Training Results}{25}{subsection.5.2.1}%
+\contentsline {section}{\numberline {5.3}Predictions on Czech Dataset}{25}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Zero-Shot Experiment}{27}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Results}{27}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}Fine-Tuned Experiment}{28}{subsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.3.4}Manual Review of Predictions}{29}{subsection.5.3.4}%
+\contentsline {subsection}{\numberline {5.3.5}Example User Analysis}{32}{subsection.5.3.5}%
+\contentsline {subsection}{\numberline {5.3.6}Reflection on User Analysis}{32}{subsection.5.3.6}%
+\contentsline {section}{\numberline {5.4}Language Adapter Experiment}{33}{section.5.4}%
+\contentsline {chapter}{\numberline {6}Conclusion}{35}{chapter.6}%
+\contentsline {chapter}{\numberline {A}Bibliography\markboth {\MakeUppercase {Bibliography}}{\MakeUppercase {Bibliography}}}{37}{appendix.A}%

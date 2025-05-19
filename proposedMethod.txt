@@ -1,0 +1,84 @@
+% ========================================== CHAPTER 4 PROPOSED METHOD =====================
+\chapter{Proposed Method}
+In this chapter we will outline the proposed method for detecting troll-like behavior in online discussions. The core idea behind the method is the use of transformer-based models, specifically multilingual BERT-based models, in a regression task designed to quantify the a users troll-like behavior. Instead of a binary classification task, the approach is to assign a user with a continous ''trolliness'' score, measured from 0 to 1.\par
+
+\section{Motivation}
+As the backbone of the method, I decided to use multilingual BERT based models, as they are trained across dozens of languages at once, which makes them a natural choice when trying to transfer knowledge from English or Russian troll datasets to Czech. Beyond their multilingual capabilities, BERT models are also able to capture and represent both syntactic and semantic relationships and dependencies within a text sequence. Instead of manually designing and extracting individual features like syntax counts, stylometric traits, sentiment scores, in theory BERT should be able to learn and encode much of this information into its embeddings and attention mechanism.\cite{Rogers2020}\par
+A classical machine learning approach using manually selected stylometric and other features is not suitable for this task, due to the limitations of the datasets we are working with, which were mentioned above. However BERT should be able to capture similar semantic and syntactic knowledge while also being able to be used in our specific task with limited labeled data and a multilingual datasets.\par
+The motivation to use a regression task instead of a binary classification task is twofold. First, the main dataset of Czech comments lacks troll/non-troll labels, so standart supervised classification methods cannot be applied. Second, troll behavior isn't a straight forward binary state, but rather a spectrum of behavior, with users displaying varying degrees and different types of distruptive behavior. For those reasons we focus on getting a \textit{trolliness score} rather than a troll classification.\par
+
+\section{Data Collection and Preprocessing}
+The first step of the method is the collection and preprocessing of the data. The raw text data is cleaned and preprocessed using basic text preprocessing techniques to normalize it to a certain extend across the different data sources. Each comment is then grouped according to its author, creating sets of comments for each user.\par
+A key design decision in this thesis was to rate the trolliness at the user level, rather than at an individual comment level. This decision was based on the analysis and observations from the labeled troll datasets. A reccuring pattern was that many troll accounts did not only engage in disruptive and manipulative behavior all the time. Instead, in many cases trolls posted mostly ''normal'' content, perhaps to blend in with regular users, pushing their agenda more subdly in some posts and then only occasionally posting more overtly troll-like comments.\par
+For this thesis we will exclude all users with fewer than 5 comments, as our aim is to try to find broader patterns of troll-like behavior not only one-off examples of offensive or provocative comments. We do this both for the initial training as well as when working with the target Czech dataset. While this discards about half of the users in the dataset, it is only a small fraction of the comments, about ten precent.\par
+\begin{figure}[htbp]
+	\centering
+	% left image
+	\begin{minipage}[b]{0.48\linewidth}
+	  \centering
+	  \includegraphics[width=\linewidth]{figures/comments_per_author.png}
+	  \caption{First image}
+	  \label{fig:left}
+	\end{minipage}
+	\hfill                  
+	% right image
+	\begin{minipage}[b]{0.48\linewidth}
+	  \centering
+	  \includegraphics[width=\linewidth]{figures/comments_5_plus.png}
+	  \caption{Second image}
+	  \label{fig:right}
+	\end{minipage}
+	\caption{Distribution of comments per autor before and after filtering for 5+ comments}
+	\label{fig:pair}
+  \end{figure}
+
+\section{Model Architecture}
+The model architecture is designed in two levels: the comment level and the user level. 
+
+\subsection{Comment Processing and Aggregation}
+
+At the comment level, each individual comment is first encoded using a pretrained multilingual BERT model. Specifically, the model uses the [CLS] token embedding, which carries the summary of the entire comment, to generate a fixed-length representation for the text.\par
+
+\begin{equation}
+    E_{\text{cls}} = \text{BERT}_{\text{embeddings}}(\text{comment})_{[\text{CLS}]}
+\end{equation}
+
+At the user level, the embeddings of all the comments from a single user are aggregated by using a simple attention mechanism. The attention mechanism consists of a single linear layer forllowed by a softmax function. It assigns each comment a weight reflecting its importance for determining the the user's trolliness score. The final output for a user is a weighted sum of the comment embeddings, where the weights are determined by the attention mechanism.
+
+\begin{align}
+	s_i &= W_{att} \cdot E_i + b_{att} && \text{(Linear Layer)} \\
+	\alpha_i &= \frac{\exp(s_i)}{\sum_{j} \exp(s_j)} && \text{(Softmax)} \\
+	V &= \sum_i \alpha_i E_i && \text{(Weighted Sum)}
+\end{align}
+
+\subsection{Regression Head}
+
+Finally, a regression head is applied on top of the aggregated user-level embedding vector. The regression head consists of a feed-forward neural network composed of two fully connected layers with a ReLU acitvation function in between. The first layer maps the user embedding vector to a hidden representation:
+
+\begin{equation}
+	h = \mathrm{ReLU}(W_{reg,1} V + b_{reg,1}) \\
+\end{equation}
+
+where $W_{reg,1}$ and $b_{reg,1}$ are the weights and biases of the first layer. The hidden representation \textit{h} is passed through a second linear layer to produce a single scalar output:
+
+\begin{equation}
+	\hat{y} = W_{reg,2} h + b_{reg,2}
+\end{equation}
+
+The output $\hat{y}$ represents the predicted trolliness score for the user, which is a continuous value between 0 and 1. Regularization is applied to prevent overfitting, using dropout layers after each fully connected layer.\par
+
+The model is trained using Binary Cross-Entropy Loss (BCE Loss), which is defined as follows:
+
+% Binary Cross-Entropy Loss (BCE)
+\begin{equation}
+	L_{BCE}(y, \hat{y}) = - \left[ y \log(\hat{y}) + (1 - y) \log(1 - \hat{y}) \right]
+\end{equation}
+
+The decision to use BCE Loss, despite framing the problem as a regression task, was motivated by the fact that in the training data we work with binary labels and not continous target values. Unlike standard regression losses (like Mean Squared Error or Huber Loss), BCE Loss is specifically designed to handle cases where the target values are binary, but the model's predictions are continuous probabilities. This setup helps the model avoid becoming overly biased towards low values, which was a problem with a test run with HuberLoss.\par 
+
+\section{Training}
+The training of the model is done in two steps. Larger training on the large labeled troll datasets from foreign domains, and a smaller fine-tune on manually annotated Czech comments from the target dataset.\par
+The first training step includes the Russian IRA troll tweets, information operations datasets, and the non-troll datasets like Civil Comments. The training is done using a regression objective, where the model is trained to predict the trolliness of the users instead of their binary class.\par
+Since the labeled training data comes from different domains and languages than our target Czech dataset, a second small fine-tuning step is performed.\par
+%But first before starting this step, a lightweight adapter module was trained on the Czech comment corpus using a Masked Language Modeling (MLM) objective. This should help the model adapt for the Czech language domain better, but allows for the learned knowledge from the large foreign troll datasets to be kept.\par
+After the initial training, the model is fine-tuned on a small set of manually annoated Czech user comments from our target dataset. This data was created by me, by exploring the users in the who were classified with high or low trolliness scores and high confidence during preliminary runs. This few-shot tuning step helps the model better adapt to our specific domain.\par
