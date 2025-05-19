@@ -1,19 +1,19 @@
 # Fdb version 3
-["bibtex ctuman"] 1747694346 "ctuman.aux" "ctuman.bbl" "ctuman" 1747694438
+["bibtex ctuman"] 1747695274 "ctuman.aux" "ctuman.bbl" "ctuman" 1747695276
   "../sources/library.bib" 1747678558 47593 6074f2cf1e5febfc03a04efa47379916 ""
   "/usr/share/texlive/texmf-dist/bibtex/bst/base/alpha.bst" 1292289607 23907 a5f93555796fb564b924339521f10a7c ""
-  "ctuman.aux" 1747694438 18417 bcd0a09d2158b38df0902ba829ed71f9 "pdflatex"
+  "ctuman.aux" 1747695276 19900 064e8a80fabf6f1e1c8b0669f2d29438 "pdflatex"
   (generated)
   "ctuman.bbl"
   "ctuman.blg"
-["makeindex ctuman.idx"] 1747692964 "ctuman.idx" "ctuman.ind" "ctuman" 1747694438
-  "ctuman.idx" 1747694437 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+["makeindex ctuman.idx"] 1747694949 "ctuman.idx" "ctuman.ind" "ctuman" 1747695276
+  "ctuman.idx" 1747695274 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
   (generated)
   "ctuman.ilg"
   "ctuman.ind"
-["pdflatex"] 1747694436 "/home/luuka/thesis/thesis_template/ctuman.tex" "ctuman.pdf" "ctuman" 1747694438
+["pdflatex"] 1747695274 "/home/luuka/thesis/thesis_template/ctuman.tex" "ctuman.pdf" "ctuman" 1747695276
   "/etc/texmf/web2c/texmf.cnf" 1739010084 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/luuka/thesis/thesis_template/ctuman.tex" 1747694436 86914 92e57144fcb36a8f2b693b4efbbaee5d ""
+  "/home/luuka/thesis/thesis_template/ctuman.tex" 1747695272 88629 e853ed8f9ae3f7004ebeff262e65e5c7 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm" 1246382020 916 f87d7c45f9c908e672703b83b72241a3 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam5.tfm" 1246382020 924 9904cf1d39e9767e7a3622f2a125a565 ""
@@ -253,14 +253,14 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1739011413 4379155 98693266ff65f58d9f98aff394de12d2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1739011423 2800641 f67c19b014233764ddbf9f3b708dcf75 ""
   "ctu_logo_black.pdf" 1739203197 46035 43bf3f96a77515d47a73fdf951d1c988 ""
-  "ctuman.aux" 1747694438 18417 bcd0a09d2158b38df0902ba829ed71f9 "pdflatex"
-  "ctuman.bbl" 1747694346 7021 d564d0bb50d34151d93fabdbda34aaff "bibtex ctuman"
-  "ctuman.ind" 1747692964 0 d41d8cd98f00b204e9800998ecf8427e "makeindex ctuman.idx"
-  "ctuman.lof" 1747694438 2162 ad429fd83265ff2484039c4dcdc81b58 "pdflatex"
-  "ctuman.lot" 1747694438 1308 987d003265e672b1f39dec5d85cb6e0a "pdflatex"
-  "ctuman.out" 1747694438 7227 51d0a13e9fea71e3b60ed3f3d81cd143 "pdflatex"
-  "ctuman.tex" 1747694436 86914 92e57144fcb36a8f2b693b4efbbaee5d ""
-  "ctuman.toc" 1747694438 4650 e0e1b0daff07e346493761442462680a "pdflatex"
+  "ctuman.aux" 1747695276 19900 064e8a80fabf6f1e1c8b0669f2d29438 "pdflatex"
+  "ctuman.bbl" 1747695274 7021 d564d0bb50d34151d93fabdbda34aaff "bibtex ctuman"
+  "ctuman.ind" 1747694949 0 d41d8cd98f00b204e9800998ecf8427e "makeindex ctuman.idx"
+  "ctuman.lof" 1747695276 2460 3cf60dd43910623f2e5ff71634c2e7b0 "pdflatex"
+  "ctuman.lot" 1747695276 1308 987d003265e672b1f39dec5d85cb6e0a "pdflatex"
+  "ctuman.out" 1747695276 7460 7ab809a0c22590d35ffb11acc9a5bc63 "pdflatex"
+  "ctuman.tex" 1747695272 88629 e853ed8f9ae3f7004ebeff262e65e5c7 ""
+  "ctuman.toc" 1747695276 4754 e043c3d4a43c24c8351646911450fa90 "pdflatex"
   "ctuth-core.tex" 1739203197 13192 a27f89aea761acac4210773d64687905 ""
   "ctuth-names.tex" 1739203197 7157 51b94f3d4978db93f256725cb4972d5b ""
   "ctuth-pkg.tex" 1739203197 31692 06639b8382aec5ace18337a589ed36f7 ""
@@ -270,6 +270,8 @@
   "figures/comments_per_author.png" 1745964399 73527 b32423b3dc228bbb04bbd23acfa93b11 ""
   "figures/cumulative_mult.png" 1747329597 38491 953b7b6879af4b0099fd33ca6a6b0ab9 ""
   "figures/cumulative_ru.png" 1747329691 49601 4c8db240e37e8314b535d12c13a7eeeb ""
+  "figures/distribution_enhanced.png" 1747695168 46679 4312ed295e8323323021c8d0d90aed4c ""
+  "figures/distribution_enhanced_finetuned.png" 1747695192 42547 326ce1c9e490f488dfa0f682018f8994 ""
   "figures/distribution_fine_tuned.png" 1747323532 47494 1baf55ad3e5c3426eb5703431ff10cba ""
   "figures/distribution_multi.png" 1747257592 40794 48bcec011e7d923a35f68bdade32c1dd ""
   "figures/distribution_ru_finetuned0.png" 1747329623 45729 16568f87b6f4b1046ecb399713eb8054 ""
@@ -278,6 +280,7 @@
   "figures/russian_training.png" 1747255526 123079 ed3849468d9047338adb7dd91250f2c0 ""
   "figures/sentiment.png" 1745962047 36251 9b6966d78a2ecaf65a619c880c6880e5 ""
   "figures/streamlit_app.png" 1746809641 128209 9d293174a9684f4b2090aca7ee8991d9 ""
+  "figures/training_enhanced.png" 1747694900 126803 ced6001a2e7e5e4b34c823b600f6f118 ""
   "figures/training_full.png" 1746890629 124727 c04af27f7e06cfa09139b2d86b5db7de ""
   (generated)
   "ctuman.aux"

@@ -395,7 +395,7 @@ For this thesis, we will exclude all users with fewer than 5 comments, as our ai
 \section{Model Architecture}
 The model architecture is designed in two levels: the comment level and the user level. 
 
-\subsection{Comment Processing and Aggregation}
+\subsection{Comment Attention Mechanism}
 
 At the comment level, each individual comment is first encoded using a pretrained multilingual BERT model. As introduced in our discussion of BERT (Section 2.3.3), we utilize the final hidden state corresponding to the [CLS] token. This provides a fixed-length vector representing an entire comment, suitable for further processing. The embedding vector denoted as \( \mathbf{E}_{\mathrm{CLS}} \) resides in \( \mathbb{R}^{768} \), which corresponds to the hidden size of DistilBERT.
 
@@ -423,7 +423,9 @@ The \( s_i \) value represents the attention score for the \( i \)-th comment, a
 
 Although this is a simplified approach, it serves as a baseline for our approach. To further extend on the idea, we also epxerimeneted with an enhanced version where we extend the architecture by intorducing a neutral network transofmration for the comment embeddings before calculating the attetion scores.
 
-In this extended attention mechanism, the user's comment embeddings, denoted as \( \mathbf{E}_{\mathrm{CLS}, i} \) for the \( i \)-th comment, are first processed through a feedforward neural network with two linear layers (\texttt{nn.Linear}) with ReLU activation functions (\texttt{nn.ReLU}) after each linear layer. This is followed by an the same attention mechanism as before, using a dropout layer (\texttt{nn.Dropout}) and a linear layer (\texttt{nn.Linear}) that outputs scalar attention scores, which are normalized into weights using a softmax function (\texttt{F.Softmax}).\par
+\subsection{Enhanced Attention Mechanism}
+\label{sec:enhanced_attention}
+In this enhanced attention mechanism, the user's comment embeddings, denoted as \( \mathbf{E}_{\mathrm{CLS}, i} \) for the \( i \)-th comment, are first processed through a feedforward neural network with two linear layers (\texttt{nn.Linear}) with ReLU activation functions (\texttt{nn.ReLU}) after each linear layer. This is followed by an the same attention mechanism as before, using a dropout layer (\texttt{nn.Dropout}) and a linear layer (\texttt{nn.Linear}) that outputs scalar attention scores, which are normalized into weights using a softmax function (\texttt{F.Softmax}).\par
 
 \begin{align}
     \mathbf{H}_{i} &= \text{ReLU}(\mathbf{W}_1 \mathbf{E}_{\mathrm{CLS}, i} + \mathbf{b}_1) && \text{(First Linear Layer with ReLU)} \\
@@ -501,7 +503,6 @@ The experiments are divided into two main stages. The first stage will compare t
 
 Given the multilingual nature of the BERT model used (DistillBERT-Multilingual-Cased), the second stage will investigate the model's ability to transfer knowledge across languages. Specifically, the model trained on the international troll dataset will be directly applied to the Czech dataset. This approach aims to leverage the inherent multilingual capabilities of multilingual BERT models, as demonstrated by Pires et al.~\cite{Pires2019}, who showed that M-BERT can achieve surprising levels of cross-lingual generalization, even across languages with different scripts. This characteristic is essential for our task, as we try to have the model learn from English and other confirmed troll data and to carry this knowledge into our target Czech domain.\par
 Additionally, we experiment further with fine-tuning approaches to adapt the model to the Czech language and domain. As we will recognize, the direct application of the multilingual model may not achieve optimal results.\par
-
 
 \section{Baseline Comparison}
 
@@ -901,9 +902,39 @@ This user provides an interesting case study because, despite the use of words l
 While the manual review provides some insights into how the model assigns troliness scores, it is a very limited analysis. The review is based on a very small, randomly selected sample of users and comments, of only four users out of a total of 16500. Given this limited scope and limited ability to generalize, it would be inappropriate to draw conclusions about the model's overall performance or its capabilities. For the sake of clarity and not to draw many conclusions, we have limited the user analysis to the comparison of the first two users, A and B. However, we have also included additional user examples, allowing readers to examine the comments, attention weights, and trolliness scores for themselves and form their own opinions. \par
 Moreover, determining whether a user is genuinely a troll or not is a complex and subjective task that goes beyond the scope of this work. This section should therefore be understood as an illustration of the model's behavior rather than a definitive assessment of its performance.\par
 
-\subsection{Enhanced Attention Model}
+\subsection{Enhanced Attention Model Experiments}
 
+In addition to the baseline models, we also trained a model with the enhanced version of the attention mechanism, as described in Section \ref{sec:enhanced_attention}. The model with the enhanced attention mechanism was trained following the same pipeline as the baseline and was initially trained using the Russian-language only data. It was also fine-tuned exactly as the base line models on the small manually labeled Czech dataset. The training results, including training and validation loss curves, as well as the distribution of predicted trolliness scores, can be seen in the figures below.\par 
 
+% Training and Validation Loss Figure
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale=0.33]{figures/training_enhanced.png}
+  \caption{Training and validation loss over epochs - Enhanced Attention}
+  \label{fig:training_stats_enhanced}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.8\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/distribution_enhanced.png}
+        \caption{Distribution of Trolliness Scores - Enhanced Model Zero-Shot}
+        \label{fig:distribution_enhanced}
+    \end{subfigure}
+
+    \vspace{1em}
+
+    \begin{subfigure}{0.8\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/distribution_enhanced_finetuned.png}
+        \caption{Distribution of Trolliness Scores - Enhanced Model Fine-Tuned}
+        \label{fig:distribution_enhanced_finetuned}
+    \end{subfigure}
+
+    \caption{Comparison of Trolliness Score Distributions before and after Fine-Tuning}
+    \label{fig:distribution_comparison_enhanced}
+\end{figure}
 
 \section{Language Adapter Experiment}
 As a failed experiment, we also attempted to further adapt the BERT model to the Czech language by training a language adapter. Adapters are lightweight modules that can be inserted into transformer models, allowing them to efficiently adapt to new domains with minimal changes to the main model \cite{Houlsby2019}. The approach has been shown to be effective in many contexts, including multilingual tasks. Moreover, the MetaTrolls model, previously cited in Related Methods \cite{Tian2023}, successfully used adapters to specialize its model for different trolling campaigns, which inspired us to explore this method.\par

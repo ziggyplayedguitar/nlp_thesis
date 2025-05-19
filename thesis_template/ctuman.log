@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.8)  20 MAY 2025 00:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.8)  20 MAY 2025 00:54
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1019,7 +1019,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmss' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-<ctu_logo_black.pdf, id=187, 366.36874pt x 279.0425pt>
+<ctu_logo_black.pdf, id=191, 366.36874pt x 279.0425pt>
 File: ctu_logo_black.pdf Graphic file (type pdf)
 <use ctu_logo_black.pdf>
 Package pdftex.def Info: ctu_logo_black.pdf  used on input line 179.
@@ -1173,7 +1173,7 @@ Chapter 3.
 [11
 
 ]
-<figures/sentiment.png, id=407, 343.88475pt x 272.217pt>
+<figures/sentiment.png, id=416, 343.88475pt x 272.217pt>
 File: figures/sentiment.png Graphic file (type png)
 <use figures/sentiment.png>
 Package pdftex.def Info: figures/sentiment.png  used on input line 323.
@@ -1190,44 +1190,44 @@ Chapter 4.
 Underfull \vbox (badness 1675) has occurred while \output is active []
 
  [15]
-<figures/comments_per_author.png, id=444, 705.837pt x 561.297pt>
+<figures/comments_per_author.png, id=453, 705.837pt x 561.297pt>
 File: figures/comments_per_author.png Graphic file (type png)
 <use figures/comments_per_author.png>
 Package pdftex.def Info: figures/comments_per_author.png  used on input line 376.
 (pdftex.def)             Requested size: 217.80222pt x 173.19519pt.
-<figures/comments_5_plus.png, id=445, 705.837pt x 561.297pt>
+<figures/comments_5_plus.png, id=454, 705.837pt x 561.297pt>
 File: figures/comments_5_plus.png Graphic file (type png)
 <use figures/comments_5_plus.png>
 Package pdftex.def Info: figures/comments_5_plus.png  used on input line 386.
 (pdftex.def)             Requested size: 217.80222pt x 173.19519pt.
  [16] [17 <./figures/comments_per_author.png> <./figures/comments_5_plus.png>] [18] [19] [20]
-<figures/streamlit_app.png, id=493, 702.37407pt x 872.50969pt>
+<figures/streamlit_app.png, id=502, 702.37407pt x 872.50969pt>
 File: figures/streamlit_app.png Graphic file (type png)
 <use figures/streamlit_app.png>
-Package pdftex.def Info: figures/streamlit_app.png  used on input line 490.
+Package pdftex.def Info: figures/streamlit_app.png  used on input line 492.
 (pdftex.def)             Requested size: 302.01497pt x 375.17186pt.
  [21] [22 <./figures/streamlit_app.png>]
 Chapter 5.
 [23
 
 ] [24]
-Overfull \hbox (40.36343pt too wide) in paragraph at lines 578--590
+Overfull \hbox (40.36343pt too wide) in paragraph at lines 579--591
  [][] 
  []
 
 [25]
-<figures/language_distribution.png, id=525, 573.8238pt x 480.5955pt>
+<figures/language_distribution.png, id=534, 573.8238pt x 480.5955pt>
 File: figures/language_distribution.png Graphic file (type png)
 <use figures/language_distribution.png>
-Package pdftex.def Info: figures/language_distribution.png  used on input line 601.
+Package pdftex.def Info: figures/language_distribution.png  used on input line 602.
 (pdftex.def)             Requested size: 290.40111pt x 243.22314pt.
 
-Overfull \hbox (60.05824pt too wide) in paragraph at lines 612--624
+Overfull \hbox (60.05824pt too wide) in paragraph at lines 613--625
  [][] 
  []
 
 
-Overfull \hbox (50.07616pt too wide) in paragraph at lines 632--644
+Overfull \hbox (50.07616pt too wide) in paragraph at lines 633--645
  [][] 
  []
 
@@ -1235,55 +1235,55 @@ Overfull \hbox (50.07616pt too wide) in paragraph at lines 632--644
 Underfull \vbox (badness 4353) has occurred while \output is active []
 
  [26 <./figures/language_distribution.png>]
-Overfull \hbox (75.52518pt too wide) in paragraph at lines 655--667
+Overfull \hbox (75.52518pt too wide) in paragraph at lines 656--668
  [][] 
  []
 
-<figures/training_full.png, id=535, 1076.1003pt x 715.473pt>
+<figures/training_full.png, id=544, 1076.1003pt x 715.473pt>
 File: figures/training_full.png Graphic file (type png)
 <use figures/training_full.png>
-Package pdftex.def Info: figures/training_full.png  used on input line 673.
+Package pdftex.def Info: figures/training_full.png  used on input line 674.
 (pdftex.def)             Requested size: 355.1142pt x 236.10683pt.
-<figures/russian_training.png, id=536, 1076.1003pt x 715.473pt>
+<figures/russian_training.png, id=545, 1076.1003pt x 715.473pt>
 File: figures/russian_training.png Graphic file (type png)
 <use figures/russian_training.png>
-Package pdftex.def Info: figures/russian_training.png  used on input line 681.
+Package pdftex.def Info: figures/russian_training.png  used on input line 682.
 (pdftex.def)             Requested size: 355.1142pt x 236.10683pt.
 [27] [28 <./figures/training_full.png> <./figures/russian_training.png>]
-<figures/distribution_multi.png, id=549, 980.7039pt x 349.7868pt>
+<figures/distribution_multi.png, id=558, 980.7039pt x 349.7868pt>
 File: figures/distribution_multi.png Graphic file (type png)
 <use figures/distribution_multi.png>
-Package pdftex.def Info: figures/distribution_multi.png  used on input line 723.
+Package pdftex.def Info: figures/distribution_multi.png  used on input line 724.
 (pdftex.def)             Requested size: 290.40111pt x 103.57584pt.
-<figures/russian_distribution.png, id=550, 982.1493pt x 349.7868pt>
+<figures/russian_distribution.png, id=559, 982.1493pt x 349.7868pt>
 File: figures/russian_distribution.png Graphic file (type png)
 <use figures/russian_distribution.png>
-Package pdftex.def Info: figures/russian_distribution.png  used on input line 732.
+Package pdftex.def Info: figures/russian_distribution.png  used on input line 733.
 (pdftex.def)             Requested size: 290.40111pt x 103.42639pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [29]
-<figures/distribution_fine_tuned.png, id=558, 952.5186pt x 349.7868pt>
+<figures/distribution_fine_tuned.png, id=567, 952.5186pt x 349.7868pt>
 File: figures/distribution_fine_tuned.png Graphic file (type png)
 <use figures/distribution_fine_tuned.png>
-Package pdftex.def Info: figures/distribution_fine_tuned.png  used on input line 755.
+Package pdftex.def Info: figures/distribution_fine_tuned.png  used on input line 756.
 (pdftex.def)             Requested size: 290.40111pt x 106.63945pt.
-<figures/distribution_ru_finetuned0.png, id=559, 968.418pt x 349.7868pt>
+<figures/distribution_ru_finetuned0.png, id=568, 968.418pt x 349.7868pt>
 File: figures/distribution_ru_finetuned0.png Graphic file (type png)
 <use figures/distribution_ru_finetuned0.png>
-Package pdftex.def Info: figures/distribution_ru_finetuned0.png  used on input line 764.
+Package pdftex.def Info: figures/distribution_ru_finetuned0.png  used on input line 765.
 (pdftex.def)             Requested size: 290.40111pt x 104.88881pt.
  [30 <./figures/distribution_multi.png> <./figures/russian_distribution.png>]
-<figures/cumulative_mult.png, id=572, 711.1368pt x 349.7868pt>
+<figures/cumulative_mult.png, id=582, 711.1368pt x 349.7868pt>
 File: figures/cumulative_mult.png Graphic file (type png)
 <use figures/cumulative_mult.png>
-Package pdftex.def Info: figures/cumulative_mult.png  used on input line 782.
+Package pdftex.def Info: figures/cumulative_mult.png  used on input line 783.
 (pdftex.def)             Requested size: 290.40111pt x 142.83708pt.
-<figures/cumulative_ru.png, id=573, 711.1368pt x 349.7868pt>
+<figures/cumulative_ru.png, id=583, 711.1368pt x 349.7868pt>
 File: figures/cumulative_ru.png Graphic file (type png)
 <use figures/cumulative_ru.png>
-Package pdftex.def Info: figures/cumulative_ru.png  used on input line 792.
+Package pdftex.def Info: figures/cumulative_ru.png  used on input line 793.
 (pdftex.def)             Requested size: 290.40111pt x 142.83708pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1297,24 +1297,43 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [34]
 Underfull \vbox (badness 2591) has occurred while \output is active []
 
- [35] [36] [37] [38
+ [35] [36]
+<figures/training_enhanced.png, id=616, 1076.1003pt x 715.473pt>
+File: figures/training_enhanced.png Graphic file (type png)
+<use figures/training_enhanced.png>
+Package pdftex.def Info: figures/training_enhanced.png  used on input line 912.
+(pdftex.def)             Requested size: 355.1142pt x 236.10683pt.
+<figures/distribution_enhanced.png, id=617, 971.3088pt x 349.7868pt>
+File: figures/distribution_enhanced.png Graphic file (type png)
+<use figures/distribution_enhanced.png>
+Package pdftex.def Info: figures/distribution_enhanced.png  used on input line 921.
+(pdftex.def)             Requested size: 290.40111pt x 104.57924pt.
+<figures/distribution_enhanced_finetuned.png, id=618, 950.3505pt x 349.7868pt>
+File: figures/distribution_enhanced_finetuned.png Graphic file (type png)
+<use figures/distribution_enhanced_finetuned.png>
+Package pdftex.def Info: figures/distribution_enhanced_finetuned.png  used on input line 930.
+(pdftex.def)             Requested size: 290.40111pt x 106.88496pt.
 
-]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [37 <./figures/training_enhanced.png>] [38 <./figures/distribution_enhanced.png> <./figures/distribution_enhanced_finetuned.png>]
 Chapter 6.
-(./ctuman.ind) (./ctuman.bbl [39] [40
+(./ctuman.ind) (./ctuman.bbl [39
+
+] [40
 
 ]
 Appendix A.
 [41] [42]) [43] (./ctuman.aux)
 Package rerunfilecheck Info: File `ctuman.out' has not changed.
-(rerunfilecheck)             Checksum: 51D0A13E9FEA71E3B60ED3F3D81CD143;7227.
+(rerunfilecheck)             Checksum: 7AB809A0C22590D35FFB11ACC9A5BC63;7460.
  ) 
 Here is how much of TeX's memory you used:
- 30434 strings out of 478287
- 553129 string characters out of 5849290
- 872923 words of memory out of 5000000
- 47610 multiletter control sequences out of 15000+600000
- 595418 words of font info for 240 fonts, out of 8000000 for 9000
+ 30472 strings out of 478287
+ 554290 string characters out of 5849290
+ 873549 words of memory out of 5000000
+ 47636 multiletter control sequences out of 15000+600000
+ 595602 words of font info for 242 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  83i,17n,80p,1300b,1144s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{figure.4.2} has been referenced but does not exist, replaced by a fixed one
@@ -1322,10 +1341,10 @@ pdfTeX warning (dest): name{figure.4.2} has been referenced but does not exist, 
 pdfTeX warning (dest): name{figure.4.1} has been referenced but does not exist, replaced by a fixed one
 
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathex.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmex10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi8.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr6.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmr9.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on ctuman.pdf (49 pages, 1135051 bytes).
+Output written on ctuman.pdf (49 pages, 1308469 bytes).
 PDF statistics:
- 758 PDF objects out of 1000 (max. 8388607)
- 638 compressed objects within 7 object streams
- 173 named destinations out of 1000 (max. 500000)
- 72123 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 777 PDF objects out of 1000 (max. 8388607)
+ 651 compressed objects within 7 object streams
+ 178 named destinations out of 1000 (max. 500000)
+ 72146 words of extra memory for PDF output out of 74296 (max. 10000000)
 

@@ -31,5 +31,7 @@
 \contentsline {figure}{\numberline {5.4}{\ignorespaces Comparison of Trolliness Score Distributions between Multilingual and Russian-Only Models (Zero-Shot)\relax }}{30}{figure.5.4}%
 \contentsline {figure}{\numberline {5.5}{\ignorespaces Comparison of Trolliness Score Distributions between Multilingual and Russian-Only Models (Zero-Shot)\relax }}{31}{figure.5.5}%
 \contentsline {figure}{\numberline {5.6}{\ignorespaces Comparison of Trolliness Score Distributions between Multilingual and Russian-Only Models (Zero-Shot)\relax }}{32}{figure.5.6}%
+\contentsline {figure}{\numberline {5.7}{\ignorespaces Training and validation loss over epochs - Enhanced Attention\relax }}{37}{figure.5.7}%
+\contentsline {figure}{\numberline {5.8}{\ignorespaces Comparison of Trolliness Score Distributions before and after Fine-Tuning\relax }}{38}{figure.5.8}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
