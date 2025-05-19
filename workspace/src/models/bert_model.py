@@ -33,6 +33,40 @@ class TweetAttention(nn.Module):
         
         return weighted_embedding, attention_weights.squeeze(-1)
 
+class EnhancedTweetAttention(nn.Module):
+    """Module for computing attention weights over tweets using a more complex attention mechanism, transforming the CLS embeddings through a neural network."""
+    def __init__(self, hidden_size: int, attention_hidden_size: int = 128, dropout_rate: float = 0.1):
+        super().__init__()
+        self.dropout = nn.Dropout(dropout_rate)
+        self.transform = nn.Sequential(
+            nn.Linear(hidden_size, attention_hidden_size),
+            nn.ReLU(),
+            nn.Linear(attention_hidden_size, hidden_size),
+            nn.ReLU()
+        )
+        self.attention = nn.Linear(hidden_size, 1)
+    
+    def forward(self, embeddings: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        Args:
+            embeddings: Tensor of shape [batch_size, num_tweets, hidden_size]
+            
+        Returns:
+            Tuple of (weighted_embedding, attention_weights)
+        """
+        embeddings = self.dropout(embeddings)
+        transformed_embeddings = self.transform(embeddings)  # [batch_size, num_tweets, hidden_size]
+        attention_scores = self.attention(transformed_embeddings)  # [batch_size, num_tweets, 1]
+        attention_weights = F.softmax(attention_scores, dim=1)
+        
+        # Calculate weighted sum
+        weighted_embedding = torch.bmm(
+            attention_weights.transpose(1, 2), 
+            embeddings
+        ).squeeze(1)  # [batch_size, hidden_size]
+        
+        return weighted_embedding, attention_weights.squeeze(-1)
+
 
 class TrollDetector(nn.Module):
     """A BERT-based model for detecting troll behavior in social media posts.
@@ -56,7 +90,8 @@ class TrollDetector(nn.Module):
         dropout_rate: float = 0.1,
         adapter_path: Optional[str] = None,
         hidden_size: Optional[int] = None,
-        regressor_hidden_size: Optional[int] = None
+        regressor_hidden_size: Optional[int] = None,
+        use_enhanced_attention: bool = False
     ) -> None:
         """Initialize the TrollDetector model.
         
@@ -85,8 +120,11 @@ class TrollDetector(nn.Module):
             print(f"Loaded and activated adapter from {adapter_path}")
             self.bert.delete_head("mlm")
         
-        # Initialize tweet attention module
-        self.tweet_attention = TweetAttention(self.hidden_size, dropout_rate)
+        # Choose attention mechanism
+        if use_enhanced_attention:
+            self.tweet_attention = EnhancedTweetAttention(self.hidden_size, dropout_rate=dropout_rate)
+        else:
+            self.tweet_attention = TweetAttention(self.hidden_size, dropout_rate=dropout_rate)
         
         # Layers for account-level regression
         self.account_dropout = nn.Dropout(dropout_rate)

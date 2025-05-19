@@ -397,39 +397,65 @@ The model architecture is designed in two levels: the comment level and the user
 
 \subsection{Comment Processing and Aggregation}
 
-At the comment level, each individual comment is first encoded using a pretrained multilingual BERT model. As introduced in our discussion of BERT (Section 2.3.3), we utilize the final hidden state corresponding to the [CLS] token. This provides a fixed-length vector representing an entire comment, suitable for further processing. We will denote this embedding vector as \( \mathbf{E}_{\mathrm{CLS}} \).
+At the comment level, each individual comment is first encoded using a pretrained multilingual BERT model. As introduced in our discussion of BERT (Section 2.3.3), we utilize the final hidden state corresponding to the [CLS] token. This provides a fixed-length vector representing an entire comment, suitable for further processing. The embedding vector denoted as \( \mathbf{E}_{\mathrm{CLS}} \) resides in \( \mathbb{R}^{768} \), which corresponds to the hidden size of DistilBERT.
 
 \begin{align}
  \mathbf{E}_{\mathrm{CLS}} &= \texttt{BERT}_{\mathrm{embeddings}}(\texttt{comment})_{[\mathrm{CLS}]}
 \end{align}
 
-At the user level, the embeddings of all the comments from a single user, denoted as \( \mathbf{E}_{\mathrm{CLS}, i} \) for the \( i \)-th comment, are aggregated using a simple attention mechanism implemented in PyTorch\footnote{https://docs.pytorch.org/docs/stable/index.html}. 
+To aggregate the information from all comments belonging to a single user, we take inspiration from the concept of the attention mechanism, which have become fundamental in recent breakthroughs in deep learning, particularly due to their sucess in Transformer models introduced by Vaswani et al.~\cite{Vaswani2017}. These models use complex multi-head attention and self-attention mechanisms. However, for our base implementation, we propose a more ligthweight and simplified form of attention.\par
 
-The attention mechanism consists of a dropout layer (\texttt{nn.Dropout}) followed by a single linear layer (\texttt{nn.Linear}) to compute attention scores, and a softmax function (\texttt{F.Softmax}) to normalize the scores into attention weights. Finally, a weighted sum of embeddings is calculated using these weights.
+Attention mechanisms are proposed as a way to allow machine learning models to learn how to assign different importance to different parts of the input data. Various types of attention mechanisms have been used for different machine learning tasks, ranging from natural language processing to computer vision, including tasks like image classification, machine translation or speech recogniction.\cite{Niu2021}
+
+In our implementation the concept of attention is implemented in a simplified manner using PyTorch neural networks.\footnote{https://docs.pytorch.org/docs/stable/index.html}\par
+
+In this simplified attention mechanism, the user's comment embeddings, denoted as \( \mathbf{E}_{\mathrm{CLS}, i} \) for the \( i \)-th comment, are processed using a dropout layer (\texttt{nn.Dropout}) followed by a single linear layer (\texttt{nn.Linear}), which outputs scalar attention scores. These attention scores are normalized into weights using a softmax function (\texttt{F.Softmax}). Finally, a weighted sum of the comment embeddings is calculated using these attention weights, producing the final user-level representation. \par
 
 \begin{align}
-    s_i &= \mathbf{W}_{\mathrm{att}} \cdot \mathbf{E}_{\mathrm{CLS}, i} + \mathbf{b}_{\mathrm{att}} && \text{(Linear Layer)} \\
-    \alpha_i &= \frac{\exp(s_i)}{\sum_{j} \exp(s_j)} && \text{(Softmax)} \\
+    s_i &= \mathbf{w}_{\mathrm{att}} \cdot \mathbf{E}_{\mathrm{CLS}, i} + \mathbf{b}_{\mathrm{att}} && \text{(Linear Layer)} \\
+    \alpha_i &= \frac{\exp(s_i)}{\sum_{j} \exp(s_j)} && \text{(Softmax Normalization)} \\
     \mathbf{V} &= \sum_i \alpha_i \mathbf{E}_{\mathrm{CLS}, i} && \text{(Weighted Sum)}
 \end{align}
 
-Here, \( \mathbf{W}_{\mathrm{att}} \) and \( \mathbf{b}_{\mathrm{att}} \) are the weight matrix and bias vector of the linear layer (applied after a dropout layer). The \( s_i \) represents the attention score for the \( i \)-th comment, and \( \alpha_i \) is the normalized attention weight for the \( i \)-th comment. The final user-level embedding \( \mathbf{V} \) is the weighted sum of the individual comment embeddings.
+Here, \( \mathbf{w}_{\mathrm{att}} \) is a learnable weight vector and  \( \mathbf{b}_{\mathrm{att}} \) is a learnable scalar bias of the linear layer. The learnable weight vector \( \mathbf{w}_{\mathrm{att}} \) resides in \( \mathbb{R}^{768} \), matching the size of the embeddings.
+
+The \( s_i \) value represents the attention score for the \( i \)-th comment, and \( \alpha_i \) is the normalized attention weight for the \( i \)-th comment. The final user-level representation \( \mathbf{V} \) is the weighted sum of the individual comment embeddings.\par
+
+Although this is a simplified approach, it serves as a baseline for our approach. To further extend on the idea, we also epxerimeneted with an enhanced version where we extend the architecture by intorducing a neutral network transofmration for the comment embeddings before calculating the attetion scores.
+
+In this extended attention mechanism, the user's comment embeddings, denoted as \( \mathbf{E}_{\mathrm{CLS}, i} \) for the \( i \)-th comment, are first processed through a feedforward neural network with two linear layers (\texttt{nn.Linear}) with ReLU activation functions (\texttt{nn.ReLU}) after each linear layer. This is followed by an the same attention mechanism as before, using a dropout layer (\texttt{nn.Dropout}) and a linear layer (\texttt{nn.Linear}) that outputs scalar attention scores, which are normalized into weights using a softmax function (\texttt{F.Softmax}).\par
+
+\begin{align}
+    \mathbf{H}_{i} &= \text{ReLU}(\mathbf{W}_1 \mathbf{E}_{\mathrm{CLS}, i} + \mathbf{b}_1) && \text{(First Linear Layer with ReLU)} \\
+    \mathbf{E}_{\mathrm{MLP2}, i} &= \text{ReLU}(\mathbf{W}_2 \mathbf{H}_{i} + \mathbf{b}_2) && \text{(Second Linear Layer with ReLU)} \\
+    s_i &= \mathbf{w}_{\mathrm{att}} \cdot \mathbf{E}_{\mathrm{MLP2}, i} + \mathbf{b}_{\mathrm{att}} && \text{(Attention Linear Layer)} \\
+    \alpha_i &= \frac{\exp(s_i)}{\sum_{j} \exp(s_j)} && \text{(Softmax Normalization)} \\
+    \mathbf{V} &= \sum_i \alpha_i \mathbf{E}_{\mathrm{MLP2}, i} && \text{(Weighted Sum)}
+\end{align}
+
+In this case \( \mathbf{W}_1 \) and \( \mathbf{W}_2 \) are the learnable weight matrices of the two linear layers, and \( \mathbf{b}_1 \) and \( \mathbf{b}_2 \) are the corresponding biases. Where \( \mathbf{W}_1 \in \mathbb{R}^{h \times 768} \), \( \mathbf{b}_1 \in \mathbb{R}^{h} \) and  \( \mathbf{W}_2 \in \mathbb{R}^{768 \times h} \) and \( \mathbf{b}_2 \in \mathbb{R}^{768} \). The first linear layer transforms the comment embeddings into a hidden dimension \( h \), while the second linear layer transforms them back to the original embedding size of 768. The attention mechanism is then applied to the transformed embeddings, similar to the previous approach. \par
+
+This enhanced version tries to leverage the high-dimension representation of the comment embeddings, which encodes various semantic feautres of the comments. By introducing non-linear transformations, the model can potential capture richer features, such as sentiment, language patterns or other semantic aspects.\par 
 
 \subsection{Regression Head}
 
-Finally, a regression head is applied on top of the aggregated user-level embedding vector. The regression head is implemented using PyTorch and consists of a feed-forward neural network (\texttt{nn.Sequential}) composed of two fully connected linear layers (\texttt{nn.Linear}) with a ReLU activation function in between (\texttt{nn.ReLU}). A dropout layer (\texttt{nn.Dropout}) is also applied after each fully connected layer to reduce the risk of overfitting.
+As the final step of the calculation a regression head is applied on top of the aggregated user-level representation vector. The regression head is implemented using PyTorch and as a a feed-forward neural network (\texttt{nn.Sequential}) composed of two fully connected linear layers (\texttt{nn.Linear}) with a ReLU activation function (\texttt{nn.ReLU}) and a dropout layer (\texttt{nn.Dropout}) between them. This network takes the aggregated user-level representation \( \mathbf{V} \) as input and produces a single scalar output representing the predicted trolliness score for the user.\par
+
+% \begin{align}
+%     \mathbf{h} &= \mathrm{ReLU}(\mathbf{W}_{\mathrm{reg,1}} \mathbf{V} + \mathbf{b}_{\mathrm{reg,1}}) \\
+%     \hat{y} &= \mathbf{W}_{\mathrm{reg,2}} \mathbf{h} + \mathbf{b}_{\mathrm{reg,2}}
+% \end{align}
 
 \begin{align}
-    \mathbf{h} &= \mathrm{ReLU}(\mathbf{W}_{\mathrm{reg,1}} \mathbf{V} + \mathbf{b}_{\mathrm{reg,1}})
+  \mathbf{h} &= \mathrm{ReLU}(\mathbf{W}{\mathrm{reg,1}} \mathbf{V} + \mathbf{b}{\mathrm{reg,1}}) && \text{(Linear Layer with ReLU)} \\
+  \mathbf{h'} &= \mathrm{Dropout}(\mathbf{h}) && \text{(Dropout Layer)} \\  
+  \hat{y} &= \mathbf{W}{\mathrm{reg,2}} \mathbf{h'} + \mathbf{b}{\mathrm{reg,2}} && \text{(Final Linear Layer)}
 \end{align}
 
-where \( \mathbf{W}_{\mathrm{reg,1}} \) and \( \mathbf{b}_{\mathrm{reg,1}} \) are the weights and biases of the first layer. The hidden representation \( \mathbf{h} \) is passed through a second linear layer to produce the final scalar output:
+Here \( \mathbf{W}_{\mathrm{reg,1}} \in \mathbb{R}^{h \times d} \) and \( \mathbf{b}_{\mathrm{reg,1}} \in \mathbb{R}^{h} \) are the learnable weights and biases of the first fully connected linear layer, where \( h \) is the hidden dimension of the regression head \( d \) is the size of the aggregated user representation \( \mathbf{V} \). Similarly, \( \mathbf{W}_{\mathrm{reg,2}} \in \mathbb{R}^{1 \times h} \) and \( \mathbf{b}_{\mathrm{reg,2}} \in \mathbb{R} \) are the learnable weights and bias of the second fully connected layer.
 
-\begin{align}
-    \hat{y} &= \mathbf{W}_{\mathrm{reg,2}} \mathbf{h} + \mathbf{b}_{\mathrm{reg,2}}
-\end{align}
+The scalar output \( \hat{y} \) represents the predicted trolliness score for the user. Notably, \( \hat{y} \) is not directly bound between 0 and 1 because it is the raw output of a linear layer. However since the model is trained using Binary Cross-Entropy with Logits Loss (BCE Loss), which internally applies a sigmoid function to \( \hat{y} \), the model learns to produce vlaues that correspond to the legit of a probability. At inference time, a sigmoid function is explicitly applied to \( \hat{y} \), transforming it into a probability value between 0 and 1.
 
-The output \( \hat{y} \) represents the predicted trolliness score for the user, which is a continuous value between 0 and 1.
 \subsection{Loss Function}
 
 The model is trained using Binary Cross-Entropy with Logits Loss (BCE Loss) also provided by PyTorch (\texttt{nn.BCEWithLogitsLoss}). This loss function combines a Sigmoid layer and the Binary Cross-Entropy Loss in a single class, which is numerically more stable than using them separately. The formula of the underlying Binary Cross-Entropy Loss is defined as follows:
@@ -874,6 +900,10 @@ This user provides an interesting case study because, despite the use of words l
 
 While the manual review provides some insights into how the model assigns troliness scores, it is a very limited analysis. The review is based on a very small, randomly selected sample of users and comments, of only four users out of a total of 16500. Given this limited scope and limited ability to generalize, it would be inappropriate to draw conclusions about the model's overall performance or its capabilities. For the sake of clarity and not to draw many conclusions, we have limited the user analysis to the comparison of the first two users, A and B. However, we have also included additional user examples, allowing readers to examine the comments, attention weights, and trolliness scores for themselves and form their own opinions. \par
 Moreover, determining whether a user is genuinely a troll or not is a complex and subjective task that goes beyond the scope of this work. This section should therefore be understood as an illustration of the model's behavior rather than a definitive assessment of its performance.\par
+
+\subsection{Enhanced Attention Model}
+
+
 
 \section{Language Adapter Experiment}
 As a failed experiment, we also attempted to further adapt the BERT model to the Czech language by training a language adapter. Adapters are lightweight modules that can be inserted into transformer models, allowing them to efficiently adapt to new domains with minimal changes to the main model \cite{Houlsby2019}. The approach has been shown to be effective in many contexts, including multilingual tasks. Moreover, the MetaTrolls model, previously cited in Related Methods \cite{Tian2023}, successfully used adapters to specialize its model for different trolling campaigns, which inspired us to explore this method.\par

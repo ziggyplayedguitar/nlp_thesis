@@ -43,23 +43,24 @@
 \contentsline {section}{\numberline {4.2}Data Collection and Preprocessing}{16}{section.4.2}%
 \contentsline {section}{\numberline {4.3}Model Architecture}{16}{section.4.3}%
 \contentsline {subsection}{\numberline {4.3.1}Comment Processing and Aggregation}{17}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Regression Head}{18}{subsection.4.3.2}%
-\contentsline {subsection}{\numberline {4.3.3}Loss Function}{18}{subsection.4.3.3}%
-\contentsline {section}{\numberline {4.4}Training}{19}{section.4.4}%
-\contentsline {section}{\numberline {4.5}Lightweight Annotation and Evaluation App}{19}{section.4.5}%
-\contentsline {chapter}{\numberline {5}Experiments}{21}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Baseline Comparison}{21}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Baseline Evaluation Metrics}{22}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Baseline Results}{23}{subsection.5.1.2}%
-\contentsline {section}{\numberline {5.2}Further Training of BERT Model}{24}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Training Results}{25}{subsection.5.2.1}%
-\contentsline {section}{\numberline {5.3}Predictions on Czech Dataset}{25}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}Zero-Shot Experiment}{27}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}Results}{27}{subsection.5.3.2}%
-\contentsline {subsection}{\numberline {5.3.3}Fine-Tuned Experiment}{28}{subsection.5.3.3}%
-\contentsline {subsection}{\numberline {5.3.4}Manual Review of Predictions}{30}{subsection.5.3.4}%
-\contentsline {subsection}{\numberline {5.3.5}Example User Analysis}{34}{subsection.5.3.5}%
-\contentsline {subsection}{\numberline {5.3.6}Reflection on User Analysis}{34}{subsection.5.3.6}%
-\contentsline {section}{\numberline {5.4}Language Adapter Experiment}{35}{section.5.4}%
-\contentsline {chapter}{\numberline {6}Conclusion}{37}{chapter.6}%
-\contentsline {chapter}{\numberline {A}Bibliography\markboth {\MakeUppercase {Bibliography}}{\MakeUppercase {Bibliography}}}{39}{appendix.A}%
+\contentsline {subsection}{\numberline {4.3.2}Regression Head}{19}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Loss Function}{20}{subsection.4.3.3}%
+\contentsline {section}{\numberline {4.4}Training}{20}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Lightweight Annotation and Evaluation App}{21}{section.4.5}%
+\contentsline {chapter}{\numberline {5}Experiments}{23}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Baseline Comparison}{23}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Baseline Evaluation Metrics}{24}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Baseline Results}{25}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}Further Training of BERT Model}{26}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Training Results}{27}{subsection.5.2.1}%
+\contentsline {section}{\numberline {5.3}Predictions on Czech Dataset}{27}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Zero-Shot Experiment}{29}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Results}{29}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}Fine-Tuned Experiment}{30}{subsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.3.4}Manual Review of Predictions}{32}{subsection.5.3.4}%
+\contentsline {subsection}{\numberline {5.3.5}Example User Analysis}{36}{subsection.5.3.5}%
+\contentsline {subsection}{\numberline {5.3.6}Reflection on User Analysis}{36}{subsection.5.3.6}%
+\contentsline {subsection}{\numberline {5.3.7}Enhanced Attention Model}{37}{subsection.5.3.7}%
+\contentsline {section}{\numberline {5.4}Language Adapter Experiment}{37}{section.5.4}%
+\contentsline {chapter}{\numberline {6}Conclusion}{39}{chapter.6}%
+\contentsline {chapter}{\numberline {A}Bibliography\markboth {\MakeUppercase {Bibliography}}{\MakeUppercase {Bibliography}}}{41}{appendix.A}%

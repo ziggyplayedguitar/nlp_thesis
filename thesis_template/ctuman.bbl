@@ -93,6 +93,11 @@ Frederick Mosteller and David L. (David~Lee) Wallace.
 \newblock {\em Inference and disputed authorship: {The} {Federalist}}.
 \newblock Reading, Mass., Addison-Wesley, 1964.
 
+\bibitem[NZY21]{Niu2021}
+Zhaoyang Niu, Guoqiang Zhong, and Hui Yu.
+\newblock A review on the attention mechanism of deep learning.
+\newblock {\em Neurocomputing}, 452:48--62, September 2021.
+
 \bibitem[PMMM20]{Pascucci2020Misogyny}
 Antonio Pascucci, Raffaele Manna, Vincenzo Masucci, and Johanna Monti.
 \newblock The role of computational stylometry in identifying (misogynistic)
