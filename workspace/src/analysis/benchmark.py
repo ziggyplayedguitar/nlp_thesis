@@ -60,11 +60,10 @@ class CzechBenchmark:
         
         # Run predictions for each author
         for author, data in benchmark_data.items():
-            pred = predictor.predict_batch(data['comments'])
+            pred = predictor.predict(data['comments'])
             results['predictions'][author] = {
                 'prediction': pred['prediction'],
-                'confidence': float(pred['confidence']),
-                'probabilities': pred['probabilities'].tolist()
+                'confidence': float(pred['trolliness_score']),  # Use trolliness score directly
             }
             
             if pred['prediction'] == 'troll':

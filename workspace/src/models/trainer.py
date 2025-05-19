@@ -124,7 +124,7 @@ class TrollDetectorTrainer:
                     attention_mask=attention_mask,
                     tweets_per_account=self.train_loader.dataset.comments_per_user
                 )
-                loss = self.criterion(outputs['trolliness_score'].squeeze(), labels)
+                loss = self.criterion(outputs['trolliness_score'].view(-1), labels.view(-1))
         else:
             with torch.no_grad():
                 outputs = self.model(
@@ -132,13 +132,13 @@ class TrollDetectorTrainer:
                     attention_mask=attention_mask,
                     tweets_per_account=self.train_loader.dataset.comments_per_user
                 )
-                loss = self.criterion(outputs['trolliness_score'].squeeze(), labels)
+                loss = self.criterion(outputs['trolliness_score'].view(-1), labels.view(-1))
         
         return {
             'loss': loss,
             'authors': authors,
-            'preds': outputs['trolliness_score'].squeeze().detach().cpu().numpy(),
-            'labels': labels.cpu().numpy()
+            'preds': np.atleast_1d(outputs['trolliness_score'].detach().cpu().numpy()),
+            'labels': np.atleast_1d(labels.cpu().numpy())
         }
 
     def _process_epoch(self, dataloader: DataLoader, is_training: bool = True) -> Dict[str, float]:
@@ -178,13 +178,24 @@ class TrollDetectorTrainer:
         # Aggregate predictions by author
         aggregated = aggregate_author_predictions(batch_results, method='mean')
         
-        # Calculate metrics
+        # Prepare predictions for metric calculation
+        final_preds_logits = [data['final_pred'] for data in aggregated.values()]
+        true_labels = [data['true_label'] for data in aggregated.values()]
+
+        # Convert logits to probabilities FOR METRIC CALCULATION ONLY
+        # Ensure final_preds_logits is not empty before converting
+        if final_preds_logits:
+            final_preds_probs = torch.sigmoid(torch.tensor(final_preds_logits, dtype=torch.float32)).numpy()
+        else:
+            final_preds_probs = np.array([]) # Handle empty case if no predictions
+
+        # Calculate metrics using PROBABILITIES
+        # Ensure that labels are also in a compatible format (e.g. numpy array) if not already
         metrics = MetricsCalculator.calculate_metrics(
-            [data['final_pred'] for data in aggregated.values()],
-            [data['true_label'] for data in aggregated.values()]
+            list(final_preds_probs), # Pass probabilities
+            true_labels
         )
         metrics['loss'] = total_loss / len(dataloader)
-        metrics['num_authors'] = len(aggregated)
         
         return metrics
 
@@ -268,4 +279,11 @@ class TrollDetectorTrainer:
             if self.use_wandb:
                 wandb.log({f"test/{k}": v for k, v in test_metrics.items()})
         
+        best_epoch = self.best_epoch  # if available
+        print(f"\nBest epoch: {best_epoch + 1}")
+        print("Best validation metrics:")
+        for metric, values in self.history['val'].items():
+            print(f"{metric}: {values[best_epoch]:.4f}")
+        
+
         return self.history

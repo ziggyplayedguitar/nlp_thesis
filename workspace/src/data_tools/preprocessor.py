@@ -56,7 +56,14 @@ class TweetPreprocessor:
         ).union(self.custom_stop_words)
 
     def preprocess_tweet(self, text: str) -> str:
-        """Basic tweet preprocessing including stop word removal"""
+        """Basic tweet preprocessing without stopword removal to preserve context for BERT.
+        
+        Keeps important preprocessing steps:
+        - URL removal
+        - Twitter-specific cleanup (mentions, hashtags)
+        - Emoji removal
+        - Whitespace normalization
+        """
         if pd.isna(text):
             return ""
         
@@ -67,13 +74,15 @@ class TweetPreprocessor:
         text = self.mention_pattern.sub('', text)
         text = self.quote_pattern.sub('', text)
         text = self.emoji_pattern.sub('', text)
-
-        # Split into words and filter out stop words, keep case
-        words = text.split()
-        words = [word for word in words if word.lower() not in self.stop_words]
         
-        # Rejoin and normalize whitespace
-        return ' '.join(words).strip()
+        # # Split into words and filter out stop words, keep case
+        # words = text.split()
+        # words = [word for word in words if word.lower() not in self.stop_words]
+
+        # Normalize whitespace
+        text = self.multiple_whitespace.sub(' ', text)
+        
+        return text.strip()
 
 def load_twitter_json(json_folder: Path) -> pd.DataFrame:
     """Load and preprocess tweets from all JSON files in the specified folder."""
