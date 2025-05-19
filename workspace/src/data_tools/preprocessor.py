@@ -3,7 +3,7 @@ import numpy as np
 import json
 from pathlib import Path
 import re
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 from transformers import AutoTokenizer
 import torch
 from torch.utils.data import Dataset
@@ -21,7 +21,29 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class TweetPreprocessor:
-    def __init__(self):
+    """A class for preprocessing social media posts.
+    
+    This class handles various preprocessing tasks for social media posts including:
+    - URL removal
+    - Twitter-specific cleanup (mentions, hashtags)
+    - Emoji removal
+    - Whitespace normalization
+    - Stop word removal (optional)
+    
+    Attributes:
+        url_pattern: Regex pattern for matching URLs
+        pic_pattern: Regex pattern for matching Twitter picture URLs
+        multiple_whitespace: Regex pattern for matching multiple whitespace
+        hashtag_pattern: Regex pattern for matching hashtags
+        mention_pattern: Regex pattern for matching mentions
+        quote_pattern: Regex pattern for matching quoted text
+        emoji_pattern: Regex pattern for matching emojis
+        stop_words: Set of stop words to remove (optional)
+    """
+    
+    def __init__(self) -> None:
+        """Initialize the TweetPreprocessor with regex patterns and stop words."""
+        # Initialize regex patterns
         self.url_pattern = re.compile(r'https?://\S+\b')
         self.pic_pattern = re.compile(r'pic\.twitter\.com/\w+\b')
         self.multiple_whitespace = re.compile(r'\s+')
@@ -56,13 +78,13 @@ class TweetPreprocessor:
         ).union(self.custom_stop_words)
 
     def preprocess_tweet(self, text: str) -> str:
-        """Basic tweet preprocessing without stopword removal to preserve context for BERT.
+        """Preprocess a single tweet.
         
-        Keeps important preprocessing steps:
-        - URL removal
-        - Twitter-specific cleanup (mentions, hashtags)
-        - Emoji removal
-        - Whitespace normalization
+        Args:
+            text: The tweet text to preprocess
+            
+        Returns:
+            Preprocessed tweet text with URLs, mentions, hashtags, and emojis removed
         """
         if pd.isna(text):
             return ""
@@ -75,17 +97,23 @@ class TweetPreprocessor:
         text = self.quote_pattern.sub('', text)
         text = self.emoji_pattern.sub('', text)
         
-        # # Split into words and filter out stop words, keep case
-        # words = text.split()
-        # words = [word for word in words if word.lower() not in self.stop_words]
-
         # Normalize whitespace
         text = self.multiple_whitespace.sub(' ', text)
         
         return text.strip()
 
 def load_twitter_json(json_folder: Path) -> pd.DataFrame:
-    """Load and preprocess tweets from all JSON files in the specified folder."""
+    """Load and preprocess tweets from all JSON files in the specified folder.
+    
+    Args:
+        json_folder: Path to folder containing Twitter JSON files
+        
+    Returns:
+        DataFrame containing processed tweets with columns:
+            - account: Twitter account name
+            - tweet: Tweet text
+            - troll: Binary label (0 for non-troll)
+    """
     logger.info("Loading Twitter JSON data from non_troll_politics folder...")
     all_tweets = []
     
@@ -101,23 +129,40 @@ def load_twitter_json(json_folder: Path) -> pd.DataFrame:
     
     return pd.DataFrame(all_tweets)
 
-def limit_tweets_per_author(df: pd.DataFrame, max_tweets_per_author: int = None) -> pd.DataFrame:
-    """Helper function to limit tweets per author in a dataframe"""
+def limit_tweets_per_author(df: pd.DataFrame, max_tweets_per_author: Optional[int] = None) -> pd.DataFrame:
+    """Limit the number of tweets per author in a dataframe.
+    
+    Args:
+        df: DataFrame containing tweets
+        max_tweets_per_author: Maximum number of tweets to keep per author
+        
+    Returns:
+        DataFrame with limited tweets per author
+    """
     if max_tweets_per_author is None:
         return df
     return df.groupby('account').apply(
         lambda x: x.sample(n=min(len(x), max_tweets_per_author), random_state=42)
     ).reset_index(drop=True)
 
-def load_and_clean_data(data_dir: str, max_tweets_per_source: int = None, max_tweets_per_author: int = None) -> pd.DataFrame:
+def load_and_clean_data(
+    data_dir: str,
+    max_tweets_per_source: Optional[int] = None,
+    max_tweets_per_author: Optional[int] = None
+) -> pd.DataFrame:
     """Load and combine all datasets including Twitter JSON files.
     
     Args:
-        data_dir (str): Directory containing the data
-        max_tweets_per_source (int, optional): Maximum number of tweets to load from each source.
-            If None, load all tweets. Defaults to None.
-        max_tweets_per_author (int, optional): Maximum number of tweets to keep per author.
-            If None, keep all tweets. Defaults to None.
+        data_dir: Directory containing the data
+        max_tweets_per_source: Maximum number of tweets to load from each source
+        max_tweets_per_author: Maximum number of tweets to keep per author
+        
+    Returns:
+        DataFrame containing combined and cleaned tweets with columns:
+            - account: Twitter account name
+            - tweet: Tweet text
+            - troll: Binary label (1 for troll, 0 for non-troll)
+            - language: Language code
     """
     data_path = Path(data_dir)
     preprocessor = TweetPreprocessor()
@@ -280,49 +325,93 @@ def load_and_clean_data(data_dir: str, max_tweets_per_source: int = None, max_tw
     return all_tweets
 
 class TrollTweetDataset(Dataset):
-    def __init__(self, 
-                 tweets_df: pd.DataFrame,
-                 tokenizer_name: str = "distilbert-base-multilingual-cased",
-                 max_length: int = 128,
-                 tweets_per_account: int = 5):
+    """Dataset class for troll detection using tweets.
+    
+    This dataset handles loading and preprocessing of tweets for training a
+    troll detection model. It supports batching of multiple tweets per account.
+    
+    Attributes:
+        tweets_df: DataFrame containing the raw tweets
+        tokenizer: Tokenizer for text preprocessing
+        max_length: Maximum sequence length for tokenization
+        tweets_per_account: Number of tweets to process per account
+        samples: List of processed samples
+    """
+    
+    def __init__(
+        self,
+        tweets_df: pd.DataFrame,
+        tokenizer_name: str = "distilbert-base-multilingual-cased",
+        max_length: int = 128,
+        tweets_per_account: int = 5
+    ) -> None:
+        """Initialize the TrollTweetDataset.
+        
+        Args:
+            tweets_df: DataFrame containing tweets with columns:
+                - account: Twitter account name
+                - tweet: Tweet text
+                - troll: Binary label
+            tokenizer_name: Name of the tokenizer to use
+            max_length: Maximum sequence length for tokenization
+            tweets_per_account: Number of tweets to process per account
+        """
         self.tweets_df = tweets_df
-        self.preprocessor = TweetPreprocessor()
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
         self.max_length = max_length
         self.tweets_per_account = tweets_per_account
         
-        # Group tweets by account
-        self.accounts = list(tweets_df.groupby('account'))
-        
+        # Create samples
+        self.samples = []
+        for account, group in tweets_df.groupby('account'):
+            tweets = group['tweet'].tolist()
+            label = group['troll'].iloc[0]
+            
+            # Handle case where we have fewer tweets than required
+            if len(tweets) < tweets_per_account:
+                tweets.extend([''] * (tweets_per_account - len(tweets)))
+            elif len(tweets) > tweets_per_account:
+                tweets = tweets[:tweets_per_account]
+            
+            self.samples.append((tweets, label, account))
+    
     def __len__(self) -> int:
-        return len(self.accounts)
+        """Get the number of samples in the dataset.
+        
+        Returns:
+            Number of samples
+        """
+        return len(self.samples)
     
     def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
-        account_name, account_tweets = self.accounts[idx]
+        """Get a sample from the dataset.
         
-        # Sample tweets for this account
-        if len(account_tweets) > self.tweets_per_account:
-            account_tweets = account_tweets.sample(n=self.tweets_per_account, random_state=42)
-        elif len(account_tweets) < self.tweets_per_account:
-            # If we have fewer tweets than needed, sample with replacement
-            account_tweets = account_tweets.sample(n=self.tweets_per_account, replace=True, random_state=42)
+        Args:
+            idx: Index of the sample to get
+            
+        Returns:
+            Dictionary containing:
+                input_ids: Tokenized tweet IDs
+                attention_mask: Attention mask for the tokens
+                label: Binary label for troll detection
+                account: Account identifier
+        """
+        tweets, label, account = self.samples[idx]
         
-        # Preprocess tweets
-        tweets = [self.preprocessor.preprocess_tweet(t) for t in account_tweets['tweet']]
-        
-        # Tokenize all tweets with fixed padding
+        # Tokenize tweets
         encodings = self.tokenizer(
             tweets,
-            padding='max_length',  # Changed to max_length
+            padding='max_length',
             truncation=True,
             max_length=self.max_length,
             return_tensors='pt'
         )
         
         return {
-            'input_ids': encodings['input_ids'],
-            'attention_mask': encodings['attention_mask'],
-            'label': torch.tensor(account_tweets['troll'].iloc[0], dtype=torch.long)
+            'input_ids': encodings['input_ids'].squeeze(0),
+            'attention_mask': encodings['attention_mask'].squeeze(0),
+            'label': torch.tensor(label, dtype=torch.float),
+            'account': account
         }
 
 def collate_batch(batch: List[Dict[str, torch.Tensor]]) -> Dict[str, torch.Tensor]:
@@ -338,10 +427,12 @@ def collate_batch(batch: List[Dict[str, torch.Tensor]]) -> Dict[str, torch.Tenso
     input_ids = torch.cat([item['input_ids'] for item in batch], dim=0)
     attention_mask = torch.cat([item['attention_mask'] for item in batch], dim=0)
     labels = torch.stack([item['label'] for item in batch])
+    accounts = [item['account'] for item in batch]
     
     return {
         'input_ids': input_ids,
         'attention_mask': attention_mask,
-        'label': labels
+        'label': labels,
+        'account': accounts
     }
 

@@ -35,6 +35,21 @@ class TweetAttention(nn.Module):
 
 
 class TrollDetector(nn.Module):
+    """A BERT-based model for detecting troll behavior in social media posts.
+    
+    This model uses a pre-trained BERT model with optional adapter layers to analyze
+    multiple posts from the same account and predict a continuous trolliness score.
+    
+    Attributes:
+        bert: The base BERT model with optional adapter layers
+        config: BERT model configuration
+        hidden_size: Size of the hidden layers
+        regressor_hidden_size: Size of the hidden layer in the regressor
+        tweet_attention: Module for attention over multiple tweets
+        account_dropout: Dropout layer for account-level features
+        regressor: Neural network for predicting trolliness score
+    """
+    
     def __init__(
         self,
         model_name: str = "distilbert-base-multilingual-cased",
@@ -42,7 +57,16 @@ class TrollDetector(nn.Module):
         adapter_path: Optional[str] = None,
         hidden_size: Optional[int] = None,
         regressor_hidden_size: Optional[int] = None
-    ):
+    ) -> None:
+        """Initialize the TrollDetector model.
+        
+        Args:
+            model_name: Name of the pre-trained BERT model to use
+            dropout_rate: Dropout rate for regularization
+            adapter_path: Optional path to pre-trained adapter weights
+            hidden_size: Optional custom hidden size for the model
+            regressor_hidden_size: Optional custom hidden size for the regressor
+        """
         super().__init__()
         
         # Load pre-trained BERT model
@@ -80,8 +104,7 @@ class TrollDetector(nn.Module):
         attention_mask: torch.Tensor,
         tweets_per_account: int
     ) -> Dict[str, torch.Tensor]:
-        """
-        Forward pass of the model.
+        """Forward pass of the model.
         
         Args:
             input_ids: Tensor of shape [batch_size * tweets_per_account, seq_length]
@@ -131,8 +154,7 @@ class TrollDetector(nn.Module):
         tweets_per_account: int,
         threshold: float = 0.5
     ) -> Dict[str, torch.Tensor]:
-        """
-        Make predictions and return trolliness scores.
+        """Make predictions and return trolliness scores.
         
         Args:
             input_ids: Tensor of shape [batch_size * tweets_per_account, seq_length]

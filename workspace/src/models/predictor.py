@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Optional
 import pandas as pd
 import logging
 from tqdm import tqdm
@@ -15,18 +15,49 @@ from src.data_tools.preprocessor import TweetPreprocessor
 logger = logging.getLogger(__name__)
 
 class TrollPredictor:
+    """A class for making predictions using the TrollDetector model.
+    
+    This class handles the preprocessing of input texts, batching, and making
+    predictions using a trained TrollDetector model.
+    
+    Attributes:
+        device: The device to run the model on (CPU/GPU)
+        model: The TrollDetector model instance
+        tokenizer: The tokenizer for preprocessing text
+        preprocessor: The tweet preprocessor
+        comments_per_user: Number of comments to process per user
+        max_length: Maximum sequence length for tokenization
+        threshold: Threshold for binary classification
+    """
+    
     def __init__(
         self,
-        model_path: str = None,  # Optional checkpoint path
-        model_name: str = None,  # Optional Hugging Face model name
-        device: str = None,
+        model_path: Optional[str] = None,  # Optional checkpoint path
+        model_name: Optional[str] = None,  # Optional Hugging Face model name
+        device: Optional[str] = None,
         comments_per_user: int = 5,
         max_length: int = 96,
-        threshold: float = 0.3,  # Add threshold for binary classification
-        adapter_path: str = None,
+        threshold: float = 0.3,
+        adapter_path: Optional[str] = None,
         adapter_name: str = "czech_comments_mlm",
-        use_adapter: bool = False  # New parameter to control adapter usage
-    ):
+        use_adapter: bool = False
+    ) -> None:
+        """Initialize the TrollPredictor.
+        
+        Args:
+            model_path: Path to model checkpoint file
+            model_name: Name of Hugging Face model to use
+            device: Device to run model on ('cuda' or 'cpu')
+            comments_per_user: Number of comments to process per user
+            max_length: Maximum sequence length for tokenization
+            threshold: Threshold for binary classification
+            adapter_path: Path to adapter weights
+            adapter_name: Name of the adapter
+            use_adapter: Whether to use adapter layers
+            
+        Raises:
+            ValueError: If neither model_path nor model_name is provided
+        """
         # Set device
         if device is None:
             self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -100,21 +131,23 @@ class TrollPredictor:
             'processed_tweets': processed_tweets
         }
     
-    def predict(self, texts: List[str]) -> Dict[str, Union[str, float]]:
-        """
-        Predict trolliness for texts, automatically handling batching if needed.
+    def predict(self, texts: List[str]) -> Dict[str, Union[str, float, List[float]]]:
+        """Predict trolliness for texts, automatically handling batching if needed.
         
         Args:
             texts: List of texts to analyze (comments/tweets)
             
         Returns:
             Dictionary containing:
-            - prediction: 'troll' or 'not_troll'
-            - trolliness_score: float between 0 and 1
-            - binary_confidence: confidence in binary prediction
-            - attention_weights: attention weights for each text
-            - batch_scores: (if batched) scores for each batch
-            - num_batches: (if batched) number of batches processed
+                prediction: 'troll' or 'not_troll'
+                trolliness_score: float between 0 and 1
+                binary_confidence: confidence in binary prediction
+                attention_weights: attention weights for each text
+                batch_scores: (if batched) scores for each batch
+                num_batches: (if batched) number of batches processed
+                
+        Raises:
+            ValueError: If input texts list is empty
         """
         # Process all texts directly using the preprocessor
         processed_texts = [self.preprocessor.preprocess_tweet(text) for text in texts]
@@ -204,7 +237,15 @@ class TrollPredictor:
         return pd.DataFrame(results)
 
     def load_checkpoint(self, checkpoint_path: str) -> None:
-        """Load model weights from checkpoint."""
+        """Load model weights from checkpoint.
+        
+        Args:
+            checkpoint_path: Path to the checkpoint file
+            
+        Raises:
+            FileNotFoundError: If checkpoint file doesn't exist
+            RuntimeError: If there's an error loading the checkpoint
+        """
         try:
             # Load checkpoint
             checkpoint = torch.load(checkpoint_path, map_location=self.device, weights_only=False)
@@ -228,6 +269,9 @@ class TrollPredictor:
             self.model.load_state_dict(state_dict, strict=False)
             self.model.eval()
             logger.info(f"Loaded model weights from {checkpoint_path}")
+        except FileNotFoundError:
+            logger.error(f"Checkpoint file not found: {checkpoint_path}")
+            raise
         except Exception as e:
             logger.error(f"Error loading checkpoint from {checkpoint_path}: {str(e)}")
-            raise
+            raise RuntimeError(f"Failed to load checkpoint: {str(e)}")

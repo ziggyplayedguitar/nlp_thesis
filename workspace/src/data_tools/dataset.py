@@ -15,7 +15,25 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class TrollDataset(Dataset):
-    """Dataset class for troll detection with continuous trolliness scores"""
+    """Dataset class for troll detection with continuous trolliness scores.
+    
+    This dataset handles loading and preprocessing of social media posts for
+    training a troll detection model. It supports batching of multiple posts
+    per author and includes caching for tokenized data.
+    
+    Attributes:
+        data: DataFrame containing the raw data
+        tokenizer: Tokenizer for text preprocessing
+        max_length: Maximum sequence length for tokenization
+        comments_per_user: Number of comments to process per user
+        max_samples_per_author: Maximum number of samples per author
+        label_column: Name of the column containing labels
+        normalize_labels: Whether to normalize labels to [0,1]
+        cache_dir: Directory for caching tokenized data
+        use_dynamic_padding: Whether to use dynamic padding
+        samples: List of processed samples
+        label_scaler: Dictionary for label normalization
+    """
     def __init__(
         self,
         data: pd.DataFrame,
@@ -27,7 +45,20 @@ class TrollDataset(Dataset):
         normalize_labels: bool = True,
         cache_dir: Optional[str] = None,
         use_dynamic_padding: bool = False
-    ):
+    ) -> None:
+        """Initialize the TrollDataset.
+        
+        Args:
+            data: DataFrame containing the raw data
+            tokenizer_name: Name of the tokenizer to use
+            max_length: Maximum sequence length for tokenization
+            comments_per_user: Number of comments to process per user
+            max_samples_per_author: Maximum number of samples per author
+            label_column: Name of the column containing labels
+            normalize_labels: Whether to normalize labels to [0,1]
+            cache_dir: Directory for caching tokenized data
+            use_dynamic_padding: Whether to use dynamic padding
+        """
         self.data = data
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
         self.max_length = max_length
@@ -61,7 +92,11 @@ class TrollDataset(Dataset):
         logger.info(f"Created {len(self.samples)} samples from {len(author_groups)} authors")
     
     def _validate_data(self) -> None:
-        """Validate input data for required columns and data types."""
+        """Validate input data for required columns and data types.
+        
+        Raises:
+            ValueError: If required columns are missing
+        """
         required_columns = ['author', 'text']
         missing_columns = [col for col in required_columns if col not in self.data.columns]
         if missing_columns:
@@ -74,7 +109,11 @@ class TrollDataset(Dataset):
             self.data = self.data.dropna(subset=['text'])
     
     def _process_labels(self, label_column: str) -> None:
-        """Process and normalize labels."""
+        """Process and normalize labels.
+        
+        Args:
+            label_column: Name of the column containing labels
+        """
         if self.normalize_labels:
             label_min = self.data[label_column].min()
             label_max = self.data[label_column].max()
@@ -92,7 +131,13 @@ class TrollDataset(Dataset):
             self.label_scaler = None
     
     def _create_author_samples(self, author: str, comments: pd.DataFrame, label_column: str) -> None:
-        """Create samples for a single author."""
+        """Create samples for a single author.
+        
+        Args:
+            author: Author identifier
+            comments: DataFrame containing author's comments
+            label_column: Name of the column containing labels
+        """
         author_label = comments[label_column].iloc[0]
         
         if self.label_scaler is not None:
@@ -111,11 +156,22 @@ class TrollDataset(Dataset):
                 self.samples.append((f"{author}_{i}", batch_comments, author_label))
     
     def _get_cache_key(self, comments: List[str]) -> str:
-        """Generate a cache key for a list of comments."""
+        """Generate a cache key for a list of comments.
+        
+        Args:
+            comments: List of comment texts
+            
+        Returns:
+            MD5 hash of the sorted comments
+        """
         return hashlib.md5(json.dumps(comments, sort_keys=True).encode()).hexdigest()
     
     def _load_cache(self) -> Dict[str, Dict]:
-        """Load cached tokenized data."""
+        """Load cached tokenized data.
+        
+        Returns:
+            Dictionary containing cached tokenized data
+        """
         if self.cache_file.exists():
             try:
                 with open(self.cache_file, 'r') as f:
@@ -134,6 +190,11 @@ class TrollDataset(Dataset):
                 logger.warning(f"Failed to save cache: {e}")
     
     def __len__(self) -> int:
+        """Get the number of samples in the dataset.
+        
+        Returns:
+            Number of samples
+        """
         return len(self.samples)
     
     def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
