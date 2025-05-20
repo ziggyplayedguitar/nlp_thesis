@@ -26,12 +26,16 @@
 \contentsline {chapter}{\numberline {2}Natural Language Processing}{5}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Stylometry}{5}{section.2.1}%
 \contentsline {subsection}{\numberline {2.1.1}Stylometry in Literature}{6}{subsection.2.1.1}%
+\contentsline {subsubsection}{Term Frequency-Inverse Document Frequency (TF-IDF)}{6}{subsubsection*.5}%
+\contentsline {subsubsection}{Term Frequency-Inverse Document Frequency (TF-IDF)}{6}{subsubsection*.5}%
+\contentsline {subsubsection}{Other Stylometric Approahces in Lietrature}{6}{subsubsection*.6}%
+\contentsline {subsubsection}{Other Stylometric Approahces in Lietrature}{6}{subsubsection*.6}%
 \contentsline {section}{\numberline {2.2}Sentiment Analysis}{7}{section.2.2}%
 \contentsline {subsection}{\numberline {2.2.1}Sentiment Analysis in Troll Detection}{7}{subsection.2.2.1}%
 \contentsline {subsection}{\numberline {2.2.2}Self-Attention}{8}{subsection.2.2.2}%
-\contentsline {subsection}{\numberline {2.2.3}Multi-Head Attention}{8}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.3}Multi-Head Attention}{9}{subsection.2.2.3}%
 \contentsline {subsection}{\numberline {2.2.4}BERT}{9}{subsection.2.2.4}%
-\contentsline {subsection}{\numberline {2.2.5}Transformer Models in Troll Detection}{9}{subsection.2.2.5}%
+\contentsline {subsection}{\numberline {2.2.5}Transformer Models in Troll Detection}{10}{subsection.2.2.5}%
 \contentsline {chapter}{\numberline {3}Dataset}{11}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Main Dataset}{11}{section.3.1}%
 \contentsline {section}{\numberline {3.2}Additionall Datasets}{12}{section.3.2}%
@@ -61,7 +65,8 @@
 \contentsline {subsection}{\numberline {5.3.4}Manual Review of Predictions}{32}{subsection.5.3.4}%
 \contentsline {subsection}{\numberline {5.3.5}Example User Analysis}{36}{subsection.5.3.5}%
 \contentsline {subsection}{\numberline {5.3.6}Reflection on User Analysis}{36}{subsection.5.3.6}%
-\contentsline {subsection}{\numberline {5.3.7}Enhanced Attention Model Experiments}{37}{subsection.5.3.7}%
-\contentsline {section}{\numberline {5.4}Language Adapter Experiment}{38}{section.5.4}%
-\contentsline {chapter}{\numberline {6}Conclusion}{39}{chapter.6}%
-\contentsline {chapter}{\numberline {A}Bibliography\markboth {\MakeUppercase {Bibliography}}{\MakeUppercase {Bibliography}}}{41}{appendix.A}%
+\contentsline {subsection}{\numberline {5.3.7}Analysis of Attention Mechanism}{37}{subsection.5.3.7}%
+\contentsline {subsection}{\numberline {5.3.8}Enhanced Attention Model Experiments}{38}{subsection.5.3.8}%
+\contentsline {section}{\numberline {5.4}Language Adapter Experiment}{40}{section.5.4}%
+\contentsline {chapter}{\numberline {6}Conclusion}{41}{chapter.6}%
+\contentsline {chapter}{\numberline {A}Bibliography\markboth {\MakeUppercase {Bibliography}}{\MakeUppercase {Bibliography}}}{43}{appendix.A}%

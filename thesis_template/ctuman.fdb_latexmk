@@ -1,19 +1,19 @@
 # Fdb version 3
-["bibtex ctuman"] 1747695274 "ctuman.aux" "ctuman.bbl" "ctuman" 1747695276
-  "../sources/library.bib" 1747678558 47593 6074f2cf1e5febfc03a04efa47379916 ""
+["bibtex ctuman"] 1747755521 "ctuman.aux" "ctuman.bbl" "ctuman" 1747755523
+  "../sources/library.bib" 1747755519 48506 bb6fdf9373b2c20e5db13edc550120cf ""
   "/usr/share/texlive/texmf-dist/bibtex/bst/base/alpha.bst" 1292289607 23907 a5f93555796fb564b924339521f10a7c ""
-  "ctuman.aux" 1747695276 19900 064e8a80fabf6f1e1c8b0669f2d29438 "pdflatex"
+  "ctuman.aux" 1747755523 21798 7f6cc918dc95ed099c04f67a1273bbaa "pdflatex"
   (generated)
   "ctuman.bbl"
   "ctuman.blg"
-["makeindex ctuman.idx"] 1747694949 "ctuman.idx" "ctuman.ind" "ctuman" 1747695276
-  "ctuman.idx" 1747695274 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+["makeindex ctuman.idx"] 1747754937 "ctuman.idx" "ctuman.ind" "ctuman" 1747755523
+  "ctuman.idx" 1747755521 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
   (generated)
   "ctuman.ilg"
   "ctuman.ind"
-["pdflatex"] 1747695274 "/home/luuka/thesis/thesis_template/ctuman.tex" "ctuman.pdf" "ctuman" 1747695276
+["pdflatex"] 1747755521 "/home/luuka/thesis/thesis_template/ctuman.tex" "ctuman.pdf" "ctuman" 1747755523
   "/etc/texmf/web2c/texmf.cnf" 1739010084 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/luuka/thesis/thesis_template/ctuman.tex" 1747695272 88629 e853ed8f9ae3f7004ebeff262e65e5c7 ""
+  "/home/luuka/thesis/thesis_template/ctuman.tex" 1747755495 93674 a4d6cc959e81555efc5666844fe2f430 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm" 1246382020 916 f87d7c45f9c908e672703b83b72241a3 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam5.tfm" 1246382020 924 9904cf1d39e9767e7a3622f2a125a565 ""
@@ -167,6 +167,7 @@
   "/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18.sty" 1601326656 989 c49c8ae06d96f8b15869da7428047b1e ""
   "/usr/share/texlive/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty" 1601326656 443 8c872229db56122037e86bcda49e14f3 ""
   "/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty" 1601326656 325 f9f16d12354225b7dd52a3321f085955 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/placeins/placeins.sty" 1137110565 4087 636308456f60d2b31cbf97867db5708d ""
   "/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty" 1576624809 9878 9e94e8fa600d95f9c7731bb21dfb67a4 ""
   "/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty" 1575674187 9715 b051d5b493d9fe5f4bc251462d039e5f ""
   "/usr/share/texlive/texmf-dist/tex/latex/tcolorbox/tcolorbox.sty" 1641594609 90399 93200a4832e517564b5aa5dc46e12177 ""
@@ -253,19 +254,20 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1739011413 4379155 98693266ff65f58d9f98aff394de12d2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1739011423 2800641 f67c19b014233764ddbf9f3b708dcf75 ""
   "ctu_logo_black.pdf" 1739203197 46035 43bf3f96a77515d47a73fdf951d1c988 ""
-  "ctuman.aux" 1747695276 19900 064e8a80fabf6f1e1c8b0669f2d29438 "pdflatex"
-  "ctuman.bbl" 1747695274 7021 d564d0bb50d34151d93fabdbda34aaff "bibtex ctuman"
-  "ctuman.ind" 1747694949 0 d41d8cd98f00b204e9800998ecf8427e "makeindex ctuman.idx"
-  "ctuman.lof" 1747695276 2460 3cf60dd43910623f2e5ff71634c2e7b0 "pdflatex"
-  "ctuman.lot" 1747695276 1308 987d003265e672b1f39dec5d85cb6e0a "pdflatex"
-  "ctuman.out" 1747695276 7460 7ab809a0c22590d35ffb11acc9a5bc63 "pdflatex"
-  "ctuman.tex" 1747695272 88629 e853ed8f9ae3f7004ebeff262e65e5c7 ""
-  "ctuman.toc" 1747695276 4754 e043c3d4a43c24c8351646911450fa90 "pdflatex"
+  "ctuman.aux" 1747755523 21798 7f6cc918dc95ed099c04f67a1273bbaa "pdflatex"
+  "ctuman.bbl" 1747755521 7021 d564d0bb50d34151d93fabdbda34aaff "bibtex ctuman"
+  "ctuman.ind" 1747754937 0 d41d8cd98f00b204e9800998ecf8427e "makeindex ctuman.idx"
+  "ctuman.lof" 1747755523 2692 cee8055de7935879a76c850db7a05fa7 "pdflatex"
+  "ctuman.lot" 1747755523 1492 988b7ba2f04387a393d4ce552757e08d "pdflatex"
+  "ctuman.out" 1747755523 7686 e405d053c31236f5447f01f577c3ef99 "pdflatex"
+  "ctuman.tex" 1747755495 93674 a4d6cc959e81555efc5666844fe2f430 ""
+  "ctuman.toc" 1747755523 5257 6e7f48a60304bcf0e41847ad39f973a4 "pdflatex"
   "ctuth-core.tex" 1739203197 13192 a27f89aea761acac4210773d64687905 ""
   "ctuth-names.tex" 1739203197 7157 51b94f3d4978db93f256725cb4972d5b ""
   "ctuth-pkg.tex" 1739203197 31692 06639b8382aec5ace18337a589ed36f7 ""
   "ctuth-templates.tex" 1739203197 6645 8e9b6199f34d272297ce6cbe4c68078f ""
   "ctuthesis.cls" 1739203197 2047 711bdc1757784dea84693ccd62a7a9b5 ""
+  "figures/attention_weights_example.png" 1747752269 40973 73b1f6f1ec0935d4a1d867562b4825c8 ""
   "figures/comments_5_plus.png" 1745964414 73308 ebae36b495547c87b3b9c7b9ed5efc99 ""
   "figures/comments_per_author.png" 1745964399 73527 b32423b3dc228bbb04bbd23acfa93b11 ""
   "figures/cumulative_mult.png" 1747329597 38491 953b7b6879af4b0099fd33ca6a6b0ab9 ""

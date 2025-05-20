@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.8)  20 MAY 2025 00:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.8)  20 MAY 2025 17:38
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -651,6 +651,8 @@ Package: mparhack 2021-05-02 v1.5 (T. Sgouros and S. Ulrich)
 Package: subcaption 2020/10/07 v1.3j Sub-captions (AR)
 \c@subfigure=\count325
 \c@subtable=\count326
+) (/usr/share/texlive/texmf-dist/tex/latex/placeins/placeins.sty
+Package: placeins 2005/04/18  v 2.2
 ) (/usr/share/texlive/texmf-dist/tex/latex/tools/tabularx.sty
 Package: tabularx 2020/01/15 v2.11c `tabularx' package (DPC)
  (/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty
@@ -855,36 +857,36 @@ Package: verbatim 2020-07-07 v1.5u LaTeX2e package for verbatim enhancements
  (./ctuman.aux)
 \openout1 = `ctuman.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 167.
-LaTeX Font Info:    ... okay on input line 167.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 167.
-LaTeX Font Info:    ... okay on input line 167.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 167.
-LaTeX Font Info:    ... okay on input line 167.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 167.
-LaTeX Font Info:    ... okay on input line 167.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 167.
-LaTeX Font Info:    ... okay on input line 167.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 167.
-LaTeX Font Info:    ... okay on input line 167.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 167.
-LaTeX Font Info:    ... okay on input line 167.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 167.
-LaTeX Font Info:    ... okay on input line 167.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 167.
-LaTeX Font Info:    ... okay on input line 167.
-LaTeX Info: Redefining \microtypecontext on input line 167.
-Package microtype Info: Applying patch `item' on input line 167.
-Package microtype Info: Applying patch `toc' on input line 167.
-Package microtype Info: Applying patch `eqnum' on input line 167.
-Package microtype Info: Applying patch `footnote' on input line 167.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 169.
+LaTeX Font Info:    ... okay on input line 169.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 169.
+LaTeX Font Info:    ... okay on input line 169.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 169.
+LaTeX Font Info:    ... okay on input line 169.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 169.
+LaTeX Font Info:    ... okay on input line 169.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 169.
+LaTeX Font Info:    ... okay on input line 169.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 169.
+LaTeX Font Info:    ... okay on input line 169.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 169.
+LaTeX Font Info:    ... okay on input line 169.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 169.
+LaTeX Font Info:    ... okay on input line 169.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 169.
+LaTeX Font Info:    ... okay on input line 169.
+LaTeX Info: Redefining \microtypecontext on input line 169.
+Package microtype Info: Applying patch `item' on input line 169.
+Package microtype Info: Applying patch `toc' on input line 169.
+Package microtype Info: Applying patch `eqnum' on input line 169.
+Package microtype Info: Applying patch `footnote' on input line 169.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 167.
+LaTeX Info: Redefining \showhyphens on input line 169.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -955,7 +957,7 @@ Package caption Info: hyperref package is loaded.
 Package caption Info: listings package is loaded.
 Package caption Info: End \AtBeginDocument code.
 \c@lstlisting=\count351
-Package hyperref Info: Link coloring OFF on input line 167.
+Package hyperref Info: Link coloring OFF on input line 169.
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
  (/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty
@@ -965,49 +967,49 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count352
 )
-LaTeX Info: Redefining \ref on input line 167.
-LaTeX Info: Redefining \pageref on input line 167.
-LaTeX Info: Redefining \nameref on input line 167.
+LaTeX Info: Redefining \ref on input line 169.
+LaTeX Info: Redefining \pageref on input line 169.
+LaTeX Info: Redefining \nameref on input line 169.
  (./ctuman.out) (./ctuman.out)
 \@outlinefile=\write5
 \openout5 = `ctuman.out'.
 
 \ctuclsnamebox=\box136
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 176.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 178.
  (/usr/share/texmf/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 176.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 178.
  (/usr/share/texmf/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 176.
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 178.
  (/usr/share/texmf/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 176.
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 178.
  (/usr/share/texmf/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 176.
+(Font)              <10.95> on input line 178.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 176.
+(Font)              <8> on input line 178.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 176.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 176.
+(Font)              <6> on input line 178.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 178.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 176.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 178.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 176.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 178.
  (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -1019,19 +1021,19 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmss' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-<ctu_logo_black.pdf, id=191, 366.36874pt x 279.0425pt>
+<ctu_logo_black.pdf, id=195, 366.36874pt x 279.0425pt>
 File: ctu_logo_black.pdf Graphic file (type pdf)
 <use ctu_logo_black.pdf>
-Package pdftex.def Info: ctu_logo_black.pdf  used on input line 179.
+Package pdftex.def Info: ctu_logo_black.pdf  used on input line 181.
 (pdftex.def)             Requested size: 85.86746pt x 65.40001pt.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <14.4> on input line 179.
+(Font)              <14.4> on input line 181.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 179.
+(Font)              <10> on input line 181.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 179.
+(Font)              <7> on input line 181.
 
-Overfull \hbox (5.0pt too wide) in paragraph at lines 179--179
+Overfull \hbox (5.0pt too wide) in paragraph at lines 181--181
 []|| [][][] 
  []
 
@@ -1079,22 +1081,22 @@ Overfull \hbox (5.0pt too wide) in paragraph at lines 179--179
 
 
 ]
-Underfull \hbox (badness 1360) in paragraph at lines 179--179
+Underfull \hbox (badness 1360) in paragraph at lines 181--181
 \T1/lmr/m/n/10.95 (+20) bach-e-lor's the-sis ex-plores troll de-tec-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 179--179
+Underfull \hbox (badness 10000) in paragraph at lines 181--181
 []\T1/lmr/m/n/10.95 (+20) Initially trained on mul-ti-lin-gual
  []
 
 
-Underfull \hbox (badness 1675) in paragraph at lines 179--179
+Underfull \hbox (badness 1675) in paragraph at lines 181--181
 \T1/lmr/m/n/10.95 (+20) a small an-no-tated dataset of Czech
  []
 
 
-Underfull \hbox (badness 4859) in paragraph at lines 179--179
+Underfull \hbox (badness 4859) in paragraph at lines 181--181
 \T1/lmr/m/n/10.95 (+20) com-ments sig-nif-i-cantly im-proved its
  []
 
@@ -1160,7 +1162,7 @@ Chapter 1.
 
 ]
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10.95> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 205.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 207.
  [2] [3] [4
 
 ]
@@ -1168,20 +1170,24 @@ Chapter 2.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [5] [6] [7] [8] [9] [10]
+ [5]
+
+Package natbib Warning: Citation `Manning2009' on page 6 undefined on input line 228.
+
+[6] [7] [8] [9] [10]
 Chapter 3.
 [11
 
 ]
-<figures/sentiment.png, id=416, 343.88475pt x 272.217pt>
+<figures/sentiment.png, id=428, 343.88475pt x 272.217pt>
 File: figures/sentiment.png Graphic file (type png)
 <use figures/sentiment.png>
-Package pdftex.def Info: figures/sentiment.png  used on input line 323.
+Package pdftex.def Info: figures/sentiment.png  used on input line 344.
 (pdftex.def)             Requested size: 240.71768pt x 190.55058pt.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 335.
+(Font)              <9> on input line 356.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 335.
+(Font)              <5> on input line 356.
  [12 <./figures/sentiment.png>] [13] [14
 
 ]
@@ -1190,44 +1196,44 @@ Chapter 4.
 Underfull \vbox (badness 1675) has occurred while \output is active []
 
  [15]
-<figures/comments_per_author.png, id=453, 705.837pt x 561.297pt>
+<figures/comments_per_author.png, id=465, 705.837pt x 561.297pt>
 File: figures/comments_per_author.png Graphic file (type png)
 <use figures/comments_per_author.png>
-Package pdftex.def Info: figures/comments_per_author.png  used on input line 376.
+Package pdftex.def Info: figures/comments_per_author.png  used on input line 397.
 (pdftex.def)             Requested size: 217.80222pt x 173.19519pt.
-<figures/comments_5_plus.png, id=454, 705.837pt x 561.297pt>
+<figures/comments_5_plus.png, id=466, 705.837pt x 561.297pt>
 File: figures/comments_5_plus.png Graphic file (type png)
 <use figures/comments_5_plus.png>
-Package pdftex.def Info: figures/comments_5_plus.png  used on input line 386.
+Package pdftex.def Info: figures/comments_5_plus.png  used on input line 407.
 (pdftex.def)             Requested size: 217.80222pt x 173.19519pt.
  [16] [17 <./figures/comments_per_author.png> <./figures/comments_5_plus.png>] [18] [19] [20]
-<figures/streamlit_app.png, id=502, 702.37407pt x 872.50969pt>
+<figures/streamlit_app.png, id=514, 702.37407pt x 872.50969pt>
 File: figures/streamlit_app.png Graphic file (type png)
 <use figures/streamlit_app.png>
-Package pdftex.def Info: figures/streamlit_app.png  used on input line 492.
+Package pdftex.def Info: figures/streamlit_app.png  used on input line 513.
 (pdftex.def)             Requested size: 302.01497pt x 375.17186pt.
  [21] [22 <./figures/streamlit_app.png>]
 Chapter 5.
 [23
 
 ] [24]
-Overfull \hbox (40.36343pt too wide) in paragraph at lines 579--591
+Overfull \hbox (40.36343pt too wide) in paragraph at lines 600--612
  [][] 
  []
 
 [25]
-<figures/language_distribution.png, id=534, 573.8238pt x 480.5955pt>
+<figures/language_distribution.png, id=546, 573.8238pt x 480.5955pt>
 File: figures/language_distribution.png Graphic file (type png)
 <use figures/language_distribution.png>
-Package pdftex.def Info: figures/language_distribution.png  used on input line 602.
+Package pdftex.def Info: figures/language_distribution.png  used on input line 623.
 (pdftex.def)             Requested size: 290.40111pt x 243.22314pt.
 
-Overfull \hbox (60.05824pt too wide) in paragraph at lines 613--625
+Overfull \hbox (60.05824pt too wide) in paragraph at lines 634--646
  [][] 
  []
 
 
-Overfull \hbox (50.07616pt too wide) in paragraph at lines 633--645
+Overfull \hbox (50.07616pt too wide) in paragraph at lines 654--666
  [][] 
  []
 
@@ -1235,55 +1241,55 @@ Overfull \hbox (50.07616pt too wide) in paragraph at lines 633--645
 Underfull \vbox (badness 4353) has occurred while \output is active []
 
  [26 <./figures/language_distribution.png>]
-Overfull \hbox (75.52518pt too wide) in paragraph at lines 656--668
+Overfull \hbox (75.52518pt too wide) in paragraph at lines 677--689
  [][] 
  []
 
-<figures/training_full.png, id=544, 1076.1003pt x 715.473pt>
+<figures/training_full.png, id=556, 1076.1003pt x 715.473pt>
 File: figures/training_full.png Graphic file (type png)
 <use figures/training_full.png>
-Package pdftex.def Info: figures/training_full.png  used on input line 674.
+Package pdftex.def Info: figures/training_full.png  used on input line 695.
 (pdftex.def)             Requested size: 355.1142pt x 236.10683pt.
-<figures/russian_training.png, id=545, 1076.1003pt x 715.473pt>
+<figures/russian_training.png, id=557, 1076.1003pt x 715.473pt>
 File: figures/russian_training.png Graphic file (type png)
 <use figures/russian_training.png>
-Package pdftex.def Info: figures/russian_training.png  used on input line 682.
+Package pdftex.def Info: figures/russian_training.png  used on input line 703.
 (pdftex.def)             Requested size: 355.1142pt x 236.10683pt.
 [27] [28 <./figures/training_full.png> <./figures/russian_training.png>]
-<figures/distribution_multi.png, id=558, 980.7039pt x 349.7868pt>
+<figures/distribution_multi.png, id=570, 980.7039pt x 349.7868pt>
 File: figures/distribution_multi.png Graphic file (type png)
 <use figures/distribution_multi.png>
-Package pdftex.def Info: figures/distribution_multi.png  used on input line 724.
+Package pdftex.def Info: figures/distribution_multi.png  used on input line 745.
 (pdftex.def)             Requested size: 290.40111pt x 103.57584pt.
-<figures/russian_distribution.png, id=559, 982.1493pt x 349.7868pt>
+<figures/russian_distribution.png, id=571, 982.1493pt x 349.7868pt>
 File: figures/russian_distribution.png Graphic file (type png)
 <use figures/russian_distribution.png>
-Package pdftex.def Info: figures/russian_distribution.png  used on input line 733.
+Package pdftex.def Info: figures/russian_distribution.png  used on input line 754.
 (pdftex.def)             Requested size: 290.40111pt x 103.42639pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [29]
-<figures/distribution_fine_tuned.png, id=567, 952.5186pt x 349.7868pt>
+<figures/distribution_fine_tuned.png, id=579, 952.5186pt x 349.7868pt>
 File: figures/distribution_fine_tuned.png Graphic file (type png)
 <use figures/distribution_fine_tuned.png>
-Package pdftex.def Info: figures/distribution_fine_tuned.png  used on input line 756.
+Package pdftex.def Info: figures/distribution_fine_tuned.png  used on input line 777.
 (pdftex.def)             Requested size: 290.40111pt x 106.63945pt.
-<figures/distribution_ru_finetuned0.png, id=568, 968.418pt x 349.7868pt>
+<figures/distribution_ru_finetuned0.png, id=580, 968.418pt x 349.7868pt>
 File: figures/distribution_ru_finetuned0.png Graphic file (type png)
 <use figures/distribution_ru_finetuned0.png>
-Package pdftex.def Info: figures/distribution_ru_finetuned0.png  used on input line 765.
+Package pdftex.def Info: figures/distribution_ru_finetuned0.png  used on input line 786.
 (pdftex.def)             Requested size: 290.40111pt x 104.88881pt.
  [30 <./figures/distribution_multi.png> <./figures/russian_distribution.png>]
-<figures/cumulative_mult.png, id=582, 711.1368pt x 349.7868pt>
+<figures/cumulative_mult.png, id=594, 711.1368pt x 349.7868pt>
 File: figures/cumulative_mult.png Graphic file (type png)
 <use figures/cumulative_mult.png>
-Package pdftex.def Info: figures/cumulative_mult.png  used on input line 783.
+Package pdftex.def Info: figures/cumulative_mult.png  used on input line 804.
 (pdftex.def)             Requested size: 290.40111pt x 142.83708pt.
-<figures/cumulative_ru.png, id=583, 711.1368pt x 349.7868pt>
+<figures/cumulative_ru.png, id=595, 711.1368pt x 349.7868pt>
 File: figures/cumulative_ru.png Graphic file (type png)
 <use figures/cumulative_ru.png>
-Package pdftex.def Info: figures/cumulative_ru.png  used on input line 793.
+Package pdftex.def Info: figures/cumulative_ru.png  used on input line 814.
 (pdftex.def)             Requested size: 290.40111pt x 142.83708pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1298,53 +1304,77 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 2591) has occurred while \output is active []
 
  [35] [36]
-<figures/training_enhanced.png, id=616, 1076.1003pt x 715.473pt>
+<figures/attention_weights_example.png, id=629, 855.6768pt x 422.0568pt>
+File: figures/attention_weights_example.png Graphic file (type png)
+<use figures/attention_weights_example.png>
+Package pdftex.def Info: figures/attention_weights_example.png  used on input line 935.
+(pdftex.def)             Requested size: 363.0pt x 179.04654pt.
+
+Overfull \hbox (4.02252pt too wide) in paragraph at lines 968--968
+ []|\T1/lmr/m/n/10.95 (-20) Weight| 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+Underfull \vbox (badness 1442) has occurred while \output is active []
+
+ [37 <./figures/attention_weights_example.png>]
+<figures/training_enhanced.png, id=639, 1076.1003pt x 715.473pt>
 File: figures/training_enhanced.png Graphic file (type png)
 <use figures/training_enhanced.png>
-Package pdftex.def Info: figures/training_enhanced.png  used on input line 912.
+Package pdftex.def Info: figures/training_enhanced.png  used on input line 980.
 (pdftex.def)             Requested size: 355.1142pt x 236.10683pt.
-<figures/distribution_enhanced.png, id=617, 971.3088pt x 349.7868pt>
+<figures/distribution_enhanced.png, id=640, 971.3088pt x 349.7868pt>
 File: figures/distribution_enhanced.png Graphic file (type png)
 <use figures/distribution_enhanced.png>
-Package pdftex.def Info: figures/distribution_enhanced.png  used on input line 921.
+Package pdftex.def Info: figures/distribution_enhanced.png  used on input line 989.
 (pdftex.def)             Requested size: 290.40111pt x 104.57924pt.
-<figures/distribution_enhanced_finetuned.png, id=618, 950.3505pt x 349.7868pt>
+<figures/distribution_enhanced_finetuned.png, id=641, 950.3505pt x 349.7868pt>
 File: figures/distribution_enhanced_finetuned.png Graphic file (type png)
 <use figures/distribution_enhanced_finetuned.png>
-Package pdftex.def Info: figures/distribution_enhanced_finetuned.png  used on input line 930.
+Package pdftex.def Info: figures/distribution_enhanced_finetuned.png  used on input line 998.
 (pdftex.def)             Requested size: 290.40111pt x 106.88496pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [37 <./figures/training_enhanced.png>] [38 <./figures/distribution_enhanced.png> <./figures/distribution_enhanced_finetuned.png>]
-Chapter 6.
-(./ctuman.ind) (./ctuman.bbl [39
+ [38]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-] [40
+ [39 <./figures/training_enhanced.png> <./figures/distribution_enhanced.png> <./figures/distribution_enhanced_finetuned.png>] [40]
+Chapter 6.
+(./ctuman.ind) (./ctuman.bbl [41
+
+] [42
 
 ]
 Appendix A.
-[41] [42]) [43] (./ctuman.aux)
+[43] [44])
+
+Package natbib Warning: There were undefined citations.
+
+[45] (./ctuman.aux)
 Package rerunfilecheck Info: File `ctuman.out' has not changed.
-(rerunfilecheck)             Checksum: 7AB809A0C22590D35FFB11ACC9A5BC63;7460.
+(rerunfilecheck)             Checksum: E405D053C31236F5447F01F577C3EF99;7686.
  ) 
 Here is how much of TeX's memory you used:
- 30472 strings out of 478287
- 554290 string characters out of 5849290
- 873549 words of memory out of 5000000
- 47636 multiletter control sequences out of 15000+600000
- 595602 words of font info for 242 fonts, out of 8000000 for 9000
+ 30529 strings out of 478287
+ 555655 string characters out of 5849290
+ 875104 words of memory out of 5000000
+ 47679 multiletter control sequences out of 15000+600000
+ 595685 words of font info for 243 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,17n,80p,1300b,1144s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 83i,17n,80p,1203b,1144s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{figure.4.2} has been referenced but does not exist, replaced by a fixed one
 
 pdfTeX warning (dest): name{figure.4.1} has been referenced but does not exist, replaced by a fixed one
 
-{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathex.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmex10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi8.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr6.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmr9.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on ctuman.pdf (49 pages, 1308469 bytes).
+{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathex.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmex10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi8.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr6.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmr9.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on ctuman.pdf (51 pages, 1347356 bytes).
 PDF statistics:
- 777 PDF objects out of 1000 (max. 8388607)
- 651 compressed objects within 7 object streams
- 178 named destinations out of 1000 (max. 500000)
- 72146 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 805 PDF objects out of 1000 (max. 8388607)
+ 675 compressed objects within 7 object streams
+ 185 named destinations out of 1000 (max. 500000)
+ 72159 words of extra memory for PDF output out of 74296 (max. 10000000)
 

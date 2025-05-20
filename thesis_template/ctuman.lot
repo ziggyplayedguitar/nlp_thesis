@@ -25,5 +25,6 @@
 \contentsline {table}{\numberline {5.3}{\ignorespaces Russian Tweet Distribution and Author Statistics in the Dataset.\relax }}{27}{table.5.3}%
 \contentsline {table}{\numberline {5.4}{\ignorespaces Training and validation metrics at the best epochs.\relax }}{27}{table.5.4}%
 \contentsline {table}{\numberline {5.5}{\ignorespaces Zero-Shot Trolliness Score Distribution\relax }}{29}{table.5.5}%
+\contentsline {table}{\numberline {5.6}{\ignorespaces Comments with the highest and lowest attention weights together with their individual trolliness scores.\relax }}{38}{table.5.6}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }

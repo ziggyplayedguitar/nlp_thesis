@@ -99,6 +99,16 @@
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{float}
+\usepackage{placeins}
+
+\usepackage{url}
+
+\usepackage{tabularx,array}
+\usepackage{multirow} % Required for \multirow command
+\usepackage{booktabs}  
+
+\usepackage{mathtools,amssymb}
+\usepackage{tcolorbox} % For colored boxes
 
 % Abstract in Czech
 \begin{abstract-czech}
@@ -144,14 +154,6 @@ The thesis concludes by highlighting the method's strengths and acknowledging li
 	V Praze, \ctufield{day}.~\monthinlanguage{second}~\ctufield{year}
 \end{declaration}
 
-\usepackage{url}
-
-\usepackage{tabularx,array}
-\usepackage{multirow} % Required for \multirow command
-\usepackage{booktabs}  
-
-\usepackage{mathtools,amssymb}
-\usepackage{tcolorbox} % For colored boxes
 
 % A savebox for typesetting listings in the titles
 \newsavebox{\myboxa}
@@ -218,11 +220,30 @@ Stylometric analyses typically examine lexical choices like vocabulary richness,
 
 \subsection{Stylometry in Literature}
 
-An example of stylometry applied to troll detection is presented in the work of Machová \textit{et al.}~\cite{Machova2021Algorithms}. The paper examines troll detection in Slovak Facebook discussions on COVID-19 by combining shallow stylometric cues with engagement and affective information.  From roughly 2,500 manually labelled comments, they extract length-based metrics (character and word counts, average word length), orthographic signals (capital-letter and digit frequency), and eight sentiment/provocativeness categories, and enrich these with interaction metadata such as the number of “likes”. These features were used by classical classifiers-including SVM, Multinomial Naïve Bayes (MNB), and logistic regression trained on bag-of-words and TF-IDF representations. The MNB model that integrates stylometric, affective, and metadata features achieves the best balance, reaching 0.92 recall for the troll class, while an SVM attains perfect precision (1.00) at the cost of markedly lower recall.  Their results confirm that stylistic signals are informative but deliver the highest performance when fused with complementary sentiment and platform-level features, rather than being relied upon in isolation.
+An example of stylometry applied to troll detection is presented in the work of Machová \textit{et al.}~\cite{Machova2021Algorithms}. The paper examines troll detection in Slovak Facebook discussions on COVID-19 by combining shallow stylometric cues with engagement and affective information.  From roughly 2,500 manually labelled comments, they extract length-based metrics (character and word counts, average word length), orthographic signals (capital-letter and digit frequency), and eight sentiment/provocativeness categories, and enrich these with interaction metadata such as the number of “likes”. These features were used by classical classifiers-including Support Vector Machines (SVM), Multinomial Naïve Bayes (MNB), and logistic regression trained on bag-of-words and TF-IDF representations. 
+
+\subsubsection{Term Frequency-Inverse Document Frequency (TF-IDF)}
+\label{subsec:tfidf}
+TF-IDF is a term-weighting scheme that emphasises words that are frequent in an individual document yet rare in the overall collection.  
+Following Manning, Raghavan, and Schütze's textbook Introduction to Information Retrieval~\cite{Manning2009}, the weight of a term \(t\) in a document \(d\) taken from a corpus of \(N\) documents is:
+
+\[
+\operatorname{tf\!-\!idf}_{t,d} 
+\;=\;
+\operatorname{tf}_{t,d}
+\;\times\;
+\log\!\Bigl(\frac{N}{df_t}\Bigr),
+\]
+
+where \(\operatorname{tf}_{t,d}\) is the (raw or normalised) term frequency of \(t\) in \(d\) and \(df_t\) is the number of documents in which \(t\) appears.  
+This product down-weights ubiquitous stop-words (e.g., “the”, “and”) while retaining terms that are stylistically distinctive for an author, making TF-IDF a staple feature in authorship-attribution and troll-detection pipelines.
+
+
+\subsubsection{Other Stylometric Approahces in Lietrature}
 
 In another paper, an example of stylometry applied to fake news detection is presented in the work of Pérez-Rosas et al.~\cite{PerezRosas2018Stylometry}. They used a variety of stylometric features, including n-grams, punctuation frequency, readability metrics, and syntactic features. They also incorporated psycholinguistic features extracted from the LIWC lexicon, which categorize words into various psychological categories. LIWC features capture psychological aspects of a text, such as emotional tone or cognitive processes, potentially revealing underlying psychological differences between fake and legitimate news writers. A linear SVM classifier was trained on these features to differentiate between fake and legitimate news articles. Their results showed that stylometric features can be effective for the task, achieving accuracies of up to 76\% which outperformed two human annotators. The analysis uncovered distinct linguistic patterns in fake news, such as increased use of social and positive words, a focus on present and future actions, and a higher prevalence of adverbs, verbs, and punctuation marks.\par
 
-Though stylometry has proven useful for text classification, recent advancements in large language models and their potential for misuse might pose a substantial challenge to its efficacy. As demonstrated by Schuster et al.~\cite{Schuster2020}, stylmoetry may struggle to differentiate between human-written and machine-generated text. In their study, they find that while a state-of-the-art stylometry-based classifier could effectively detect the presence of machine-generated text within human-written content, it struggled to discern the truthfulness of the generated text. For instance, even a single auto-generated sentence within a longer human-written text was easily detectable, but the veracity of that sentence remained largely undecidable. Additionally, even a relatively weak LM could produce statement inversions that evaded detection by the stylometry-based model.\par
+Though stylometry has proven useful for text classification, recent advancements in large language models and their potential for misuse might pose a substantial challenge to its efficacy. A language model (LM) is a probabilistic system that assigns likelihoods to sequences of words and can generate human-like text. As demonstrated by Schuster et al.~\cite{Schuster2020}, stylometry may struggle to differentiate between human-written and machine-generated text. In their study, they find that while a state-of-the-art stylometry-based classifier could effectively detect the presence of machine-generated text within human-written content, it struggled to discern the truthfulness of the generated text. For instance, even a single auto-generated sentence within a longer human-written text was easily detectable, but the veracity of that sentence remained largely undecidable. Additionally, even a relatively weak LM could produce statement inversions that evaded detection by the stylometry-based model.
 
 These findings collectively highlight stylometry's potential for detecting hidden manipulation in online text, although recent advancements in language generation models present new challenges. It is also important to note that to achieve good results, stylometric features weren't used on their own but along with others like metadata (like counts, followers) or sentiment analysis. \par
 
@@ -262,7 +283,7 @@ The model uses a dot product to calculate the similarity between the query and t
 \subsection{Multi-Head Attention}
 
 In addition to the self-attention mechanism, Transformer models also use multi-head attention. This means that instead of having a single set of query, key, and value vectors, the model has multiple sets (or heads) that can learn different aspects of the input data. Each head performs its own self-attention calculation, and the results are then concatenated and linearly transformed to create the final output. This allows the model to capture a wider range of relationships and patterns in the data.\par
-The multi-head attention mechanism is defined as follows:
+The multi-head attention mechanism is defined as follows\cite{Vaswani2017}:
 
 \begin{align}
  \text{MultiHead}(Q, K, V) &= \text{Concat}(\text{head}_1, \text{head}_2, \ldots, \text{head}_h)W^O \\
@@ -286,7 +307,7 @@ An important aspect of the BERT architecture, particularly for tasks requiring a
 This bidirectional nature and the [CLS] token convention, among other features, allow BERT to capture richer contextual information about language, making it highly effective for a wide range of downstream tasks such as text classification, question answering, and sentiment analysis, and a promising fit for our troll detection task.\par
 
 \subsection{Transformer Models in Troll Detection}
-The paper MetaTroll proposed a few-shot troll detection framework designed to adapt quickly to new state-sponsored influence campaigns using minimal labeled data. Their approach is based on a meta-learning framework and incorporates campaign-specific transformer adapters to tackle catastrophic forgetting, a common problem where models lose the ability to detect trolls from older campaigns after continual updates. MetaTroll outperformed traditional n-gram SVM baselines, achieving a 92.3\% F1-score in 5-shot scenarios and demonstrating strong cross-lingual capabilities\cite{Tian2023}.\par
+The paper MetaTroll\cite{Tian2023} proposed a few-shot troll detection framework designed to adapt quickly to new state-sponsored influence campaigns using minimal labeled data. Their approach is based on a meta-learning framework and incorporates campaign-specific transformer adapters to tackle catastrophic forgetting, a common problem where models lose the ability to detect trolls from older campaigns after continual updates. MetaTroll outperformed traditional n-gram SVM baselines, achieving a 92.3\% F1-score in 5-shot scenarios and demonstrating strong cross-lingual capabilities.\par
 Embeddings generated by transformer models have been shown to outperform static methods due to their ability to capture the contextual meanings of words. BERT-based word embeddings outperformed static GloVe vectors reaching AUC scores of 0.924. The authors of the paper \cite{yilmaz2023} highlight how transformers can better capture contextual nuances in language, which can be important for the task of troll classification, where language can be manipulative and deliberately deceptive.
 
 In this thesis, we will attempt to leverage pre-trained Transformer models such as BERT and try to fine-tune them for the troll detection task. The reasons for the choice of using Transformers will be outlined in the next chapters.\par
@@ -902,9 +923,56 @@ This user provides an interesting case study because, despite the use of words l
 While the manual review provides some insights into how the model assigns troliness scores, it is a very limited analysis. The review is based on a very small, randomly selected sample of users and comments, of only four users out of a total of 16500. Given this limited scope and limited ability to generalize, it would be inappropriate to draw conclusions about the model's overall performance or its capabilities. For the sake of clarity and not to draw many conclusions, we have limited the user analysis to the comparison of the first two users, A and B. However, we have also included additional user examples, allowing readers to examine the comments, attention weights, and trolliness scores for themselves and form their own opinions. \par
 Moreover, determining whether a user is genuinely a troll or not is a complex and subjective task that goes beyond the scope of this work. This section should therefore be understood as an illustration of the model's behavior rather than a definitive assessment of its performance.\par
 
+\subsection{Analysis of Attention Mechanism}
+\label{subsec:attention}
+
+Figure~\ref{fig:attention_example} shows the distribution of comment-level attention weights for one illustrative user.  The head of the distribution is highly skewed: two comments together receive almost half of the total mass, while the long tail attracts only marginal weight.  This suggests that the encoder learns to concentrate on the remarks it deems most “trolly” when constructing the user representation.
+
+Table~\ref{tab:attention_comments} juxtaposes the three comments with the highest attention weights against the three with the lowest. The \emph{individual troll scores} shown in the table were obtained by running the same model on each comment in isolation.  Because the architecture was trained to ingest multiple comments per user, these per-comment scores are only indicative and are not directly comparable to the aggregated \emph{user} troll scores produced in the main experiments. Nonetheless, comments that attract maximal attention are strongly more trolly and their isolated troll scores approach~1.0, whereas relatively less trolly comments draw little attention and are rated as non-trolly. These examples therefore suggest that the attention mechanism is functioning as intended-highlighting the utterances that drive the final trolliness estimate.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/attention_weights_example.png}%
+  \caption{Attention weights assigned to 16 comments written by
+  an example user.  The model focuses on a handful of comments with
+  disproportionately high weights.}
+  \label{fig:attention_example}
+\end{figure}
+
+\begin{table}[h]
+  \centering
+  \captionof{table}{Comments with the highest and lowest attention weights together with their individual trolliness scores.}
+  \label{tab:attention_comments}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.04\textwidth}
+                               >{\centering\arraybackslash}p{0.08\textwidth}
+                               >{\centering\arraybackslash}p{0.10\textwidth}X@{}}
+    \toprule
+    \multicolumn{4}{l}{\textbf{Top 3 highest attention comments}}\\
+    \midrule
+    \# & Weight & Troll score & Comment text\\
+    \midrule
+    1 & 0.246 & 0.997 & Nevidím žádné komentáře od Ssssýkory, Uncajtigové,
+        Brože, Pelce a podobných žlutomodrých pacientů…\\
+    2 & 0.235 & 0.997 & Komunistický prokurátor Stříž jako nejvyšší státní
+        zástupce. Ukázka našeho Absurdistánu. Ještě že ani on to už nemohl
+        vydržet…\\
+    3 & 0.089 & 0.993 & Jedna banda lhářů přeskočila druhou bandu ještě
+        větších lhářů. Na tom není nic divného.\\
+    \midrule
+    \multicolumn{4}{l}{\textbf{Bottom 3 lowest attention comments}}\\
+    \midrule
+    1 & 0.013 & 0.008 & Konečné slovo do pranice! Co na to naši žlutomodráci?\\
+    2 & 0.014 & 0.140 & Ale jdi ty, PePo Rozvědčíku.\\
+    3 & 0.016 & 0.007 & To bude první služba pro lidi, kterou by udělala.\\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
 \subsection{Enhanced Attention Model Experiments}
 
 In addition to the baseline models, we also trained a model with the enhanced version of the attention mechanism, as described in Section \ref{sec:enhanced_attention}. The model with the enhanced attention mechanism was trained following the same pipeline as the baseline and was initially trained using the Russian-language only data. It was also fine-tuned exactly as the base line models on the small manually labeled Czech dataset. The training results, including training and validation loss curves, as well as the distribution of predicted trolliness scores, can be seen in the figures below.\par 
+
+At first glance, the richer two-layer attention block behaves more plausibly than the lightweight variant. In the zero-shot experiment, the enhanced model already produces a noticeably flatter histogram (Figure \ref{fig:distribution_enhanced}), whereas the simplified-attention baseline all but collapsed to values below 0.1 (Figure \ref{fig:russian_distribution}). This suggests that the intermediate non-linear projection helps the network harvest additional semantic cues and prevents and lets it perform better even in the zero-shot case. Although a thorough evaluation is still outstanding, these early signs are encouraging for the enhanced attention mechanism.\par
 
 % Training and Validation Loss Figure
 \begin{figure}[htbp]
@@ -948,6 +1016,8 @@ Unfortunately, this approach did not work as expected. Instead of improving the 
 This thesis investigated the challenge of identifying online trolling using Natural Language Processing (NLP) techniques,, focusing on discussions on the Czech news website comments. The core of the proposed methodology was using a multilingual BERT model to assign a \textit{trolliness} score to each user, based on their comments. Initial training utilized diverse multilingual datasets of known troll and non-troll activity. This training was followed by a crucial fine-tuning stage using a small, manually annotated set of Czech news discussion comments.
 
 The experiments showed promise for the potential of transformer-based models for this complex task. While baseline comparison demonstrated that the BERT model's performance was competitive against traditional stylometric and TF-IDF approaches, the multilingual BERT model's cross-lingual capabilities were insufficient for effective troll detection in the Czech domain without further fine-tuning. Zero-shot predictions proved insufficient, but fine-tuning, even with limited annotated data, led to noticeable improvements in the model's ability to discern varying degrees of troll-like behavior. The model's performance was further enhanced by training on a typologically similar language, in this case, Russian, which provided a more effective knowledge transfer. However, the limited size of the Czech annotated data remains a constraint, suggesting that future work would benefit from more extensive annotation, and alternatives could also be explored by utilizing different and larger transformer models like M-BERT or XLM-R.\par
+
+Finally the thesis shows that our single-layer attention head can pick out the few comments that matter most, giving a path from comment-level evidence to a user-level score. The proposed enhanced two-layer version behaves similarly but spreads its scores more evenly, already flagging a few likely trolls even before fine-tuning. Both mechanisms therefore look useful for turning raw predictions into a practical, graded “user rating,” though more data and testing would be needed before firm claims can be made.
 
 \appendix
 

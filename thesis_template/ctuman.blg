@@ -5,10 +5,11 @@ The style file: alpha.bst
 Database file #1: ../sources/library.bib
 Warning--entry type for "Seckin2024" isn't style-file defined
 --line 949 of file ../sources/library.bib
+Warning--I didn't find a database entry for "Manning2009"
 Warning--empty institution in Bradshaw2017TroopsTrolls
 You've used 27 entries,
             2543 wiz_defined-function locations,
-            748 strings with 10046 characters,
+            750 strings with 10068 characters,
 and the built_in function-call counts, 12117 in all, are:
 = -- 1197
 > -- 708
@@ -47,4 +48,4 @@ warning$ -- 1
 while$ -- 107
 width$ -- 30
 write$ -- 356
-(There were 2 warnings)
+(There were 3 warnings)
