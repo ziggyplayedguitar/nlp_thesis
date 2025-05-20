@@ -13,16 +13,22 @@ class TweetAttention(nn.Module):
         self.dropout = nn.Dropout(dropout_rate)
         self.attention = nn.Linear(hidden_size, 1)
     
-    def forward(self, embeddings: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward(self, embeddings: torch.Tensor, padding_mask: Optional[torch.Tensor] = None) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Args:
             embeddings: Tensor of shape [batch_size, num_tweets, hidden_size]
+            padding_mask: Tensor of shape [batch_size, num_tweets] indicating padded tweets
             
         Returns:
             Tuple of (weighted_embedding, attention_weights)
         """
         embeddings = self.dropout(embeddings)
         attention_weights = self.attention(embeddings)  # [batch_size, num_tweets, 1]
+        if padding_mask is not None:
+            attention_weights = attention_weights.masked_fill(
+                padding_mask.unsqueeze(-1) == 0,
+                float('-inf')
+            )
         attention_weights = F.softmax(attention_weights, dim=1)  # Normalize over tweets
         
         # Calculate weighted sum
@@ -46,10 +52,11 @@ class EnhancedTweetAttention(nn.Module):
         )
         self.attention = nn.Linear(hidden_size, 1)
     
-    def forward(self, embeddings: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward(self, embeddings: torch.Tensor, padding_mask: Optional[torch.Tensor] = None) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Args:
             embeddings: Tensor of shape [batch_size, num_tweets, hidden_size]
+            padding_mask: Tensor of shape [batch_size, num_tweets] indicating padded tweets
             
         Returns:
             Tuple of (weighted_embedding, attention_weights)
@@ -57,6 +64,11 @@ class EnhancedTweetAttention(nn.Module):
         embeddings = self.dropout(embeddings)
         transformed_embeddings = self.transform(embeddings)  # [batch_size, num_tweets, hidden_size]
         attention_scores = self.attention(transformed_embeddings)  # [batch_size, num_tweets, 1]
+        if padding_mask is not None:
+            attention_scores = attention_scores.masked_fill(
+                padding_mask.unsqueeze(-1) == 0,
+                float('-inf')
+            )
         attention_weights = F.softmax(attention_scores, dim=1)
         
         # Calculate weighted sum
@@ -133,14 +145,14 @@ class TrollDetector(nn.Module):
             nn.ReLU(),
             nn.Dropout(dropout_rate),
             nn.Linear(self.regressor_hidden_size, 1),
-            # nn.Sigmoid()  # Ensure output is between 0 and 1, Removed since BCEWithLogitsLoss is used where sigmoid is applied
         )
         
     def forward(
         self, 
         input_ids: torch.Tensor,
         attention_mask: torch.Tensor,
-        tweets_per_account: int
+        tweets_per_account: int,
+        padding_mask: Optional[torch.Tensor] = None
     ) -> Dict[str, torch.Tensor]:
         """Forward pass of the model.
         
@@ -148,6 +160,7 @@ class TrollDetector(nn.Module):
             input_ids: Tensor of shape [batch_size * tweets_per_account, seq_length]
             attention_mask: Tensor of shape [batch_size * tweets_per_account, seq_length]
             tweets_per_account: Number of tweets per account in the batch
+            padding_mask: Tensor of shape [batch_size * tweets_per_account, seq_length] indicating padded tweets
             
         Returns:
             Dictionary containing:
@@ -166,13 +179,14 @@ class TrollDetector(nn.Module):
         )
         
         # Get the last layer hidden states and CLS token embeddings
-        cls_embeddings = bert_outputs.hidden_states[-1][:, 0, :]  # [batch_size * tweets_per_account, hidden_size]
-        
-        # Reshape to [batch_size, tweets_per_account, hidden_size]
+        cls_embeddings = bert_outputs.hidden_states[-1][:, 0, :] 
         cls_embeddings = cls_embeddings.view(batch_size, tweets_per_account, -1)
         
-        # Apply tweet attention
-        account_embedding, attention_weights = self.tweet_attention(cls_embeddings)
+        # Apply tweet attention with padding mask
+        account_embedding, attention_weights = self.tweet_attention(
+            cls_embeddings,
+            padding_mask=padding_mask
+        )
         
         # Apply dropout and regression layers
         account_embedding = self.account_dropout(account_embedding)

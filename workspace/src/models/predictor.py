@@ -161,6 +161,9 @@ class TrollPredictor:
         all_attention_weights = []
         
         for batch in batches:
+            # Store original batch length before padding
+            original_batch_length = len(batch)
+            
             # Handle smaller batch with padding
             if len(batch) < self.comments_per_user:
                 num_padding = self.comments_per_user - len(batch)
@@ -176,11 +179,15 @@ class TrollPredictor:
                 return_tensors='pt'
             )
             
+            padding_mask = torch.ones(len(batch), device=self.device)
+            padding_mask[original_batch_length:] = 0  # Mark padded tweets as 0 using original_batch_length
+            
             with torch.no_grad():
                 outputs = self.model(
                     input_ids=encodings['input_ids'].to(self.device),
                     attention_mask=encodings['attention_mask'].to(self.device),
-                    tweets_per_account=self.comments_per_user
+                    tweets_per_account=self.comments_per_user,
+                    padding_mask=padding_mask
                 )
                 
                 # Get raw logits from the model
