@@ -1,0 +1,9 @@
+{
+  "total_authors": 8275,
+  "mean_trolliness": 0.117887884993425,
+  "median_trolliness": 0.021459707990288734,
+  "std_trolliness": 0.19644636668377313,
+  "troll_percentage": 6.138972809667674,
+  "mean_confidence": 0.8170744343003951,
+  "threshold_used": 0.5
+}

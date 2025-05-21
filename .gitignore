@@ -1,7 +1,9 @@
 sources/pdfs/
 workspace/data
 workspace/checkpoints
-wrorkspace/__pycache__/
+workspace/__pycache__/
+workspace/output/unprocessed/
+workspace/output/adapter_mlm_output/
 __pycache__/
 workspace/checkpoints
 workspace/.ipynb_checkpoints
@@ -27,14 +29,13 @@ workspace/src/extracted_comments/Roman_Dostál_20250327_012941.json
 workspace/user_anomaly_scores_lof.csv
 workspace/user_anomaly_scores_lof.csv
 /workspace/2025.04.05 ToPeraicaLiska
-workspace/output/
+workspace/output/adapter_mlm_output/
 .vscode/settings.json
 workspace/.vscode/settings.json
 workspace/notebooks/My model.txt
 workspace/2025TrollDetection/CommentSentTopics/Working Copy of topic2comments_Full_5422.json
 workspace/2025TrollDetection/
 metatroll-code-main
-workspace/output/
 workspace/ignore/
 workspace/output/adapter_mlm_output/
 workspace/2025.04.05 ToPeraicaLiska

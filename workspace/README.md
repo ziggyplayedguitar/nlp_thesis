@@ -34,8 +34,12 @@ This project implements a multilingual troll detection system using transformer-
 │   ├── non_troll_politics/     # Political non-troll twitter accounts
 │   ├── celebrity_tweets/       # Verified non-troll accounts
 │   └── processed/              # Processed data files
+├── output/                    # Generated prediction files
+│   └── predictions/            # CSV files containing model predictions
 └── checkpoints/               # Saved model checkpoints
 ```
+
+The `/output` directory contains pre-generated CSV files with model predictions. These files can be loaded directly for analysis without needing to run the prediction process again. This is especially useful for analyzing large datasets or when you want to compare results across different experiments.
 
 ## Features
 - **Czech Media Comment Analysis**: Advanced detection of trolls in Czech online news comment sections
