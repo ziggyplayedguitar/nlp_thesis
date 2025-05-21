@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.8)  21 MAY 2025 19:00
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.8)  21 MAY 2025 19:51
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1351,11 +1351,11 @@ Package rerunfilecheck Info: File `ctuman.out' has not changed.
 (rerunfilecheck)             Checksum: E405D053C31236F5447F01F577C3EF99;7686.
  ) 
 Here is how much of TeX's memory you used:
- 30534 strings out of 478287
- 555741 string characters out of 5849290
- 874253 words of memory out of 5000000
+ 30536 strings out of 478287
+ 555769 string characters out of 5849290
+ 874317 words of memory out of 5000000
  47683 multiletter control sequences out of 15000+600000
- 595685 words of font info for 243 fonts, out of 8000000 for 9000
+ 595786 words of font info for 244 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  83i,17n,80p,1203b,1144s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{figure.4.2} has been referenced but does not exist, replaced by a fixed one
@@ -1363,7 +1363,7 @@ pdfTeX warning (dest): name{figure.4.2} has been referenced but does not exist, 
 pdfTeX warning (dest): name{figure.4.1} has been referenced but does not exist, replaced by a fixed one
 
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathex.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmex10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi8.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr6.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmr9.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on ctuman.pdf (51 pages, 1347536 bytes).
+Output written on ctuman.pdf (51 pages, 1347663 bytes).
 PDF statistics:
  808 PDF objects out of 1000 (max. 8388607)
  678 compressed objects within 7 object streams
