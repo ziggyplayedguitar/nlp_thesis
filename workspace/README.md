@@ -15,18 +15,18 @@ This project implements a multilingual troll detection system using transformer-
 │   └── 08_analyze.py           # Analysis of attention mechanism
 ├── src/  
 │   ├── analysis/               # Model analysis utilities
-│   │   └── user_analysis.py     # User behavior analysis tools
+│   │   └── user_analysis.py    # User behavior analysis tools
 │   ├── data_tools/             # Data processing utilities
-│   │   ├── czech_data_tools.py  # Novinky.cz data loading tools
-│   │   ├── preprocessor.py      # Text preprocessing utilities
+│   │   ├── czech_data_tools.py # Novinky.cz data loading tools
+│   │   ├── preprocessor.py     # Text preprocessing utilities
 │   │   ├── dataset.py          # Dataset creation utilities
-│   │   └── examine_parquet.py   # Parquet file inspection utilities
+│   │   └── examine_parquet.py  # Parquet file inspection utilities
 │   ├── models/                 # Model definitions and training code
 │   │   ├── bert_model.py       # Transformer model architecture
 │   │   ├── predictor.py        # Prediction and explanation utilities
 │   │   ├── trainer.py          # Model training utilities
 │   │   └── train_adapter.py    # Language adapter training utilities
-├── data/                      # Data storage (not in repo)
+├── data/                       # Data storage (not in repo)
 │   ├── MediaSource/            # Novinky.cz comments, unlabeled
 │   ├── russian_troll_tweets/   # Russian troll tweet dataset
 │   ├── sentiment140/           # Twitter regular user dataset
@@ -34,9 +34,9 @@ This project implements a multilingual troll detection system using transformer-
 │   ├── non_troll_politics/     # Political non-troll twitter accounts
 │   ├── celebrity_tweets/       # Verified non-troll accounts
 │   └── processed/              # Processed data files
-├── output/                    # Generated prediction files
-│   └── predictions/            # CSV files containing model predictions
-└── checkpoints/               # Saved model checkpoints
+├── output/                     # Generated prediction files
+│   └── *predictions*.csv       # CSV files containing model predictions
+└── checkpoints/                # Saved model checkpoints
 ```
 
 The `/output` directory contains pre-generated CSV files with model predictions. These files can be loaded directly for analysis without needing to run the prediction process again. This is especially useful for analyzing large datasets or when you want to compare results across different experiments.
