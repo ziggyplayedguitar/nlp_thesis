@@ -29,22 +29,23 @@
 }
 
 \ctusetup{
-%	preprint = {\ctuverlog \\ ctuman \mytoday},
+	% preprint = {\ctuverlog \\ ctuman \mytoday},
 	mainlanguage = english,
 	titlelanguage = english,
 %	otherlanguages = {czech},
 	title-czech = {Hodnocení diskusních příspěvků mediálních zpráv},
 	title-english = {Evaluation of Media News Discussion Posts},
 	doctype-english = {Bachelor thesis},
-%	xfaculty = F4,
+	xfaculty = F3,
 	department-czech = {Katedra kybernetiky},
 	department-english = {Department of Cybernetics},
-	author = {Luka Peraica },
+  % fieldofstudy-english = {Open Informatics, Artificial Intelligence and Computer Science},
+	author = {Luka Peraica},
 	supervisor = {Ing. Radek Mařík, CSc.},
 %	supervisor-address = {Ústav X, \\ Uliční 5, \\ Praha 99},
 	keywords-czech = {online trolling, Zpracování přirozeného jazyka (NLP), Transformer modely, vícejazyčný BERT, Strojové učení},
 	keywords-english = {Online trolling, Natural Language Processing (NLP), Transformer models, Multiligual BERT, Machine Learning},
-	day = 15,
+	day = 20,
 	month = 5,
 	year = 2025,
 %	list-of-figures = false,
@@ -299,7 +300,7 @@ The output is finally passed through a feed-forward neural network (FFN), which 
 These mechanisms allow the Transformer to capture relationships and dependencies between words in a text, regardless of their position. The use of multi-head attention further enhances these abilities by allowing the model to learn different aspects of the text simultaneously. As a result, Transformer models can efficiently process long sequences, recognize contextual nuance, and achieve state-of-the-art performance in various NLP tasks.\par
 
 \subsection{BERT}
-
+\label{subsec:bert}
 One of the most influential Transformer-based models for natural language understanding is BERT (Bidirectional Encoder Representations from Transformers). Introduced by Devlin et al. in 2018~\cite{Devlin2018}, BERT builds on the Transformer encoder architecture and is pre-trained on large text corpora using masked language modeling and next sentence prediction tasks. Unlike traditional language models that read text from left to right, BERT is deeply bidirectional, meaning it learns information from both the left and right context of a token simultaneously during pre-training.\par
 
 An important aspect of the BERT architecture, particularly for tasks requiring a summary representation of an entire input sequence, is the use of a special token called [CLS] (classification token). This token is added at the beginning of the input sequence and is used to aggregate information from all tokens in the sequence. The final hidden state corresponding to the [CLS] token can then be used, for example, as the input for classification tasks.\par
@@ -418,17 +419,17 @@ The model architecture is designed in two levels: the comment level and the user
 
 \subsection{Comment Attention Mechanism}
 
-At the comment level, each individual comment is first encoded using a pretrained multilingual BERT model. As introduced in our discussion of BERT (Section 2.3.3), we utilize the final hidden state corresponding to the [CLS] token. This provides a fixed-length vector representing an entire comment, suitable for further processing. The embedding vector denoted as \( \mathbf{E}_{\mathrm{CLS}} \) resides in \( \mathbb{R}^{768} \), which corresponds to the hidden size of DistilBERT.
+At the comment level, each individual comment is first encoded using a pretrained multilingual BERT model. As introduced in our discussion of BERT (Section \ref{subsec:bert}), we utilize the final hidden state corresponding to the [CLS] token. This provides a fixed-length vector representing an entire comment, suitable for further processing. The embedding vector denoted as \( \mathbf{E}_{\mathrm{CLS}} \) resides in \( \mathbb{R}^{768} \), which corresponds to the hidden size of DistilBERT.
 
 \begin{align}
  \mathbf{E}_{\mathrm{CLS}} &= \texttt{BERT}_{\mathrm{embeddings}}(\texttt{comment})_{[\mathrm{CLS}]}
 \end{align}
 
-To aggregate the information from all comments belonging to a single user, we take inspiration from the concept of the attention mechanism, which have become fundamental in recent breakthroughs in deep learning, particularly due to their sucess in Transformer models introduced by Vaswani et al.~\cite{Vaswani2017}. These models use complex multi-head attention and self-attention mechanisms. However, for our base implementation, we propose a more ligthweight and simplified form of attention.\par
+To aggregate the information from all comments belonging to a single user, we take inspiration from the concept of the attention mechanism, which has become fundamental in recent breakthroughs in deep learning, particularly due to their success in Transformer models introduced by Vaswani et al.~\cite{Vaswani2017}. These models use complex multi-head attention and self-attention mechanisms. However, for our base implementation, we propose a more lightweight and simplified form of attention.\par
 
-Attention mechanisms are proposed as a way to allow machine learning models to learn how to assign different importance to different parts of the input data. Various types of attention mechanisms have been used for different machine learning tasks, ranging from natural language processing to computer vision, including tasks like image classification, machine translation or speech recogniction.\cite{Niu2021}
+Attention mechanisms are proposed as a way to allow machine learning models to learn how to assign different importance to different parts of the input data. Various types of attention mechanisms have been used for different machine learning tasks, ranging from natural language processing to computer vision, including tasks like image classification, machine translation, or speech recogniction.\cite{Niu2021}
 
-In our implementation the concept of attention is implemented in a simplified manner using PyTorch neural networks.\footnote{https://docs.pytorch.org/docs/stable/index.html}\par
+In our implementation, the concept of attention is implemented in a simplified manner using PyTorch neural networks.\footnote{https://docs.pytorch.org/docs/stable/index.html}\par
 
 In this simplified attention mechanism, the user's comment embeddings, denoted as \( \mathbf{E}_{\mathrm{CLS}, i} \) for the \( i \)-th comment, are processed using a dropout layer (\texttt{nn.Dropout}) followed by a single linear layer (\texttt{nn.Linear}), which outputs scalar attention scores. These attention scores are normalized into weights using a softmax function (\texttt{F.Softmax}). Finally, a weighted sum of the comment embeddings is calculated using these attention weights, producing the final user-level representation. \par
 
@@ -442,7 +443,7 @@ Here, \( \mathbf{w}_{\mathrm{att}} \) is a learnable weight vector and  \( \math
 
 The \( s_i \) value represents the attention score for the \( i \)-th comment, and \( \alpha_i \) is the normalized attention weight for the \( i \)-th comment. The final user-level representation \( \mathbf{V} \) is the weighted sum of the individual comment embeddings.\par
 
-Although this is a simplified approach, it serves as a baseline for our approach. To further extend on the idea, we also epxerimeneted with an enhanced version where we extend the architecture by intorducing a neutral network transofmration for the comment embeddings before calculating the attetion scores.
+Although this is a simplified approach, it serves as a baseline for our approach. To further develop the idea, we also experimented with an enhanced version, in which we extended the architecture by introducing a neutral network transformation for the comment embeddings before calculating the attention scores.
 
 \subsection{Enhanced Attention Mechanism}
 \label{sec:enhanced_attention}
@@ -458,7 +459,7 @@ In this enhanced attention mechanism, the user's comment embeddings, denoted as 
 
 In this case \( \mathbf{W}_1 \) and \( \mathbf{W}_2 \) are the learnable weight matrices of the two linear layers, and \( \mathbf{b}_1 \) and \( \mathbf{b}_2 \) are the corresponding biases. Where \( \mathbf{W}_1 \in \mathbb{R}^{h \times 768} \), \( \mathbf{b}_1 \in \mathbb{R}^{h} \) and  \( \mathbf{W}_2 \in \mathbb{R}^{768 \times h} \) and \( \mathbf{b}_2 \in \mathbb{R}^{768} \). The first linear layer transforms the comment embeddings into a hidden dimension \( h \), while the second linear layer transforms them back to the original embedding size of 768. The attention mechanism is then applied to the transformed embeddings, similar to the previous approach. \par
 
-This enhanced version tries to leverage the high-dimension representation of the comment embeddings, which encodes various semantic feautres of the comments. By introducing non-linear transformations, the model can potential capture richer features, such as sentiment, language patterns or other semantic aspects.\par 
+This enhanced version tries to leverage the high-dimension representation of the comment embeddings, which encodes various semantic features of the comments. By introducing non-linear transformations, the model can potential capture richer features, such as sentiment, language patterns or other semantic aspects.\par 
 
 \subsection{Regression Head}
 
@@ -972,7 +973,7 @@ Table~\ref{tab:attention_comments} juxtaposes the three comments with the highes
 
 In addition to the baseline models, we also trained a model with the enhanced version of the attention mechanism, as described in Section \ref{sec:enhanced_attention}. The model with the enhanced attention mechanism was trained following the same pipeline as the baseline and was initially trained using the Russian-language only data. It was also fine-tuned exactly as the base line models on the small manually labeled Czech dataset. The training results, including training and validation loss curves, as well as the distribution of predicted trolliness scores, can be seen in the figures below.\par 
 
-At first glance, the richer two-layer attention block behaves more plausibly than the lightweight variant. In the zero-shot experiment, the enhanced model already produces a noticeably flatter histogram (Figure \ref{fig:distribution_enhanced}), whereas the simplified-attention baseline all but collapsed to values below 0.1 (Figure \ref{fig:russian_distribution}). This suggests that the intermediate non-linear projection helps the network harvest additional semantic cues and prevents and lets it perform better even in the zero-shot case. Although a thorough evaluation is still outstanding, these early signs are encouraging for the enhanced attention mechanism.\par
+At first glance, the richer two-layer attention block behaves more plausibly than the lightweight variant. In the zero-shot experiment, the enhanced model already produces a noticeably flatter histogram (Figure \ref{fig:distribution_enhanced}), whereas the simplified-attention baseline all but collapsed to values below 0.1 (Figure \ref{fig:russian_distribution}). This suggests that the intermediate non-linear projection helps the network harvest additional semantic cues and lets it perform better even in the zero-shot case. Although a thorough evaluation by a specialist in troll detection has not been performed, these early signs are encouraging for the enhanced attention mechanism.\par
 
 % Training and Validation Loss Figure
 \begin{figure}[htbp]
@@ -1005,7 +1006,7 @@ At first glance, the richer two-layer attention block behaves more plausibly tha
 \end{figure}
 
 \section{Language Adapter Experiment}
-As a failed experiment, we also attempted to further adapt the BERT model to the Czech language by training a language adapter. Adapters are lightweight modules that can be inserted into transformer models, allowing them to efficiently adapt to new domains with minimal changes to the main model \cite{Houlsby2019}. The approach has been shown to be effective in many contexts, including multilingual tasks. Moreover, the MetaTrolls model, previously cited in Related Methods \cite{Tian2023}, successfully used adapters to specialize its model for different trolling campaigns, which inspired us to explore this method.\par
+In an attempt to improve the performace of the proposed method, we also attempted to further adapt the BERT model to the Czech language by training a language adapter. Adapters are lightweight modules that can be inserted into transformer models, allowing them to efficiently adapt to new domains with minimal changes to the main model \cite{Houlsby2019}. The approach has been shown to be effective in many contexts, including multilingual tasks. Moreover, the MetaTrolls model, previously cited in Related Methods \cite{Tian2023}, successfully used adapters to specialize its model for different trolling campaigns, which inspired us to explore this method.\par
 
 We trained an adapter using Masked Language Modeling (MLM) on the Czech comments dataset. The adapter was trained to predict masked tokens in the input text, with the aim to have it learn Czech-specific linguistic patterns, while retaining the multilingual knowledge and training of the BERT model.\par
 

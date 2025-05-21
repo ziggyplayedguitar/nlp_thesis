@@ -5,47 +5,46 @@ The style file: alpha.bst
 Database file #1: ../sources/library.bib
 Warning--entry type for "Seckin2024" isn't style-file defined
 --line 949 of file ../sources/library.bib
-Warning--I didn't find a database entry for "Manning2009"
 Warning--empty institution in Bradshaw2017TroopsTrolls
-You've used 27 entries,
+You've used 28 entries,
             2543 wiz_defined-function locations,
-            750 strings with 10068 characters,
-and the built_in function-call counts, 12117 in all, are:
-= -- 1197
-> -- 708
-< -- 9
-+ -- 259
-- -- 251
-* -- 894
-:= -- 2020
-add.period$ -- 85
-call.type$ -- 27
-change.case$ -- 195
-chr.to.int$ -- 27
-cite$ -- 28
-duplicate$ -- 456
-empty$ -- 782
-format.name$ -- 278
-if$ -- 2466
+            754 strings with 10207 characters,
+and the built_in function-call counts, 12385 in all, are:
+= -- 1220
+> -- 716
+< -- 10
++ -- 262
+- -- 253
+* -- 907
+:= -- 2065
+add.period$ -- 88
+call.type$ -- 28
+change.case$ -- 199
+chr.to.int$ -- 28
+cite$ -- 29
+duplicate$ -- 472
+empty$ -- 807
+format.name$ -- 281
+if$ -- 2521
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 25
-newline$ -- 139
-num.names$ -- 87
-pop$ -- 172
+missing$ -- 27
+newline$ -- 144
+num.names$ -- 90
+pop$ -- 180
 preamble$ -- 1
-purify$ -- 222
+purify$ -- 228
 quote$ -- 0
-skip$ -- 421
+skip$ -- 432
 stack$ -- 0
-substring$ -- 549
-swap$ -- 100
-text.length$ -- 9
+substring$ -- 557
+swap$ -- 101
+text.length$ -- 10
 text.prefix$ -- 3
 top$ -- 0
-type$ -- 212
+type$ -- 216
 warning$ -- 1
-while$ -- 107
-width$ -- 30
-write$ -- 356
-(There were 3 warnings)
+while$ -- 109
+width$ -- 31
+write$ -- 368
+(There were 2 warnings)
