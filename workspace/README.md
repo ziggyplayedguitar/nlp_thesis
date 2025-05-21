@@ -1,27 +1,32 @@
-# Multilingual Troll Detection using DistilBERT
+# Multilingual Troll Detection using Transformer Models
 
 ## Overview
-This project implements a multilingual troll detection system using transformer-based models (DistilBERT/mBERT/XLM-R) to identify troll accounts based on their tweet content. The system is designed to work across different languages, with a particular focus on English training data and Czech test data.
+This project implements a multilingual troll detection system using transformer-based models to identify troll accounts based on their comment content. The system is designed to work across different languages, with a particular focus on English and Russian training data and Czech test data. The project specifically analyzes comments from Czech news discussion sections to detect potential troll behavior.
 
 ## Project Structure
 ```
 ├── notebooks/                  # Jupyter notebooks for exploration and analysis
 │   ├── 01_preprocess.ipynb     # Data preprocessing
 │   ├── 02_train.ipynb          # Model training
-│   ├── 03_benchmark.ipynb      # Model benchmark test
-│   └── 04_visualize.ipynb      # Visualizing data and model output
+│   ├── 03_fine_tune.ipynb      # Model fine-tuning on Czech dataset
+│   ├── 04_predict.ipynb        # Using trained models to predict Czech news comments
+│   ├── 05_stylometry.ipynb     # Baseline benchmark against classical ML models
+│   ├── 07_adapter.ipynb        # Failed experiment of training a Czech language adapter
+│   └── 08_analyze.py           # Analysis of attention mechanism
 ├── src/  
 │   ├── analysis/               # Model analysis utilities
-│   │   ├── benchmark.py         # Benchmark to test model on same cases
+│   │   └── user_analysis.py     # User behavior analysis tools
 │   ├── data_tools/             # Data processing utilities
-│   │   ├── czech_data_tools.py # Novinky.cz data loading tools
-│   │   ├── preprocessor.py     # Text preprocessing utilities
-│   │   └── dataset.py          # Dataset creation utilities
+│   │   ├── czech_data_tools.py  # Novinky.cz data loading tools
+│   │   ├── preprocessor.py      # Text preprocessing utilities
+│   │   ├── dataset.py          # Dataset creation utilities
+│   │   └── examine_parquet.py   # Parquet file inspection utilities
 │   ├── models/                 # Model definitions and training code
-│   │   ├── troll_detector.py   # Transformer-based model
-│   │   └── predictor.py        # Prediction and explanation utilities
-├── output/                     # Ploomber generated output notebooks and other outputs
-├── data/                       # Data storage (not in repo)
+│   │   ├── bert_model.py       # Transformer model architecture
+│   │   ├── predictor.py        # Prediction and explanation utilities
+│   │   ├── trainer.py          # Model training utilities
+│   │   └── train_adapter.py    # Language adapter training utilities
+├── data/                      # Data storage (not in repo)
 │   ├── MediaSource/            # Novinky.cz comments, unlabeled
 │   ├── russian_troll_tweets/   # Russian troll tweet dataset
 │   ├── sentiment140/           # Twitter regular user dataset
@@ -29,100 +34,67 @@ This project implements a multilingual troll detection system using transformer-
 │   ├── non_troll_politics/     # Political non-troll twitter accounts
 │   ├── celebrity_tweets/       # Verified non-troll accounts
 │   └── processed/              # Processed data files
-├── checkpoints/                # Saved model checkpoints
-├── pipeline.yaml               # Python task definitions for Ploomber
-├── tasks.py                    # Ploomber pipeline configuration
+└── checkpoints/               # Saved model checkpoints
 ```
 
 ## Features
-- **Czech Media Comment Analysis**: Focuses on detecting trolls in Czech online news comment sections.
-- **Ploomber Pipeline**: Structured workflow for reproducible machine learning execution.
-- **Data Preprocessing**: Cleans and formats tweets, removes unnecessary elements like URLs, and organizes data for training.
-- **Custom Dataset**: Structures tweets and comments at an account level rather than tweet-by-tweet classification.
-- **Multi-Tweet Attention Mechanism**: Assigns different weights to tweets when making an account-level decision.
-- **Transformer-based Model**: Utilizes pre-trained DistilBERT or XLM-R for feature extraction.
-- **Multi-stage Processing**: Separate preprocessing, training, evaluation and prediction steps.
-- **Configurable Training Pipeline**: Implements gradient clipping, learning rate scheduling, and mixed precision training.
-- **Prediction & Explainability**: Provides an interface for making predictions and generating explanations for model decisions.
+- **Czech Media Comment Analysis**: Advanced detection of trolls in Czech online news comment sections
+- **Multi-Comment Processing**: Analyzes multiple comments per user for more accurate account-level classification
+- **Transformer Architecture**: Uses state-of-the-art transformer models for text processing
+- **Multilingual Capability**: Supports English, Russian, and Czech language content
+- **User Behavior Analysis**: Tools for analyzing user commenting patterns and behavior
+- **Flexible Model Training**: Supports various transformer architectures with customizable training parameters
+- **Explainable Predictions**: Provides insight into model decisions through attention visualization
 
-## Data Sources
-The project uses multiple data sources:
-1. Russian Troll Tweets (labeled troll accounts)
-2. Sentiment140 Dataset (regular Twitter users)
-3. Celebrity Tweets (verified non-troll accounts)
-4. Information Operations (additional troll dataset)
-5. Political Non-troll Tweets (tweets from legitimate accounts)
-6. Czech Novinky.cz discussion comments (Main dataset of comments from Czech newssite novinky.cz)
+## Data Processing Pipeline
+1. **Data Collection**: Gathering comments from Novinky.cz and other sources
+2. **Preprocessing**: Text cleaning and standardization using `preprocessor.py`
+3. **Dataset Creation**: Building structured datasets with `dataset.py`
+4. **Model Training**: Training using `trainer.py` with configurable parameters
+5. **Prediction**: Making predictions using `predictor.py`
+6. **Analysis**: Analyzing results with tools in the `analysis` directory
+
+## Model Architecture
+The project implements a hierarchical transformer architecture:
+- **Base Transformer**: Processes individual comments using pre-trained models
+- **Comment-Level Attention**: Weighs the importance of different parts within comments
+- **User-Level Aggregation**: Combines multiple comments to make user-level predictions
 
 ## Installation
 ### Prerequisites
 - Python 3.8+
-- ploomber
 - PyTorch
 - Transformers (Hugging Face)
+- pandas
+- numpy
 - scikit-learn
-- NumPy
-- Pandas
 - tqdm
-- wandb (optional for experiment tracking)
-- matplotlib
-- seaborn
-- jupyter
-- pathlib
-- papermill
-
-```bash
-pip install -r requirements.txt
-```
-
-## Usage
-
-### Running the Pipeline
-To execute the full pipeline:
-```bash
-ploomber build
-```
-
-To run a specific task:
-```bash
-ploomber task <task_name>
-```
 
 ## Configuration
-Key configuration parameters in `train.py`:
+Key configuration parameters in `02_train.ipynb`:
 ```python
+
+# Updated training configuration
 config = {
+    # Model configuration
     'model_name': 'distilbert-base-multilingual-cased',
-    'max_length': 128,
-    'batch_size': 64,
-    'learning_rate': 2e-5,
-    'weight_decay': 0.03,
-    'num_epochs': 3,
+    'adapter_path': None,
+    # Data parameters
+    'max_length': 96,
+    'batch_size': 16,
+    # Training hyperparameters
+    'learning_rate': 1e-5,
+    'weight_decay': 0.01,
+    'num_epochs': 6,
     'dropout_rate': 0.2,
     'warmup_steps': 50,
     'max_grad_norm': 1.0,
-    'comments_per_user': 5,
+    'comments_per_user': 10,
+    # Training control
     'early_stopping_patience': 3,
-    'use_wandb': False,
     'random_state': 17,
-    'label_smoothing': 0.1       
 }
 ```
-
-## Model Architecture
-- **Transformer Encoder**: Extracts contextual embeddings from each tweet.
-- **Tweet-Level Attention**: Determines the importance of each tweet in an account.
-- **Account-Level Classifier**: Aggregates tweet embeddings and predicts troll likelihood.
-
-## Evaluation
-The model is evaluated on:
-- Account-level classification accuracy
-- ROC-AUC score
-- Precision, Recall, and F1-score
-
-## Future Improvements
-- Fine-tuning with more diverse datasets
-- Adding Czech test set evaluation
 
 ## Acknowledgments
 - Hugging Face Transformers
