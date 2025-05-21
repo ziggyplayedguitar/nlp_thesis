@@ -8,7 +8,6 @@ from src.models.predictor import TrollPredictor
 
 # --- CONFIG ---
 COMMENTS_PARQUET = "./data/processed/czech_media_comments.parquet"
-ANOMALY_CSV = "./user_anomaly_scores.csv"
 ANNOTATIONS_OUTPUT = "./annotations/user_labels.csv"
 Path("./annotations").mkdir(exist_ok=True)
 
@@ -18,9 +17,9 @@ def get_predictor():
     try:
         return TrollPredictor(
             # model_path="./checkpoints/best_model_english_medium",
-            model_path="./checkpoints/finetuned_model_BCE_no_emoji.pt",
+            model_path="./checkpoints/best_model_ru_only_finetuned_enhanced_attention.pt",
             # model_name="distilbert-base-multilingual-cased",
-            comments_per_user=10,
+            comments_per_user=20,
             max_length=96,
             use_adapter=False,
             threshold=0.4,
@@ -40,14 +39,13 @@ if predictor is None:
 def load_data():
     try:
         df_comments = pd.read_parquet(COMMENTS_PARQUET)
-        df_anomaly = pd.read_csv(ANOMALY_CSV)
-        return df_comments, df_anomaly
+        return df_comments
     except Exception as e:
         st.error(f"Error loading data: {str(e)}")
-        return None, None
+        return None
 
-df_comments, df_anomaly = load_data()
-if df_comments is None or df_anomaly is None:
+df_comments = load_data()
+if df_comments is None:
     st.error("Failed to load data. Please check the data paths.")
     st.stop()
 
@@ -62,11 +60,11 @@ else:
 
 # Authors not yet labeled
 # authors = [a for a in df_anomaly["author"].tolist() if a not in labeled_authors]
-authors = df_anomaly["author"].tolist()
+authors = df_comments["author"].tolist()
 selected_author = st.selectbox("Select an Author", authors)
 
 # --- Display Info ---
-author_info = df_anomaly[df_anomaly["author"] == selected_author].iloc[0]
+author_info = df_comments[df_comments["author"] == selected_author].iloc[0]
 st.markdown(f"### Author: `{selected_author}`")
 
 # Get author's comments for prediction
@@ -78,9 +76,8 @@ prediction = pred_result["prediction"]  # This is still 'troll' or 'not_troll' b
 trolliness_score = pred_result["trolliness_score"]  # New continuous score
 binary_confidence = pred_result["binary_confidence"]  # New confidence metric
 
-# Display all scores with color coding
-# col1 = st.columns(1)  # Added an extra column for trolliness score
-col1, col2, col3 = st.columns(3)  # Added an extra column for trolliness score
+# Display scores with color coding
+col1, col2 = st.columns(2)  # Changed to 2 columns
 
 with col1:
     st.metric(
@@ -95,20 +92,6 @@ with col2:
         value=prediction,
         delta=f"{binary_confidence:.3f} confidence"
     )
-
-with col3:
-    st.metric(
-        label="Isolation Forest Score",
-        value=f"{author_info['anomaly_score_iforest']:.3f}",
-        delta="higher = more anomalous"
-    )
-
-# with col4:
-#     st.metric(
-#         label="LOF Score",
-#         value=f"{author_info['anomaly_score_lof']:.3f}",
-#         delta="higher = more anomalous"
-#     )
 
 # --- Comments Preview ---
 st.markdown("#### Example Comments")
@@ -169,8 +152,6 @@ if st.button("Save Label"):
     label_map = {"Uncertain": -1, "Not Troll": 0, "Troll": 1}
     label_data = {
         "author": selected_author,
-        "iforest_score": author_info["anomaly_score_iforest"],
-        "lof_score": author_info["anomaly_score_lof"],
         "trolliness_score": trolliness_score,  # Add the continuous score
         "binary_confidence": binary_confidence,  # Add the binary confidence
         "label": label_map[label]
