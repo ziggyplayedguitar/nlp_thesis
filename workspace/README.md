@@ -100,6 +100,20 @@ config = {
 }
 ```
 
+## Fine-tuning
+Use `scripts/fine_tune.py` to adapt an existing checkpoint on a small set of
+annotated Czech comments. The annotation CSV must contain `author` and `label`
+columns while the comments file includes `author` and `text`.
+
+Example:
+```bash
+python scripts/fine_tune.py \
+  --annotations annotations/user_labels.csv \
+  --comments data/processed/czech_media_comments.parquet \
+  --checkpoint checkpoints/best_model.pt \
+  --output_dir checkpoints/fine_tuned
+```
+
 ## Acknowledgments
 - Hugging Face Transformers
 - PyTorch community
