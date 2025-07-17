@@ -96,7 +96,8 @@ config = {
     'comments_per_user': 10,
     # Training control
     'early_stopping_patience': 3,
-    'random_state': 17,
+
+'random_state': 17,
 }
 ```
 
@@ -112,8 +113,41 @@ python scripts/fine_tune.py \
   --comments data/processed/czech_media_comments.parquet \
   --checkpoint checkpoints/best_model.pt \
   --output_dir checkpoints/fine_tuned
+=======
+## Command-Line Training
+The repository includes a standalone script for training models without using the notebooks.
+Provide paths to the preprocessed Parquet files and desired hyperparameters:
+
+```bash
+python scripts/train.py \
+  --train-data data/processed/train_ru_only.parquet \
+  --val-data data/processed/val_ru_only.parquet \
+  --test-data data/processed/test_ru_only.parquet \
+  --model-name distilbert-base-multilingual-cased \
+  --epochs 6 \
+  --batch-size 16 \
+  --comments-per-user 10 \
+  --output-dir ./checkpoints/ru_run
 ```
 
 ## Acknowledgments
 - Hugging Face Transformers
 - PyTorch community
+
+## Preprocessing Script
+Use `scripts/preprocess.py` to prepare the dataset outside of the notebooks.
+The script loads raw files, creates author-based splits and saves each split as
+parquet files.
+
+```bash
+python scripts/preprocess.py \
+    --input-dir /path/to/raw/data \
+    --output-dir /path/to/output \
+    --random-seed 42
+```
+
+This command generates `train.parquet`, `val.parquet` and `test.parquet` in the
+output directory. Additional arguments like `--train-size`, `--val-size`, and
+`--test-size` control the split ratios, while `--max-tweets-per-source` and
+`--max-tweets-per-author` limit dataset size. Run the script with `--help` for a
+full list of options.
