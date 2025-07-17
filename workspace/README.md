@@ -96,8 +96,25 @@ config = {
     'comments_per_user': 10,
     # Training control
     'early_stopping_patience': 3,
-    'random_state': 17,
+
+'random_state': 17,
 }
+```
+
+## Command-Line Training
+The repository includes a standalone script for training models without using the notebooks.
+Provide paths to the preprocessed Parquet files and desired hyperparameters:
+
+```bash
+python scripts/train.py \
+  --train-data data/processed/train_ru_only.parquet \
+  --val-data data/processed/val_ru_only.parquet \
+  --test-data data/processed/test_ru_only.parquet \
+  --model-name distilbert-base-multilingual-cased \
+  --epochs 6 \
+  --batch-size 16 \
+  --comments-per-user 10 \
+  --output-dir ./checkpoints/ru_run
 ```
 
 ## Acknowledgments
