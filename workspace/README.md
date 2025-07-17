@@ -103,3 +103,21 @@ config = {
 ## Acknowledgments
 - Hugging Face Transformers
 - PyTorch community
+
+## Preprocessing Script
+Use `scripts/preprocess.py` to prepare the dataset outside of the notebooks.
+The script loads raw files, creates author-based splits and saves each split as
+parquet files.
+
+```bash
+python scripts/preprocess.py \
+    --input-dir /path/to/raw/data \
+    --output-dir /path/to/output \
+    --random-seed 42
+```
+
+This command generates `train.parquet`, `val.parquet` and `test.parquet` in the
+output directory. Additional arguments like `--train-size`, `--val-size`, and
+`--test-size` control the split ratios, while `--max-tweets-per-source` and
+`--max-tweets-per-author` limit dataset size. Run the script with `--help` for a
+full list of options.
