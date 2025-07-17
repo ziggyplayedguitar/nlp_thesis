@@ -36,6 +36,7 @@ This project implements a multilingual troll detection system using transformer-
 │   └── processed/              # Processed data files
 ├── output/                     # Generated prediction files
 │   └── *predictions*.csv       # CSV files containing model predictions
+├── scripts/                    # Command-line utilities (e.g. predict.py)
 └── checkpoints/                # Saved model checkpoints
 ```
 
@@ -55,7 +56,7 @@ The `/output` directory contains pre-generated CSV files with model predictions.
 2. **Preprocessing**: Text cleaning and standardization using `preprocessor.py`
 3. **Dataset Creation**: Building structured datasets with `dataset.py`
 4. **Model Training**: Training using `trainer.py` with configurable parameters
-5. **Prediction**: Making predictions using `predictor.py`
+5. **Prediction**: Making predictions using `predictor.py` or the `scripts/predict.py` command-line utility
 6. **Analysis**: Analyzing results with tools in the `analysis` directory
 
 ## Model Architecture
